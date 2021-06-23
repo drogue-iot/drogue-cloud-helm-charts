@@ -1,0 +1,12 @@
+apiVersion: v2
+name: drogue-cloud-common
+description: Drogue Cloud common
+keywords:
+  - IoT
+home: https://drogue.io
+icon: https://blog.drogue.io/favicon.svg
+
+type: library
+
+version: 0.1.0
+appVersion: 0.6.0-alpha1

@@ -1,0 +1,17 @@
+apiVersion: v2
+name: drogue-cloud-examples
+description: Installation of examples on top of Drogue Cloud
+keywords:
+  - IoT
+home: https://drogue.io
+icon: https://blog.drogue.io/favicon.svg
+
+type: application
+
+version: 0.1.0
+appVersion: 0.6.0-alpha1
+
+dependencies:
+  - name: drogue-cloud-common
+    version: 0.1.0
+    repository: file://../drogue-cloud-common
