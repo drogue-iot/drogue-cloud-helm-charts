@@ -1,4 +1,3 @@
-
-cluster: kubernetes
-domain: my-cluster.dns
-
+global:
+  cluster: kubernetes
+  domain: my-cluster.dns

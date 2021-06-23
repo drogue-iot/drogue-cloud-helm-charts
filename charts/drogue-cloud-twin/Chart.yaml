@@ -6,6 +6,11 @@ keywords:
 home: https://drogue.io
 icon: https://blog.drogue.io/favicon.svg
 
+maintainers:
+  - name: ctron
+    email: ctron@dentrassi.de
+    url: https://dentrassi.de
+
 type: application
 
 version: 0.1.0
@@ -13,5 +18,5 @@ appVersion: 0.6.0-alpha1
 
 dependencies:
   - name: drogue-cloud-common
-    version: 0.1.0
+    version: ~0.1.0
     repository: file://../drogue-cloud-common

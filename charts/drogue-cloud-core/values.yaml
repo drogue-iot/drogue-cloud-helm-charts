@@ -1,4 +1,3 @@
-
 global:
   # cluster defines the cluster type
   cluster: kubernetes
@@ -43,7 +42,7 @@ keycloak:
     #  - drogue: Re-use the Drogue Cloud postgres instance
     #  - operator: Let the keycloak operate manage one
     #  - external: Use an external instance
-    mode: drogue # reuse drogue instance
+    mode: drogue  # reuse drogue instance
     # username: foo
     # password: bar
     # you can provider either:
