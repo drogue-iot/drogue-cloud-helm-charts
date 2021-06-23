@@ -1,6 +1,6 @@
 apiVersion: v2
 name: drogue-cloud-common
-description: Drogue Cloud common
+description: Common functionality for Drogue Cloud charts
 keywords:
   - IoT
 home: https://drogue.io
@@ -13,5 +13,4 @@ maintainers:
 
 type: library
 
-version: 0.1.1
-appVersion: "0.0.0"  # we are a library
+version: 0.2.0-alpha1

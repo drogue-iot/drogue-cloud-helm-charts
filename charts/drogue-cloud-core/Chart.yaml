@@ -1,6 +1,6 @@
 apiVersion: v2
 name: drogue-cloud-core
-description: Installation of Drogue Cloud core
+description: Drogue IoT Cloud core installation
 keywords:
   - IoT
 home: https://drogue.io
@@ -13,10 +13,10 @@ maintainers:
 
 type: application
 
-version: 0.1.0
+version: 0.2.0-alpha1
 appVersion: 0.6.0-alpha1
 
 dependencies:
   - name: drogue-cloud-common
-    version: ~0.1.0
+    version: ~0.2.0
     repository: file://../drogue-cloud-common

@@ -2,6 +2,10 @@
 
 This repository contains the Drogue IoT Cloud Helm charts.
 
+You can add this repository be executing:
+
+    helm repo add drogue-iot https://drogue-iot.github.io/drogue-cloud-helm-charts/
+
 ## Releases
 
 Changes are automatically released when the main branch is updated.
