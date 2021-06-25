@@ -78,8 +78,8 @@ kafka:
     sasl:
       enabled: false
       mechanism: plain
-      #username: my-user
-      #password: my-password
+      # username: my-user
+      # password: my-password
 
     # properties allow you to provide arbitrary additional properties
     properties: {}
