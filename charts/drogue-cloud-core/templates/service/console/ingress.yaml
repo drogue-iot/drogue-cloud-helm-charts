@@ -1,3 +1,4 @@
+{{- $ref := dict "root" . "name" "console" "component" "console" -}}
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -8,6 +9,8 @@ metadata:
     {{- else }}
     kubernetes.io/ingress.class: "nginx"
     {{- end }}
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   rules:
     - host: {{ include "drogue-cloud-common.ingress.hostname" (list . "console" ) }}

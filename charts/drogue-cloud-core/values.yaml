@@ -1,7 +1,9 @@
 global:
   # cluster defines the cluster type
   cluster: kubernetes
+  # domain defines the domain suffix
   domain: .my-cluster.dns
+  # instance is the ID of the installation
   instance: drogue
 
 

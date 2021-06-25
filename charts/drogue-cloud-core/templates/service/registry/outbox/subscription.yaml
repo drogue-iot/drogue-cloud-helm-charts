@@ -1,10 +1,10 @@
+{{- $ref := dict "root" . "name" "outbox-controller" "component" "device-registry" -}}
 apiVersion: sources.knative.dev/v1alpha1
 kind: KafkaSource
 metadata:
   name: outbox-controller
   labels:
-    app.kubernetes.io/name: outbox-controller
-    app.kubernetes.io/part-of: device-registry
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   consumerGroup: outbox-controller
   bootstrapServers:

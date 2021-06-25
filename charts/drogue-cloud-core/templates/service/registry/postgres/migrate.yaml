@@ -1,3 +1,4 @@
+{{- $ref := dict "root" . "name" "migrate-database" "component" "device-registry" -}}
 kind: Job
 apiVersion: batch/v1
 metadata:
@@ -6,8 +7,7 @@ metadata:
     argocd.argoproj.io/hook: PostSync
     argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
   labels:
-    app.kubernetes.io/name: postgres
-    app.kubernetes.io/part-of: device-registry
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   backoffLimit: 1000
   completions: 1

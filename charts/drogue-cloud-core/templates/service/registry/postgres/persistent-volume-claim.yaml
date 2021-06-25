@@ -1,10 +1,10 @@
+{{- $ref := dict "root" . "name" "postgres-pvc" "component" "device-registry" -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
  name: postgres-pvc
  labels:
-   app.kubernetes.io/name: postgres
-   app.kubernetes.io/part-of: device-registry
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
  accessModes:
  - ReadWriteOnce

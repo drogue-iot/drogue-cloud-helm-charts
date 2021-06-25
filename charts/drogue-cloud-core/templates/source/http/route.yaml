@@ -1,8 +1,11 @@
+{{- $ref := dict "root" . "name" "http-endpoint" "component" "endpoints" -}}
 {{ if eq .Values.global.cluster "openshift" }}
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
   name: http-endpoint
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   to:
     kind: Service

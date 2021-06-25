@@ -3,12 +3,10 @@ apiVersion: v1
 metadata:
   name: http-command
   labels:
-    app.kubernetes.io/name: http-command
-    app.kubernetes.io/part-of: endpoints
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "http-command" "component" "endpoints") | nindent 4 }}
 spec:
   selector:
-    app.kubernetes.io/name: http-endpoint
-    app.kubernetes.io/part-of: endpoints
+    {{- include "drogue-cloud-common.selectorLabels" (dict "root" . "name" "http-endpoint" "component" "endpoints") | nindent 4 }}
   ports:
     - name: command
       protocol: TCP

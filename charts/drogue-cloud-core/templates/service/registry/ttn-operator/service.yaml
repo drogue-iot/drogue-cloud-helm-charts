@@ -1,14 +1,13 @@
+{{- $ref := dict "root" . "name" "ttn-operator" "component" "device-registry" -}}
 kind: Service
 apiVersion: v1
 metadata:
   name: ttn-operator
   labels:
-    app.kubernetes.io/name: ttn-operator
-    app.kubernetes.io/part-of: device-registry
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   selector:
-    app.kubernetes.io/name: ttn-operator
-    app.kubernetes.io/part-of: device-registry
+    {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
   ports:
     - name: api
       port: 80

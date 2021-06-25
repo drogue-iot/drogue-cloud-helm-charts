@@ -1,17 +1,19 @@
+{{- $ref := dict "root" . "name" "postgres" "component" "device-registry" -}}
 kind: Service
 apiVersion: v1
 metadata:
   name: postgres
   labels:
-    app.kubernetes.io/name: postgres
-    app.kubernetes.io/part-of: device-registry
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
+  selector:
+    {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
+
+  type: ClusterIP
+
   ports:
     - name: postgres
       port: 5432
       protocol: TCP
       targetPort: 5432
-  selector:
-    app.kubernetes.io/name: postgres
-    app.kubernetes.io/part-of: device-registry
-  type: ClusterIP
+

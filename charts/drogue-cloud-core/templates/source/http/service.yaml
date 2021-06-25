@@ -1,14 +1,13 @@
+{{- $ref := dict "root" . "name" "http-endpoint" "component" "endpoints" -}}
 kind: Service
 apiVersion: v1
 metadata:
   name: http-endpoint
   labels:
-    app.kubernetes.io/name: http-endpoint
-    app.kubernetes.io/part-of: endpoints
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   selector:
-    app.kubernetes.io/name: http-endpoint
-    app.kubernetes.io/part-of: endpoints
+    {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
 
   {{- if eq .Values.global.cluster "openshift" }}
   type: ClusterIP

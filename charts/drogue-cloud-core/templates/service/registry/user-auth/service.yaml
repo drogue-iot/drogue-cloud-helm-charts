@@ -1,15 +1,15 @@
+{{- $ref := dict "root" . "name" "user-auth-service" "component" "device-registry" -}}
 kind: Service
 apiVersion: v1
 metadata:
   name: user-auth-service
   labels:
-    app.kubernetes.io/name: user-auth-service
-    app.kubernetes.io/part-of: device-registry
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+
 spec:
 
   selector:
-    app.kubernetes.io/name: user-auth-service
-    app.kubernetes.io/part-of: device-registry
+    {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
 
   type: ClusterIP
 

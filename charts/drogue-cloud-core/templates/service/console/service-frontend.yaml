@@ -1,13 +1,14 @@
+{{- $ref := dict "root" . "name" "console-frontend" "component" "console" -}}
 kind: Service
 apiVersion: v1
 metadata:
   name: console
   labels:
-    app: console-frontend
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
 
   selector:
-    app: console-frontend
+    {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
 
   type: ClusterIP
 

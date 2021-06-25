@@ -7,7 +7,7 @@ metadata:
 spec:
   realmSelector:
     matchLabels:
-      app.kubernetes.io/part-of: console
+      {{- include "drogue-cloud-common.selectorLabels" (dict "root" . "releaseName" "drogue-iot" "name" "drogue" "component" "sso") | nindent 6 }}
   client:
     clientId: grafana
     clientAuthenticatorType: client-secret

@@ -1,19 +1,19 @@
+{{- $ref := dict "root" . "name" "console-frontend" "component" "console" -}}
 kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: console-frontend
   labels:
-    app: console-frontend
-    app.kubernetes.io/part-of: console
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: console-frontend
+      {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
   template:
     metadata:
       labels:
-        app: console-frontend
+        {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
     spec:
       containers:
         - name: endpoint

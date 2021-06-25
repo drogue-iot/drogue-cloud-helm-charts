@@ -1,7 +1,11 @@
+{{- $ref := dict "root" . "name" "configuration" "component" "global" -}}
 apiVersion: v1
 kind: ConfigMap
 
 metadata:
   name: configuration
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+
 data:
   instance: {{ .Values.global.instance }}

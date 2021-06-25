@@ -1,7 +1,12 @@
+{{- $ref := dict "root" . "name" "console-backend" "component" "console" -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
+
 metadata:
   name: console-backend
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+
 rules:
   - apiGroups: [ "route.openshift.io" ]
     resources: [ "routes" ]

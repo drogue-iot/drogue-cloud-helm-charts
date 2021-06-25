@@ -1,14 +1,13 @@
+{{- $ref := dict "root" . "name" "outbox-controller" "component" "device-registry" -}}
 kind: Service
 apiVersion: v1
 metadata:
   name: outbox-controller
   labels:
-    app.kubernetes.io/name: outbox-controller
-    app.kubernetes.io/part-of: device-registry
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   selector:
-    app.kubernetes.io/name: outbox-controller
-    app.kubernetes.io/part-of: device-registry
+    {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
   ports:
     - name: api
       port: 80

@@ -29,6 +29,9 @@
           "type": "string",
           "description": "The instance ID",
           "default": "drogue"
+        },
+        "partOf": {
+          "type": "string"
         }
       }
     },

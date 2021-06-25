@@ -25,30 +25,28 @@ Pull policy
 {{- end }}
 
 {{/*
-Expand the name of the chart.
+Create chart name and version as used by the chart label.
 */}}
-{{- define "drogue-cloud-core.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- define "drogue-cloud-core.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
-Common labels
+Common labels.
+
+Arguments: (dict)
+ * root - .
+ * name - name of the resource
+ * component - component this resource belongs to
 */}}
 {{- define "drogue-cloud-core.labels" -}}
-helm.sh/chart: {{ include "drogue-cloud-core.chart" . }}
-{{ include "drogue-cloud-core.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+helm.sh/chart: {{ include "drogue-cloud-core.chart" .root }}
+{{ include "drogue-cloud-common.selectorLabels" . }}
+{{- if .root.Chart.AppVersion }}
+app.kubernetes.io/version: {{ .root.Chart.AppVersion | quote }}
 {{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end }}
-
-{{/*
-Selector labels
-*/}}
-{{- define "drogue-cloud-core.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "drogue-cloud-core.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/managed-by: {{ .root.Release.Service }}
+app.kubernetes.io/part-of: {{ .root.Values.global.partOf | default "drogue-iot" }}
 {{- end }}
 
 

@@ -3,8 +3,11 @@ kind: KeycloakUser
 metadata:
   name: admin
   labels:
-    app.kubernetes.io/part-of: console
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "admin" "component" "sso") | nindent 4 }}
 spec:
+  realmSelector:
+    matchLabels:
+      {{- include "drogue-cloud-common.selectorLabels" (dict "root" . "name" "drogue" "component" "sso") | nindent 6 }}
   user:
     username: "admin"
     firstName: "System"
@@ -29,6 +32,3 @@ spec:
         - "manage-account"
       realm-management:
         - "manage-users"
-  realmSelector:
-    matchLabels:
-      app.kubernetes.io/part-of: console

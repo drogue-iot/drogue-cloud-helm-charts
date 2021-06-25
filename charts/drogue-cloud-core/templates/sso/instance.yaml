@@ -3,7 +3,7 @@ kind: Keycloak
 metadata:
   name: sso
   labels:
-    app.kubernetes.io/part-of: sso
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "keycloak" "component" "sso") | nindent 4 }}
 spec:
   instances: 1
   externalAccess:

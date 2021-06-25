@@ -1,14 +1,13 @@
+{{ $ref := dict "root" . "name" "mqtt-integration" "component" "integrations" }}
 kind: Service
 apiVersion: v1
 metadata:
   name: mqtt-integration
   labels:
-    app.kubernetes.io/name: mqtt-integration
-    app.kubernetes.io/part-of: integrations
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   selector:
-    app.kubernetes.io/name: mqtt-integration
-    app.kubernetes.io/part-of: integrations
+    {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
 
   {{- if eq .Values.global.cluster "openshift" }}
   type: ClusterIP

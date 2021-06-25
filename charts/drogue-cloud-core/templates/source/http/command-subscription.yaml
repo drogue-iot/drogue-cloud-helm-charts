@@ -3,7 +3,7 @@ kind: KafkaSource
 metadata:
   name: commands-http
   labels:
-    app.kubernetes.io/part-of: endpoints
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "commands-http" "component" "endpoints") | nindent 4 }}
 spec:
   consumerGroup: commands-http
   bootstrapServers:

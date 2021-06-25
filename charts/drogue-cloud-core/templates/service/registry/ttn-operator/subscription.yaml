@@ -1,10 +1,10 @@
+{{- $ref := dict "root" . "name" "ttn-operator" "component" "device-registry" -}}
 apiVersion: sources.knative.dev/v1alpha1
 kind: KafkaSource
 metadata:
   name: ttn-operator
   labels:
-    app.kubernetes.io/name: ttn-operator
-    app.kubernetes.io/part-of: device-registry
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   consumerGroup: ttn-operator
   bootstrapServers:

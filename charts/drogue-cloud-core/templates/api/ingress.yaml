@@ -1,3 +1,4 @@
+{{- $ref := dict "root" . "name" "api" "component" "api" -}}
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -8,6 +9,8 @@ metadata:
     {{- else }}
     kubernetes.io/ingress.class: "nginx"
     {{- end }}
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   rules:
     - host: {{ include "drogue-cloud-common.api.hostname" . }}
@@ -59,14 +62,14 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: registry
+                name: device-management-service
                 port:
                   name: api
           - path: /api/registry/
             pathType: Prefix
             backend:
               service:
-                name: registry
+                name: device-management-service
                 port:
                   name: api
           - path: /api/command/
