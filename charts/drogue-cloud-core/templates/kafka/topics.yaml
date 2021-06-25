@@ -1,3 +1,4 @@
+{{- if not .Values.kafka.external.enabled -}}
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
@@ -34,3 +35,4 @@ spec:
   partitions: 3
   replicas: 1
   topicName: registry
+{{- end }}

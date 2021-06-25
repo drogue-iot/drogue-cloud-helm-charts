@@ -1,3 +1,4 @@
+{{- if not .Values.kafka.external.enabled -}}
 kind: Kafka
 apiVersion: kafka.strimzi.io/v1beta2
 metadata:
@@ -49,3 +50,4 @@ spec:
         {{- else }}
         {}
         {{- end }}
+{{- end }}

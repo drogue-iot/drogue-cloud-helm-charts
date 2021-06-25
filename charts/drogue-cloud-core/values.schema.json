@@ -128,6 +128,26 @@
         }
       }
     },
+    "kafka": {
+      "type": "object",
+      "required": [
+        "external"
+      ],
+      "properties": {
+        "external": {
+          "type": "object",
+          "required": [
+            "enabled"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": "false"
+            }
+          }
+        }
+      }
+    },
     "keycloak": {
       "type": "object",
       "properties": {

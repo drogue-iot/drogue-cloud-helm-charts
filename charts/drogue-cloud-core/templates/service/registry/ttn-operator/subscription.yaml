@@ -6,11 +6,17 @@ metadata:
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
+
   consumerGroup: ttn-operator
+
   bootstrapServers:
-    - drogue-iot-kafka-bootstrap.{{ .Release.Namespace }}.svc.cluster.local.:9092
+    - {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
+
   topics:
     - registry
+
+  {{- include "drogue-cloud-common.knative-kafka-net" (dict "root" . "secretName" "externa-kafka-secret" ) }}
+
   sink:
     ref:
       apiVersion: v1

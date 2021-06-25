@@ -6,3 +6,11 @@ grafana:
   adminPassword: admin123456
   podSecurityContext:
     enabled: false
+
+kafka:
+  external:
+    enabled: false
+    tls:
+      enabled: false
+    sasl:
+      enabled: false

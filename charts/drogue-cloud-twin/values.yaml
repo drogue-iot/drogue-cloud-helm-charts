@@ -1,3 +1,11 @@
 global:
   cluster: kubernetes
   domain: my-cluster.dns
+
+kafka:
+  external:
+    enabled: false
+    tls:
+      enabled: false
+    sasl:
+      enabled: false

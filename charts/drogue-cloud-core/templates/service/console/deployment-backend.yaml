@@ -60,6 +60,9 @@ spec:
               value: "0.0.0.0:9090"
             - name: ENABLE_AUTH
               value: "true"
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_PROPERTIES__" ) | nindent 12 }}
             - name: UI__CLIENT_ID
               valueFrom:
                 secretKeyRef:

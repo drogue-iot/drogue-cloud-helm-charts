@@ -6,10 +6,15 @@ metadata:
     app.kubernetes.io/part-of: digital-twin
 spec:
   consumerGroup: digital-twin
+
   bootstrapServers:
-    - drogue-iot-kafka-bootstrap:9092
+    - {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
+
   topics:
-    - iot-events
+      iot-events
+
+  {{- include "drogue-cloud-common.knative-kafka-net" (dict "root" . "secretName" "externa-kafka-secret" ) }}
+
   sink:
     ref:
       apiVersion: flows.knative.dev/v1

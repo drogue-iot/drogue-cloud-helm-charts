@@ -7,10 +7,15 @@ metadata:
     app.kubernetes.io/part-of: custom-app-1
 spec:
   consumerGroup: influxdb
+
   bootstrapServers:
-    - drogue-iot-kafka-bootstrap:9092
+    - {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
+
   topics:
     - iot-events
+
+  {{- include "drogue-cloud-common.knative-kafka-net" (dict "root" . "secretName" "externa-kafka-secret" ) }}
+
   sink:
     ref:
       apiVersion: v1

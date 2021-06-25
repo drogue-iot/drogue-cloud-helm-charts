@@ -6,10 +6,15 @@ metadata:
     {{- include "drogue-cloud-core.labels" (dict "root" . "name" "commands-mqtt" "component" "endpoints") | nindent 4 }}
 spec:
   consumerGroup: commands-mqtt
+
   bootstrapServers:
-    - drogue-iot-kafka-bootstrap.{{ .Release.Namespace }}.svc.cluster.local.:9092
+    - {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
+
   topics:
     - iot-commands
+
+  {{- include "drogue-cloud-common.knative-kafka-net" (dict "root" . "secretName" "externa-kafka-secret" ) }}
+
   sink:
     ref:
       apiVersion: v1

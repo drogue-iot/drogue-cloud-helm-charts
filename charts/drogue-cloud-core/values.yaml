@@ -6,7 +6,6 @@ global:
   # instance is the ID of the installation
   instance: drogue
 
-
 endpoints:
 
   http:
@@ -64,5 +63,23 @@ postgres:
 
 
 kafka:
+
   podSecurityContext:
     enabled: false
+
+  # external can be used to configure Drogue Cloud to use an external Kafka instance
+  external:
+    enabled: false
+    # bootstrapServer lists the boostrap server
+    # bootstrapServer: my-server:9002
+    # tls defined if TLS should be used or not
+    tls:
+      enabled: true
+    sasl:
+      enabled: false
+      mechanism: plain
+      #username: my-user
+      #password: my-password
+
+    # properties allow you to provide arbitrary additional properties
+    properties: {}
