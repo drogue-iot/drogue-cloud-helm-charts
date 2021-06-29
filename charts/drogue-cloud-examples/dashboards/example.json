@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1613141754783,
+  "iteration": 1624977364744,
   "links": [],
   "panels": [
     {
@@ -26,9 +26,7 @@
       "dashes": false,
       "datasource": "IoT",
       "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
+        "defaults": {},
         "overrides": []
       },
       "fill": 1,
@@ -57,7 +55,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.4.0",
+      "pluginVersion": "7.5.6",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -223,7 +221,6 @@
           "color": {
             "mode": "thresholds"
           },
-          "custom": {},
           "decimals": 1,
           "mappings": [],
           "max": 100,
@@ -305,7 +302,7 @@
         "text": {},
         "textMode": "value"
       },
-      "pluginVersion": "7.4.0",
+      "pluginVersion": "7.5.6",
       "targets": [
         {
           "groupBy": [
@@ -314,12 +311,6 @@
                 "1m"
               ],
               "type": "time"
-            },
-            {
-              "params": [
-                "device_id"
-              ],
-              "type": "tag"
             },
             {
               "params": [
@@ -343,7 +334,7 @@
               },
               {
                 "params": [],
-                "type": "last"
+                "type": "median"
               }
             ]
           ],
@@ -358,7 +349,6 @@
       ],
       "timeFrom": "1m",
       "timeShift": null,
-      "title": "",
       "transformations": [
         {
           "id": "reduce",
@@ -431,5 +421,5 @@
   "timezone": "",
   "title": "Example Dashboard",
   "uid": "YYGTNzdMk",
-  "version": 3
+  "version": 2
 }
