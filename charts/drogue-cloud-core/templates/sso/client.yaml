@@ -20,10 +20,9 @@ spec:
     serviceAccountsEnabled: false
     fullScopeAllowed: false
     redirectUris:
-      # used for the CLI
       - {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}
       - {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}/*
-      - "http://localhost:*"
+      - "http://localhost:*" {{/* used for the CLI */}}
     defaultRoles:
       - "drogue-user"
       - "drogue-admin"
