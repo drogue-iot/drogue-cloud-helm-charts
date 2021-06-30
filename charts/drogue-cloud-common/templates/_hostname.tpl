@@ -37,14 +37,14 @@ Ingress HTTP protocol:
 */}}
 {{- define "drogue-cloud-common.ingress.proto" -}}
     {{- with .ingress.proto -}}{{ . }}{{- else -}}
-    {{ if not .insecure -}}
-        http
+    {{- with .insecure -}}
+        {{- if . -}}http{{- else -}}https{{- end -}}
     {{- else -}}
-        {{- if eq .Values.global.cluster "openshift" -}}
+        {{- if eq .root.Values.global.cluster "openshift" -}}
             https
         {{- else -}}
             http
         {{- end }}
-    {{- end }}
-    {{- end }}{{/* end-with */}}
+    {{- end }}{{/* end-with .insecure */}}
+    {{- end }}{{/* end-with .ingress.proto */}}
 {{- end }}
