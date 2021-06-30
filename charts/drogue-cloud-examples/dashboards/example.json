@@ -503,62 +503,13 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "fixed"
           },
           "decimals": 1,
           "mappings": [],
           "max": 100,
-          "min": -273.15,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "dark-blue",
-                "value": null
-              },
-              {
-                "color": "semi-dark-blue",
-                "value": -100
-              },
-              {
-                "color": "blue",
-                "value": -50
-              },
-              {
-                "color": "light-blue",
-                "value": -15
-              },
-              {
-                "color": "super-light-blue",
-                "value": 0
-              },
-              {
-                "color": "super-light-green",
-                "value": 5
-              },
-              {
-                "color": "light-green",
-                "value": 10
-              },
-              {
-                "color": "super-light-yellow",
-                "value": 25
-              },
-              {
-                "color": "#EAB839",
-                "value": 30
-              },
-              {
-                "color": "dark-orange",
-                "value": 40
-              },
-              {
-                "color": "dark-red",
-                "value": 50
-              }
-            ]
-          },
-          "unit": "celsius"
+          "min": 0,
+          "unit": "humidity"
         },
         "overrides": []
       },
@@ -612,7 +563,7 @@
             [
               {
                 "params": [
-                  "temperature"
+                  "humidity"
                 ],
                 "type": "field"
               },
