@@ -40,7 +40,6 @@ Arguments: (dict)
  * component - component this resource belongs to
 */}}
 {{- define "drogue-cloud-core.labels" -}}
-helm.sh/chart: {{ include "drogue-cloud-core.chart" .root }}
 {{ include "drogue-cloud-common.selectorLabels" . }}
 {{- if .root.Chart.AppVersion }}
 app.kubernetes.io/version: {{ .root.Chart.AppVersion | quote }}
