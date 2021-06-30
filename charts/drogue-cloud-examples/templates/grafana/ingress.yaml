@@ -10,7 +10,7 @@ metadata:
     {{- end }}
 spec:
   rules:
-    - host: {{ include "drogue-cloud-common.ingress.hostname" ( list . "grafana" ) }}
+    - host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "grafana" "ingress" .Values.grafana.ingress ) }}
       http:
         paths:
           - path: /

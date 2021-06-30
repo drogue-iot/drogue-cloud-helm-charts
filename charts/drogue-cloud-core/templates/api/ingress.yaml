@@ -13,7 +13,7 @@ metadata:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   rules:
-    - host: {{ include "drogue-cloud-common.api.hostname" . }}
+    - host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) }}
       http:
         paths:
           - path: /

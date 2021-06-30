@@ -25,6 +25,15 @@ integrations:
       port: 8883
 
 
+services:
+  console:
+    ingress: {}
+  api:
+    ingress: {}
+  sso:
+    ingress: {}
+
+
 defaults:
   images:
     repository: ghcr.io/drogue-iot

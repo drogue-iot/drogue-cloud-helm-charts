@@ -48,29 +48,3 @@ app.kubernetes.io/version: {{ .root.Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .root.Release.Service }}
 app.kubernetes.io/part-of: {{ .root.Values.global.partOf | default "drogue-iot" }}
 {{- end }}
-
-
-{{/*
-Passthrough service URL
-*/}}
-{{- define "drogue-cloud-core.passthrough.ingress.url" -}}
-{{ if .insecure }}http{{ else }}https{{ end }}://
-{{- include "drogue-cloud-core.passthrough.ingress.host" . -}}
-
-{{- $port := .ingress.port | default 443 | toString -}}
-{{- /*
-  The next line means:
-    !( port == 80 && insecure ) || ( port == 443 && !insecure)
-*/ -}}
-{{- if not (or (and (eq $port "80") .insecure) (and (eq $port "443") (not .insecure )) ) -}}
-:{{ $port }}
-{{- end }}
-
-{{- end }}
-
-{{/*
-Passthrough service host
-*/}}
-{{- define "drogue-cloud-core.passthrough.ingress.host" -}}
-{{- .ingress.host | default ( printf "%s%s" .prefix .root.Values.global.domain ) -}}
-{{- end }}

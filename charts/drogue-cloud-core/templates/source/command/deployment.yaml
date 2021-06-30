@@ -92,7 +92,7 @@ spec:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
             - name: SSO_URL
-              value: {{ include "drogue-cloud-common.sso.url" . }}
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
             - name: COMMAND_KAFKA_SINK__TOPIC
               value: iot-commands
             - name: COMMAND_KAFKA_SINK__BOOTSTRAP_SERVERS

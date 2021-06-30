@@ -126,25 +126,25 @@ spec:
               value: "true"
             {{- end }}
             - name: SSO_URL
-              value: {{ include "drogue-cloud-common.sso.url" . }}
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
             - name: ENDPOINTS__API_URL
-              value: {{ include "drogue-cloud-common.api.url" . }}
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) }}
             - name: ENDPOINTS__CONSOLE_URL
-              value: {{ include "drogue-cloud-common.ingress.proto" . -}}{{- include "drogue-cloud-common.ingress.hostname" (list . "console" ) }}
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}
             - name: ENDPOINTS__REDIRECT_URL
-              value: {{ include "drogue-cloud-common.ingress.proto" . -}}{{- include "drogue-cloud-common.ingress.hostname" (list . "console" ) }}
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}
             - name: ENDPOINTS__DEVICE_REGISTRY_URL
-              value: {{ include "drogue-cloud-common.api.url" . }}
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) }}
             - name: ENDPOINTS__COMMAND_ENDPOINT_URL
-              value: {{ include "drogue-cloud-common.api.url" . }}
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) }}
             - name: ENDPOINTS__HTTP_ENDPOINT_URL
-              value: {{ include "drogue-cloud-core.passthrough.ingress.url" (dict "root" . "prefix" "http-endpoint" "ingress" .Values.endpoints.http.ingress "insecure" .Values.endpoints.http.insecure ) }}
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "http-endpoint" "ingress" .Values.endpoints.http.ingress "insecure" .Values.endpoints.http.insecure ) }}
             - name: ENDPOINTS__MQTT_ENDPOINT_HOST
-              value: {{ include "drogue-cloud-core.passthrough.ingress.host" (dict "root" . "prefix" "mqtt-endpoint" "ingress" .Values.endpoints.mqtt.ingress ) }}
+              value: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-endpoint" "ingress" .Values.endpoints.mqtt.ingress ) }}
             - name: ENDPOINTS__MQTT_ENDPOINT_PORT
               value: "{{ .Values.endpoints.mqtt.ingress.port }}"
             - name: ENDPOINTS__MQTT_INTEGRATION_HOST
-              value: {{ include "drogue-cloud-core.passthrough.ingress.host" (dict "root" . "prefix" "mqtt-integration" "ingress" .Values.integrations.mqtt.ingress ) }}
+              value: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-integration" "ingress" .Values.integrations.mqtt.ingress ) }}
             - name: ENDPOINTS__MQTT_INTEGRATION_PORT
               value: "{{ .Values.integrations.mqtt.ingress.port }}"
           ports:

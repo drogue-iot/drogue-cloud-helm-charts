@@ -74,7 +74,7 @@ spec:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
             - name: SSO_URL
-              value: {{ include "drogue-cloud-common.sso.url" . }}
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1

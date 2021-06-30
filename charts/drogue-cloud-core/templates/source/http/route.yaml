@@ -7,7 +7,7 @@ metadata:
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
-  host: {{ include "drogue-cloud-core.passthrough.ingress.host" (dict "root" . "prefix" "http-endpoint" "ingress" .Values.endpoints.http.ingress ) }}
+  host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "http-endpoint" "ingress" .Values.endpoints.http.ingress ) }}
   to:
     kind: Service
     name: http-endpoint

@@ -75,7 +75,7 @@ spec:
               value: "openid profile email"
 
             - name: SSO_URL
-              value: {{ include "drogue-cloud-common.sso.url" . }}
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
 
             - name: GF_AUTH_GENERIC_OAUTH_AUTH_URL
               value: $(SSO_URL)/auth/realms/drogue/protocol/openid-connect/auth
@@ -87,7 +87,7 @@ spec:
               value: "contains(roles[*], 'grafana-admin') && 'Admin' || contains(roles[*], 'grafana-editor') && 'Editor' || 'Viewer'"
 
             - name: GF_SERVER_ROOT_URL
-              value: {{ include "drogue-cloud-common.ingress.proto" . }}{{ include "drogue-cloud-common.ingress.hostname" (list . "grafana" ) }}
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "grafana" "ingress" .Values.grafana.ingress ) }}
 
             - name: DS_USERNAME
               valueFrom:
