@@ -8,6 +8,7 @@ metadata:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 
 spec:
+  host: {{ include "drogue-cloud-core.passthrough.ingress.host" (dict "root" . "prefix" "mqtt-integration" "ingress" .Values.integrations.mqtt.ingress ) }}
   to:
     kind: Service
     name: mqtt-integration
