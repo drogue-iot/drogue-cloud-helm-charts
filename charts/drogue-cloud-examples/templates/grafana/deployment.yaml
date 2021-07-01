@@ -19,6 +19,7 @@ spec:
       labels:
         app: grafana
     spec:
+      serviceAccountName: grafana
       initContainers:
         - name: wait-for-client-secret
           image: registry.access.redhat.com/ubi8-minimal
@@ -35,6 +36,18 @@ spec:
             - mountPath: /etc/client-secret
               name: client-secret
               readOnly: true
+        - name: collect-dashboards
+          image: ghcr.io/ctron/kubectl:1.19
+          imagePullPolicy: IfNotPresent
+          command:
+            - bash
+            - -c
+            - |
+              cd /var/lib/grafana/dashboards
+              readarray -d $'\0' -t a < <(kubectl get cm -l grafana=dashboards -o json | jq -cj '.items[] | . as $cm | .data | to_entries[] | [ ($cm.metadata.name + "-" + .key), .value ][]+"\u0000"') ; count=0; while [ $count -lt ${#a[@]} ]; do echo "${a[$((count + 1))]}" > ${a[$count]}; count=$(( $count + 2)); done
+          volumeMounts:
+            - mountPath: /var/lib/grafana/dashboards
+              name: grafana-dashboards
       containers:
         - name: grafana
           image: docker.io/grafana/grafana:7.5.6
@@ -146,8 +159,7 @@ spec:
           configMap:
             name: grafana-dashboard-providers
         - name: grafana-dashboards
-          configMap:
-            name: grafana-dashboards
+          emptyDir: {}
         - name: client-secret
           secret:
             secretName: keycloak-client-secret-drogue

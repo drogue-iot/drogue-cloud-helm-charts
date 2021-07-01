@@ -39,6 +39,8 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: grafana-dashboards
+  labels:
+    grafana: dashboards
 data:
   {{ range $path, $_ :=  .Files.Glob  "dashboards/*.json" }}
   {{ base $path }}: |
