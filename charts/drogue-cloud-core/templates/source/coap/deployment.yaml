@@ -43,13 +43,9 @@ spec:
             - name: BIND_ADDR_COAP
               value: "0.0.0.0:5683"
             - name: BIND_ADDR_HTTP
-              value: "0.0.0.0:8080"
+              value: "0.0.0.0:8081"
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
-            - name: CERT_BUNDLE_FILE
-              value: /etc/endpoint/tls.crt
-            - name: KEY_FILE
-              value: /etc/endpoint/tls.key
             - name: INSTANCE
               valueFrom:
                 configMapKeyRef:
@@ -65,6 +61,15 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
+
+            {{ if .Values.endpoints.http.insecure }}
+            - name: DISABLE_TLS
+              value: "true"
+            {{ else }}
+            - name: CERT_BUNDLE_FILE # TLS
+              value: /etc/endpoint/tls.crt
+            - name: KEY_FILE # TLS
+              value: /etc/endpoint/tls.key
             - name: SSO_URL
               value: {{ include "drogue-cloud-common.sso.url" . }}
             - name: DOWNSTREAM_KAFKA_SINK__TOPIC
@@ -72,13 +77,16 @@ spec:
             - name: DOWNSTREAM_KAFKA_SINK__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "DOWNSTREAM_KAFKA_SINK__CUSTOM__" ) | nindent 12 }}
+            {{ end }}
+
           ports:
             - containerPort: 5683
               name: endpoint
               protocol: UDP
-            - containerPort: 8080
+            - containerPort: 8081
               name: command
               protocol: TCP
+
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1
@@ -98,13 +106,21 @@ spec:
           resources:
             limits:
               memory: 64Mi
+          
+          {{ if not .Values.endpoints.http.insecure }}
           volumeMounts:
             - mountPath: /etc/endpoint
               name: endpoint-tls
+          {{ end }}
+
       volumes:
+
+        {{ if not .Values.endpoints.http.insecure }}
         - name: endpoint-tls
           secret:
             secretName: coap-endpoint-tls
+        {{ end }}
+
         - name: client-secret
           secret:
-            secretName: keycloak-client-secret-drogue
+            secretName: keycloak-client-secret-services
