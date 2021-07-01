@@ -71,7 +71,7 @@ spec:
             - name: KEY_FILE # TLS
               value: /etc/endpoint/tls.key
             - name: SSO_URL
-              value: {{ include "drogue-cloud-common.sso.url" . }}
+              value: {{ include "drogue-cloud-common.ingress.url" . }}
             - name: DOWNSTREAM_KAFKA_SINK__TOPIC
               value: iot-events
             - name: DOWNSTREAM_KAFKA_SINK__BOOTSTRAP_SERVERS
@@ -103,9 +103,6 @@ spec:
             httpGet:
               port: 9090
               path: /liveness
-          resources:
-            limits:
-              memory: 64Mi
           
           {{ if not .Values.endpoints.http.insecure }}
           volumeMounts:
