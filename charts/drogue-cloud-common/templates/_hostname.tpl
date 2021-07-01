@@ -1,3 +1,5 @@
+{{/* HTTP Specific */}}
+
 {{/*
 Service URL:
  * root - .
@@ -49,6 +51,9 @@ Ingress HTTP protocol:
     {{- end }}{{/* end-with .ingress.proto */}}
 {{- end }}
 
+
+{{/* CoAP specific */}}
+
 {{/*
 CoAP Service URL:
  * root - .
@@ -58,7 +63,7 @@ CoAP Service URL:
 {{- define "drogue-cloud-common.ingress.coap-url" -}}
 {{- include "drogue-cloud-common.ingress.coap-proto" . -}}
 ://
-{{- include "drogue-cloud-common.ingress.host" . -}}
+{{- include "drogue-cloud-common.ingress.coap-host" . -}}
 
 {{- $port := .ingress.port | default 5683 | toString -}}
 {{- /*
@@ -69,6 +74,16 @@ CoAP Service URL:
 :{{ $port }}
 {{- end }}
 
+{{- end }}
+
+{{/*
+CoAP Service host:
+ * root - .
+ * insecure - coaps or not
+ * prefix - DNS prefix
+*/}}
+{{- define "drogue-cloud-common.ingress.coap-host" -}}
+{{- .ingress.coaphost | default ( printf "%s%s" .prefix .root.Values.global.domain ) -}}
 {{- end }}
 
 {{/*
