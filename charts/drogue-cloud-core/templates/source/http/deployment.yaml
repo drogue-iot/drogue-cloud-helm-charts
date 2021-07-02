@@ -60,6 +60,14 @@ spec:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
 
+            - name: SSO_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+            - name: DOWNSTREAM_KAFKA_SINK__TOPIC
+              value: iot-events
+            - name: DOWNSTREAM_KAFKA_SINK__BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "DOWNSTREAM_KAFKA_SINK__CUSTOM__" ) | nindent 12 }}
+
             {{ if .Values.endpoints.http.insecure }}
             - name: DISABLE_TLS
               value: "true"
@@ -68,14 +76,7 @@ spec:
               value: /etc/endpoint/tls.crt
             - name: KEY_FILE # TLS
               value: /etc/endpoint/tls.key
-            - name: SSO_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
-            - name: DOWNSTREAM_KAFKA_SINK__TOPIC
-              value: iot-events
-            - name: DOWNSTREAM_KAFKA_SINK__BOOTSTRAP_SERVERS
-              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
-            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "DOWNSTREAM_KAFKA_SINK__CUSTOM__" ) | nindent 12 }}
-          {{ end }}
+            {{ end }}
 
           ports:
             - containerPort: {{ if .Values.endpoints.http.insecure }}8080{{ else }}8443{{ end }}
