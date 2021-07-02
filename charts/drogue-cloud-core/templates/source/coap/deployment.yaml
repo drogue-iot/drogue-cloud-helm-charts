@@ -61,8 +61,14 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-
-            {{ if .Values.endpoints.http.insecure }}
+            - name: DOWNSTREAM_KAFKA_SINK__TOPIC
+              value: iot-events
+            - name: DOWNSTREAM_KAFKA_SINK__BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "DOWNSTREAM_KAFKA_SINK__CUSTOM__" ) | nindent 12 }}
+            - name: SSO_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+            {{ if .Values.endpoints.coap.insecure }}
             - name: DISABLE_TLS
               value: "true"
             {{ else }}
@@ -70,20 +76,13 @@ spec:
               value: /etc/endpoint/tls.crt
             - name: KEY_FILE # TLS
               value: /etc/endpoint/tls.key
-            - name: SSO_URL
-              value: {{ include "drogue-cloud-common.ingress.url" . }}
-            - name: DOWNSTREAM_KAFKA_SINK__TOPIC
-              value: iot-events
-            - name: DOWNSTREAM_KAFKA_SINK__BOOTSTRAP_SERVERS
-              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
-            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "DOWNSTREAM_KAFKA_SINK__CUSTOM__" ) | nindent 12 }}
             {{ end }}
 
           ports:
-            - containerPort: 5683
+            - containerPort: {{ if .Values.endpoints.coap.insecure }}5683{{ else }}5684{{ end }}
               name: endpoint
               protocol: UDP
-            - containerPort: 8081
+            - containerPort: 8080
               name: command
               protocol: TCP
 
@@ -104,7 +103,7 @@ spec:
               port: 9090
               path: /liveness
           
-          {{ if not .Values.endpoints.http.insecure }}
+          {{ if not .Values.endpoints.coap.insecure }}
           volumeMounts:
             - mountPath: /etc/endpoint
               name: endpoint-tls
@@ -112,7 +111,7 @@ spec:
 
       volumes:
 
-        {{ if not .Values.endpoints.http.insecure }}
+        {{ if not .Values.endpoints.coap.insecure }}
         - name: endpoint-tls
           secret:
             secretName: coap-endpoint-tls
@@ -120,4 +119,4 @@ spec:
 
         - name: client-secret
           secret:
-            secretName: keycloak-client-secret-services
+            secretName: keycloak-client-secret-drogue
