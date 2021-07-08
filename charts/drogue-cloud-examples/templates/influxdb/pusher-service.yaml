@@ -11,7 +11,7 @@ spec:
   template:
     spec:
       containers:
-        - image: ghcr.io/drogue-iot/influxdb-pusher:0.4.0
+        - image: {{ .Values.influx.pusher.image }}
           env:
             - name: RUST_LOG
               value: debug

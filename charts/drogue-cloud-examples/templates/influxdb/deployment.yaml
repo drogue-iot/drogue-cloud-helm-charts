@@ -19,7 +19,7 @@ spec:
    spec:
      containers:
      - name: influxdb
-       image: docker.io/library/influxdb:1.8
+       image: {{ .Values.influx.database.image }}
        imagePullPolicy: IfNotPresent
        args:
        - -config

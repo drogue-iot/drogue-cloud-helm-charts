@@ -4,6 +4,7 @@ global:
 
 grafana:
   adminPassword: admin123456
+  image: docker.io/grafana/grafana:7.5.6
   podSecurityContext:
     enabled: false
   ingress: {}
@@ -15,6 +16,12 @@ kafka:
       enabled: false
     sasl:
       enabled: false
+
+influx:
+  database:
+    image: docker.io/library/influxdb:1.8
+  pusher:
+    image: ghcr.io/drogue-iot/influxdb-pusher:0.5.0
 
 services:
   sso:
