@@ -36,10 +36,16 @@ spec:
               value: temperatures
             - name: FIELD_TEMPERATURE
               value: $.temp
+            - name: TYPE_FIELD_TEMPERATURE
+              value: float
             - name: FIELD_BATTERY
               value: $.batt
+            - name: TYPE_FIELD_BATTERY
+                value: float
             - name: FIELD_HUMIDITY
               value: $.hum
+            - name: TYPE_FIELD_HUMIDITY
+                value: float
             - name: TAG_DEVICE_ID
               value: $.device
           resources:
