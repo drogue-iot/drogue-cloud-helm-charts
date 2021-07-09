@@ -45,7 +45,7 @@ spec:
             - name: FIELD_HUMIDITY
               value: $.hum
             - name: TYPE_FIELD_HUMIDITY
-                value: float
+              value: float
             - name: TAG_DEVICE_ID
               value: $.device
           resources:
