@@ -3,7 +3,8 @@ name: Release Charts
 on:
   push:
     branches:
-      - main
+      # We only release from release branches
+      - release-*
 
 jobs:
   release:
