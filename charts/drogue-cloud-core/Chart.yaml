@@ -20,5 +20,5 @@ kubeVersion: ">= 1.19.0"
 
 dependencies:
   - name: drogue-cloud-common
-    version: ^0.2.2
+    version: ^0.2.3
     repository: file://../drogue-cloud-common
