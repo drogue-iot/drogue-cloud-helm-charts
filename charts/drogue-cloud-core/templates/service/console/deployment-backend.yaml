@@ -138,7 +138,7 @@ spec:
             - name: ENDPOINTS__COMMAND_ENDPOINT_URL
               value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) }}
             - name: ENDPOINTS__HTTP_ENDPOINT_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "http-endpoint" "ingress" .Values.endpoints.http.ingress "insecure" .Values.endpoints.http.insecure ) }}
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "http-endpoint" "ingress" .Values.endpoints.http.ingress "insecure" ( .Values.endpoints.http.insecure | default true ) ) }}
             - name: ENDPOINTS__MQTT_ENDPOINT_HOST
               value: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-endpoint" "ingress" .Values.endpoints.mqtt.ingress ) }}
             - name: ENDPOINTS__MQTT_ENDPOINT_PORT
