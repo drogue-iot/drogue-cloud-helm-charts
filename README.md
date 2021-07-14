@@ -8,7 +8,7 @@ You can add this repository be executing:
 
 ## Releases
 
-Changes are automatically released when the main branch is updated.
+Changes are automatically released when one of the release branches is updated.
 
 ## Changes
 
