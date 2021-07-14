@@ -42,8 +42,6 @@ spec:
               value: "1"
             - name: BIND_ADDR_COAP
               value: "0.0.0.0:{{ if .Values.endpoints.coap.insecure }}5683{{ else }}5684{{ end }}"
-            - name: BIND_ADDR_HTTP
-              value: "0.0.0.0:8080"
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
             - name: INSTANCE
@@ -82,7 +80,7 @@ spec:
             - containerPort: {{ if .Values.endpoints.coap.insecure }}5683{{ else }}5684{{ end }}
               name: endpoint
               protocol: UDP
-            - containerPort: 8080
+            - containerPort: 8081
               name: command
               protocol: TCP
 

@@ -63,7 +63,7 @@ CoAP Service URL:
 {{- define "drogue-cloud-common.ingress.coap-url" -}}
 {{- include "drogue-cloud-common.ingress.coap-proto" . -}}
 ://
-{{- include "drogue-cloud-common.ingress.coap-host" . -}}
+{{- include "drogue-cloud-common.ingress.host" . -}}
 
 {{- $port := .ingress.port | default 5683 | toString -}}
 {{- /*
@@ -77,30 +77,20 @@ CoAP Service URL:
 {{- end }}
 
 {{/*
-CoAP Service host:
- * root - .
- * insecure - coaps or not
- * prefix - DNS prefix
-*/}}
-{{- define "drogue-cloud-common.ingress.coap-host" -}}
-{{- .ingress.coaphost | default ( printf "%s%s" .prefix .root.Values.global.domain ) -}}
-{{- end }}
-
-{{/*
 Ingress CoAP protocol:
  * root - .
  * insecure - coaps or not
 */}}
 {{- define "drogue-cloud-common.ingress.coap-proto" -}}
     {{- with .ingress.proto -}}{{ . }}{{- else -}}
-    {{- with .insecure -}}
-        {{- if . -}}coap{{- else -}}coaps{{- end -}}
+    {{- if not ( kindIs "invalid" .insecure ) -}}
+        {{- if .insecure -}}coap{{- else -}}coaps{{- end -}}
     {{- else -}}
         {{- if eq .root.Values.global.cluster "openshift" -}}
             coaps
         {{- else -}}
             coap
         {{- end }}
-    {{- end }}{{/* end-with .insecure */}}
+    {{- end }}{{/* end-if defined .insecure */}}
     {{- end }}{{/* end-with .ingress.coap-proto */}}
 {{- end }}

@@ -16,7 +16,7 @@ endpoints:
   mqtt:
     ingress:
       port: 8883
-  
+
   coap:
     insecure: true
     ingress:
