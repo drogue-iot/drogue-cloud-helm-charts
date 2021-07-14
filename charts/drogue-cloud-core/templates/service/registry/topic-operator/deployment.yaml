@@ -1,0 +1,72 @@
+{{- $ref := dict "root" . "name" "topic-operator" "component" "device-registry" -}}
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: topic-operator
+  annotations:
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"device-management-service"}]'
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
+    spec:
+      serviceAccountName: ttn-operator
+      containers:
+        - name: service
+          image: {{ include "drogue-cloud-core.image-repo" . }}topic-operator:{{ include "drogue-cloud-core.image-tag" . }}
+          imagePullPolicy: {{ include "drogue-cloud-core.image-pull-policy" . }}
+          env:
+            - name: RUST_LOG
+              value: debug
+            - name: RUST_BACKTRACE
+              value: "1"
+            - name: BIND_ADDR
+              value: 0.0.0.0:8080
+            - name: HEALTH__BIND_ADDR
+              value: "0.0.0.0:9090"
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: REGISTRY__CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_ID
+            - name: REGISTRY__CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_SECRET
+            - name: SSO_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+          readinessProbe:
+            initialDelaySeconds: 2
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 3
+            httpGet:
+              port: 9090
+              path: /readiness
+          livenessProbe:
+            initialDelaySeconds: 2
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 3
+            httpGet:
+              port: 9090
+              path: /liveness
+          ports:
+            - containerPort: 8080
+              name: api
+              protocol: TCP
+          resources:
+            limits:
+              memory: 128Mi
