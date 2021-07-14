@@ -13,12 +13,12 @@ maintainers:
 
 type: application
 
-version: 0.2.6
-appVersion: 0.6.0
+version: 0.3.0-alpha1
+appVersion: 0.7.0
 
 kubeVersion: ">= 1.19.0"
 
 dependencies:
   - name: drogue-cloud-common
-    version: ^0.2.2
+    version: ^0.3.0
     repository: file://../drogue-cloud-common
