@@ -17,7 +17,7 @@ spec:
       labels:
         {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
     spec:
-      serviceAccountName: ttn-operator
+      serviceAccountName: topic-operator
       containers:
         - name: service
           image: {{ include "drogue-cloud-core.image-repo" . }}topic-operator:{{ include "drogue-cloud-core.image-tag" . }}
@@ -47,6 +47,12 @@ spec:
                   key: CLIENT_SECRET
             - name: SSO_URL
               value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+            - name: CONTROLLER__TOPIC_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: CONTROLLER__CLUSTER_NAME
+              value: drogue-iot
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1

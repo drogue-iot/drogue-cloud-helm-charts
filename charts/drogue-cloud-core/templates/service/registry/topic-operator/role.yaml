@@ -6,12 +6,6 @@ metadata:
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 rules:
-  - apiGroups: [ "route.openshift.io" ]
-    resources: [ "routes" ]
-    verbs: [ "get", "watch", "list" ]
-  - apiGroups: [ "networking.k8s.io" ]
-    resources: [ "ingresses" ]
-    verbs: [ "get", "watch", "list" ]
-  - apiGroups: [ "serving.knative.dev" ]
-    resources: [ "services" ]
-    verbs: [ "get", "watch", "list" ]
+  - apiGroups: [ "kafka.strimzi.io" ]
+    resources: [ "kafkatopics" ]
+    verbs: [ "get", "watch", "list", "create", "update", "delete", "patch" ]
