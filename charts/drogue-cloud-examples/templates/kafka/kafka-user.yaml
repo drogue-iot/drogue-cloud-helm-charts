@@ -1,0 +1,24 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: example-app
+  labels:
+    strimzi.io/cluster: drogue-iot
+spec:
+  authentication:
+    type: scram-sha-512
+  authorization:
+    type: simple
+    acls:
+      - resource:
+          type: topic
+          name: events-example-app
+          patternType: literal
+        operation: Read
+        host: "*"
+      - resource:
+          type: topic
+          name: commands-example-app
+          patternType: literal
+        operation: Write
+        host: "*"

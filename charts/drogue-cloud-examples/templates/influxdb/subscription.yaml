@@ -12,9 +12,9 @@ spec:
     - {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
 
   topics:
-    - iot-events
+    - events-example-app
 
-  {{- include "drogue-cloud-common.knative-kafka-net" (dict "root" . "secretName" "externa-kafka-secret" ) }}
+  {{- include "drogue-cloud-common.knative-kafka-net" (dict "root" . "secretName" "external-kafka-secret" ) }}
 
   sink:
     ref:

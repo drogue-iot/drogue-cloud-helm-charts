@@ -53,6 +53,25 @@ spec:
                   fieldPath: metadata.namespace
             - name: CONTROLLER__CLUSTER_NAME
               value: drogue-iot
+            - name: WORK_QUEUE__INSTANCE
+              value: topic-operator
+            - name: WORK_QUEUE__PG__HOST
+              value: postgres
+            - name: WORK_QUEUE__PG__DBNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: databaseName
+            - name: WORK_QUEUE__PG__USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: admin.username
+            - name: WORK_QUEUE__PG__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: admin.password
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1

@@ -13,7 +13,7 @@ spec:
   topics:
       iot-events
 
-  {{- include "drogue-cloud-common.knative-kafka-net" (dict "root" . "secretName" "externa-kafka-secret" ) }}
+  {{- include "drogue-cloud-common.knative-kafka-net" (dict "root" . "secretName" "external-kafka-secret" ) }}
 
   sink:
     ref:

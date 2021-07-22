@@ -9,3 +9,6 @@ rules:
   - apiGroups: [ "kafka.strimzi.io" ]
     resources: [ "kafkatopics" ]
     verbs: [ "get", "watch", "list", "create", "update", "delete", "patch" ]
+  - apiGroups: [ "kafka.strimzi.io" ]
+    resources: [ "kafkas" ]
+    verbs: [ "get", "watch", "list" ]

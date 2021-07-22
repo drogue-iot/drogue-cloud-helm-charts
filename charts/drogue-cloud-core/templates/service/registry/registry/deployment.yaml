@@ -105,8 +105,11 @@ spec:
                   key: instance
             - name: SSO_URL
               value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
-            - name: KAFKA_EVENTS__TOPIC
+            - name: KAFKA_SENDER__TOPIC
               value: registry
+            - name: KAFKA_SENDER__QUEUE_TIMEOUT
+              value: 15s
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SENDER__CUSTOM__" ) | nindent 12 }}
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1

@@ -1,0 +1,14 @@
+{{- if not .Values.kafka.external.enabled -}}
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: drogue-iot
+  labels:
+    strimzi.io/cluster: drogue-iot
+spec:
+  authentication:
+    type: scram-sha-512
+  authorization:
+    type: simple
+    acls: []
+{{- end }}

@@ -8,22 +8,34 @@ spec:
     topicOperator: {}
     userOperator: {}
   kafka:
+    authorization:
+      type: simple
+      superUsers:
+        - drogue-iot
     config:
       log.message.format.version: '2.7'
       offsets.topic.replication.factor: 1
       transaction.state.log.min.isr: 1
       transaction.state.log.replication.factor: 1
-    #    authorization:
-    #      type: simple
     listeners:
       - name: plain
         tls: false
         port: 9092
         type: internal
+        authentication:
+          type: scram-sha-512
       - name: tls
         tls: true
         port: 9093
         type: internal
+        authentication:
+          type: scram-sha-512
+      - name: external
+        tls: true
+        port: 9094
+        type: loadbalancer
+        authentication:
+          type: scram-sha-512
     replicas: 1
     storage:
       type: persistent-claim

@@ -3,18 +3,6 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
-  name: iot-events
-  labels:
-    strimzi.io/cluster: drogue-iot
-spec:
-  config: {}
-  partitions: 3
-  replicas: 1
-  topicName: iot-events
----
-apiVersion: kafka.strimzi.io/v1beta2
-kind: KafkaTopic
-metadata:
   name: iot-commands
   labels:
     strimzi.io/cluster: drogue-iot

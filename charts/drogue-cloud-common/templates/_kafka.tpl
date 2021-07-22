@@ -36,6 +36,20 @@ Kafka bootstrap server
   value: {{ .root.Values.kafka.external.sasl.password | quote }}
 {{- end }}{{/* if kafka.external.sasl.enabled */}}
 
+{{- else -}}{{/* if kafka.external.enabled */}}
+
+- name: {{ .prefix }}SECURITY_PROTOCOL
+  value: sasl_plaintext
+- name: {{ .prefix }}SASL_MECHANISMS
+  value: SCRAM-SHA-512
+- name: {{ .prefix }}SASL_USERNAME
+  value: drogue-iot
+- name: {{ .prefix }}SASL_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: drogue-iot
+      key: password
+
 {{- end }}{{/* if kafka.external.enabled */}}
 
 {{- end }}
@@ -76,6 +90,24 @@ Args (dict):
 
   {{- end }}{{/* external.sasl.enabled */}}
 
+{{- else }}{{/* external.enabled */}}
+
+  net:
+    sasl:
+      enable: true
+      type:
+        secretKeyRef:
+            name: {{ .secretName }}
+            key: mechanism
+      user:
+        secretKeyRef:
+            name: {{ .secretName }}
+            key: username
+      password:
+        secretKeyRef:
+            name: drogue-iot
+            key: password
+
 {{- end }}{{/* external.enabled */}}
 {{- end }}
 
@@ -86,7 +118,9 @@ Args (dict):
   * name - the name of the topic resource (might not be the topic name itself)
 */}}
 {{- define "drogue-cloud-common.knative-kafka-net-secret-data" -}}
+
 {{- if .Values.kafka.external.enabled }}
+
 {{- if .Values.kafka.external.sasl.enabled }}
 {{- if eq .Values.kafka.external.sasl.mechanism "plain" }}
 mechanism: {{ "plain" | b64enc }}
@@ -94,6 +128,12 @@ username: {{ .Values.kafka.external.sasl.username | b64enc }}
 password: {{ .Values.kafka.external.sasl.password | b64enc }}
 {{- end }}
 {{- end }}
-{{- end }}
+
+{{- else -}}{{/* external.enabled */}}
+
+mechanism: {{ "SCRAM-SHA-512" | b64enc }}
+username: {{ "drogue-iot" | b64enc }}
+
+{{- end }}{{/* external.enabled */}}
 
 {{- end }}
