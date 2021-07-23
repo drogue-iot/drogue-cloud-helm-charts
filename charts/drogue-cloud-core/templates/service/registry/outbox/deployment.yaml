@@ -26,8 +26,6 @@ spec:
               value: debug
             - name: RUST_BACKTRACE
               value: "1"
-            - name: BIND_ADDR
-              value: 0.0.0.0:8080
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
             - name: PG__HOST
@@ -47,8 +45,16 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: admin.password
-            - name: KAFKA_EVENTS__TOPIC
+            - name: KAFKA_SENDER__TOPIC
               value: registry
+            - name: KAFKA_SENDER__QUEUE_TIMEOUT
+              value: 15s
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SENDER__CUSTOM__" ) | nindent 12 }}
+            - name: KAFKA_SOURCE__TOPIC
+              value: registry
+            - name: KAFKA_SOURCE__CONSUMER_GROUP
+              value: outbox-controller
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SOURCE__CUSTOM__" ) | nindent 12 }}
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1

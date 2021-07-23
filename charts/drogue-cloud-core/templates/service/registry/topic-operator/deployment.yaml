@@ -27,8 +27,6 @@ spec:
               value: debug
             - name: RUST_BACKTRACE
               value: "1"
-            - name: BIND_ADDR
-              value: 0.0.0.0:8080
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
             - name: NAMESPACE
@@ -72,6 +70,11 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: admin.password
+            - name: KAFKA_SOURCE__TOPIC
+              value: registry
+            - name: KAFKA_SOURCE__CONSUMER_GROUP
+              value: topic-operator
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SOURCE__CUSTOM__" ) | nindent 12 }}
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1
@@ -88,10 +91,6 @@ spec:
             httpGet:
               port: 9090
               path: /liveness
-          ports:
-            - containerPort: 8080
-              name: api
-              protocol: TCP
           resources:
             limits:
               memory: 128Mi
