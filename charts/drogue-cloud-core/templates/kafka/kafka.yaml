@@ -30,12 +30,14 @@ spec:
         type: internal
         authentication:
           type: scram-sha-512
+{{- if .Values.kafka.externalAccess.enabled }}
       - name: external
         tls: true
-        port: 9094
-        type: loadbalancer
+        port: {{ .Values.kafka.externalAccess.port}}
+        type: {{ .Values.kafka.externalAccess.type }}
         authentication:
           type: scram-sha-512
+{{- end }}
     replicas: 1
     storage:
       type: persistent-claim
