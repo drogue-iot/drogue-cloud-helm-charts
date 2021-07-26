@@ -11,6 +11,9 @@ Kafka bootstrap server
 
 {{- end }}
 
+{{/*
+Kafka connection properties
+*/}}
 {{- define "drogue-cloud-common.kafka-properties" -}}
 
 {{- if .root.Values.kafka.external.enabled -}}
@@ -29,7 +32,7 @@ Kafka bootstrap server
 
 {{- if .root.Values.kafka.external.sasl.enabled }}
 - name: {{ .prefix }}SASL_MECHANISMS
-  value: PLAIN
+  value: {{ .root.Values.kafka.external.sasl.mechanism }}
 - name: {{ .prefix }}SASL_USERNAME
   value: {{ .root.Values.kafka.external.sasl.username | quote }}
 - name: {{ .prefix }}SASL_PASSWORD
@@ -65,6 +68,7 @@ Args (dict):
 
 {{- if .root.Values.kafka.external.enabled }}
   net:
+
   {{- if .root.Values.kafka.external.tls.enabled }}
     tls:
       enable: true
@@ -73,7 +77,6 @@ Args (dict):
   {{- if .root.Values.kafka.external.sasl.enabled }}
     sasl:
       enable: true
-  {{- if (eq .root.Values.kafka.external.sasl.mechanism "plain") }}
       type:
         secretKeyRef:
             name: {{ .secretName }}
@@ -86,7 +89,6 @@ Args (dict):
         secretKeyRef:
             name: {{ .secretName }}
             key: password
-  {{- end }}
 
   {{- end }}{{/* external.sasl.enabled */}}
 
@@ -122,11 +124,9 @@ Args (dict):
 {{- if .Values.kafka.external.enabled }}
 
 {{- if .Values.kafka.external.sasl.enabled }}
-{{- if eq .Values.kafka.external.sasl.mechanism "plain" }}
-mechanism: {{ "plain" | b64enc }}
+mechanism: {{ .Values.kafka.external.sasl.mechanism | b64enc }}
 username: {{ .Values.kafka.external.sasl.username | b64enc }}
 password: {{ .Values.kafka.external.sasl.password | b64enc }}
-{{- end }}
 {{- end }}
 
 {{- else -}}{{/* external.enabled */}}
