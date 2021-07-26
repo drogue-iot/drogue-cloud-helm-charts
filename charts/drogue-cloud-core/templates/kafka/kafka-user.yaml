@@ -5,6 +5,7 @@ metadata:
   name: drogue-iot
   labels:
     strimzi.io/cluster: drogue-iot
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "drogue-iot" "component" "kafka") | nindent 4 }}
 spec:
   authentication:
     type: scram-sha-512

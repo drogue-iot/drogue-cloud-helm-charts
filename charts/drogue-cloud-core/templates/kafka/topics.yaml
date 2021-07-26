@@ -6,6 +6,7 @@ metadata:
   name: iot-commands
   labels:
     strimzi.io/cluster: drogue-iot
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "iot-commands" "component" "kafka") | nindent 4 }}
 spec:
   config: {}
   partitions: 3
@@ -18,6 +19,7 @@ metadata:
   name: registry
   labels:
     strimzi.io/cluster: drogue-iot
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "registry" "component" "kafka") | nindent 4 }}
 spec:
   config: {}
   partitions: 3

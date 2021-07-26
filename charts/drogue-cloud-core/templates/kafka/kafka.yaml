@@ -3,6 +3,8 @@ kind: Kafka
 apiVersion: kafka.strimzi.io/v1beta2
 metadata:
   name: drogue-iot
+  labels:
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "drogue-iot" "component" "kafka") | nindent 4 }}
 spec:
   entityOperator:
     topicOperator: {}
