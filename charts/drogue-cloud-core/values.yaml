@@ -17,6 +17,11 @@ endpoints:
     ingress:
       port: 8883
 
+  coap:
+    insecure: true
+    ingress:
+      port: 5683
+
 
 integrations:
 

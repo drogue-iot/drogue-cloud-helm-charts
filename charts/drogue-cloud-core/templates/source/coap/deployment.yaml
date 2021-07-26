@@ -1,0 +1,120 @@
+{{- $ref := dict "root" . "name" "coap-endpoint" "component" "endpoints" -}}
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: coap-endpoint
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
+    spec:
+      initContainers:
+        - name: wait-for-client-secret
+          image: registry.access.redhat.com/ubi8-minimal
+          imagePullPolicy: IfNotPresent
+          command:
+            - bash
+            - -c
+            - |
+              echo "Waiting for client secret to be populated (/etc/client-secret/CLIENT_SECRET)..."
+              while test -z "$(cat /etc/client-secret/CLIENT_SECRET)"; do
+                sleep 1
+              done
+          volumeMounts:
+            - mountPath: /etc/client-secret
+              name: client-secret
+              readOnly: true
+      containers:
+        - name: endpoint
+          image: {{ include "drogue-cloud-core.image-repo" . }}coap-endpoint:{{ include "drogue-cloud-core.image-tag" . }}
+          imagePullPolicy: {{ include "drogue-cloud-core.image-pull-policy" . }}
+          env:
+            - name: RUST_LOG
+              value: debug
+            - name: RUST_BACKTRACE
+              value: "1"
+            - name: BIND_ADDR_COAP
+              value: "0.0.0.0:{{ if .Values.endpoints.coap.insecure }}5683{{ else }}5684{{ end }}"
+            - name: HEALTH__BIND_ADDR
+              value: "0.0.0.0:9090"
+            - name: INSTANCE
+              valueFrom:
+                configMapKeyRef:
+                  name: configuration
+                  key: instance
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_ID
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_SECRET
+            - name: DOWNSTREAM_KAFKA_SINK__TOPIC
+              value: iot-events
+            - name: DOWNSTREAM_KAFKA_SINK__BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "DOWNSTREAM_KAFKA_SINK__CUSTOM__" ) | nindent 12 }}
+            - name: SSO_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+            {{ if .Values.endpoints.coap.insecure }}
+            - name: DISABLE_TLS
+              value: "true"
+            {{ else }}
+            - name: CERT_BUNDLE_FILE # TLS
+              value: /etc/endpoint/tls.crt
+            - name: KEY_FILE # TLS
+              value: /etc/endpoint/tls.key
+            {{ end }}
+
+          ports:
+            - containerPort: {{ if .Values.endpoints.coap.insecure }}5683{{ else }}5684{{ end }}
+              name: endpoint
+              protocol: UDP
+            - containerPort: 8081
+              name: command
+              protocol: TCP
+
+          readinessProbe:
+            initialDelaySeconds: 2
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 3
+            httpGet:
+              port: 9090
+              path: /readiness
+          livenessProbe:
+            initialDelaySeconds: 2
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 3
+            httpGet:
+              port: 9090
+              path: /liveness
+          
+          {{ if not .Values.endpoints.coap.insecure }}
+          volumeMounts:
+            - mountPath: /etc/endpoint
+              name: endpoint-tls
+          {{ end }}
+
+      volumes:
+
+        {{ if not .Values.endpoints.coap.insecure }}
+        - name: endpoint-tls
+          secret:
+            secretName: coap-endpoint-tls
+        {{ end }}
+
+        - name: client-secret
+          secret:
+            secretName: keycloak-client-secret-drogue

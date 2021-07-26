@@ -1,3 +1,5 @@
+{{/* HTTP Specific */}}
+
 {{/*
 Service URL:
  * root - .
@@ -47,4 +49,48 @@ Ingress HTTP protocol:
         {{- end }}
     {{- end }}{{/* end-if defined .insecure */}}
     {{- end }}{{/* end-with .ingress.proto */}}
+{{- end }}
+
+
+{{/* CoAP specific */}}
+
+{{/*
+CoAP Service URL:
+ * root - .
+ * insecure - coaps or not
+ * prefix - DNS prefix
+*/}}
+{{- define "drogue-cloud-common.ingress.coap-url" -}}
+{{- include "drogue-cloud-common.ingress.coap-proto" . -}}
+://
+{{- include "drogue-cloud-common.ingress.host" . -}}
+
+{{- $port := .ingress.port | default 5683 | toString -}}
+{{- /*
+  The next line means:
+    !( port == 5683 && insecure ) || ( port == 5684 && !insecure)
+*/ -}}
+{{- if not (or (and (eq $port "5683") .insecure) (and (eq $port "5684") (not .insecure )) ) -}}
+:{{ $port }}
+{{- end }}
+
+{{- end }}
+
+{{/*
+Ingress CoAP protocol:
+ * root - .
+ * insecure - coaps or not
+*/}}
+{{- define "drogue-cloud-common.ingress.coap-proto" -}}
+    {{- with .ingress.proto -}}{{ . }}{{- else -}}
+    {{- if not ( kindIs "invalid" .insecure ) -}}
+        {{- if .insecure -}}coap{{- else -}}coaps{{- end -}}
+    {{- else -}}
+        {{- if eq .root.Values.global.cluster "openshift" -}}
+            coaps
+        {{- else -}}
+            coap
+        {{- end }}
+    {{- end }}{{/* end-if defined .insecure */}}
+    {{- end }}{{/* end-with .ingress.coap-proto */}}
 {{- end }}

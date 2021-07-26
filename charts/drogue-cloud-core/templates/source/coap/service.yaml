@@ -1,0 +1,27 @@
+{{- $ref := dict "root" . "name" "coap-endpoint" "component" "endpoints" -}}
+kind: Service
+apiVersion: v1
+metadata:
+  name: coap-endpoint
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+spec:
+  selector:
+    {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
+
+  {{- if eq .Values.global.cluster "openshift" }}
+  type: ClusterIP
+  {{- else if has .Values.global.cluster (list "minikube" "kind" ) }}
+  type: NodePort
+  {{- else }}
+  type: LoadBalancer
+  {{- end }}
+
+  ports:
+    - name: endpoint
+      protocol: UDP
+      port: 5683
+      targetPort: endpoint
+      {{- if has .Values.global.cluster (list "minikube" "kind" ) }}
+      nodePort: {{ .Values.endpoints.coap.ingress.port }}
+      {{- end }}

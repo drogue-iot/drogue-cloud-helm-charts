@@ -137,6 +137,8 @@ spec:
               value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) }}
             - name: ENDPOINTS__COMMAND_ENDPOINT_URL
               value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) }}
+            - name: ENDPOINTS__COAP_ENDPOINT_URL
+              value: {{ include "drogue-cloud-common.ingress.coap-url" (dict "root" . "prefix" "coap-endpoint" "ingress" .Values.endpoints.coap.ingress "insecure" .Values.endpoints.coap.insecure ) }}
             - name: ENDPOINTS__HTTP_ENDPOINT_URL
               value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "http-endpoint" "ingress" .Values.endpoints.http.ingress "insecure" .Values.endpoints.http.insecure ) }}
             - name: ENDPOINTS__MQTT_ENDPOINT_HOST

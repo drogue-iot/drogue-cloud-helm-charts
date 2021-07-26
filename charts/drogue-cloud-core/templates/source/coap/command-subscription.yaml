@@ -1,0 +1,23 @@
+apiVersion: sources.knative.dev/v1alpha1
+kind: KafkaSource
+metadata:
+  name: commands-coap
+  labels:
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "commands-coap" "component" "endpoints") | nindent 4 }}
+spec:
+  consumerGroup: commands-coap
+
+  bootstrapServers:
+    - {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
+
+  topics:
+    - iot-commands
+
+  {{- include "drogue-cloud-common.knative-kafka-net" (dict "root" . "secretName" "externa-kafka-secret" ) }}
+
+  sink:
+    ref:
+      apiVersion: v1
+      kind: Service
+      name: coap-command
+    uri: /command-service
