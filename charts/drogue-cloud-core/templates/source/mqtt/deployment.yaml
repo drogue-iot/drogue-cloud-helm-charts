@@ -83,9 +83,7 @@ spec:
             - containerPort: 8883
               name: endpoint
               protocol: TCP
-            - containerPort: 8080
-              name: command
-              protocol: TCP
+
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1
@@ -114,4 +112,4 @@ spec:
             secretName: mqtt-endpoint-tls
         - name: client-secret
           secret:
-            secretName: keycloak-client-secret-drogue
+            secretName: keycloak-client-secret-services

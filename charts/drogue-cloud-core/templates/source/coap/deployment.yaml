@@ -59,13 +59,21 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            - name: DOWNSTREAM_KAFKA_SINK__TOPIC
-              value: iot-events
+            - name: SSO_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+            - name: COMMAND_SOURCE_KAFKA__TOPIC
+              value: iot-commands
+            - name: COMMAND_SOURCE_KAFKA__CONSUMER_GROUP
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: COMMAND_SOURCE_KAFKA__BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "COMMAND_SOURCE_KAFKA__CUSTOM__" ) | nindent 12 }}
             - name: DOWNSTREAM_KAFKA_SINK__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "DOWNSTREAM_KAFKA_SINK__CUSTOM__" ) | nindent 12 }}
-            - name: SSO_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+
             {{ if .Values.endpoints.coap.insecure }}
             - name: DISABLE_TLS
               value: "true"
@@ -80,9 +88,6 @@ spec:
             - containerPort: {{ if .Values.endpoints.coap.insecure }}5683{{ else }}5684{{ end }}
               name: endpoint
               protocol: UDP
-            - containerPort: 8081
-              name: command
-              protocol: TCP
 
           readinessProbe:
             initialDelaySeconds: 2
@@ -100,7 +105,7 @@ spec:
             httpGet:
               port: 9090
               path: /liveness
-          
+
           {{ if not .Values.endpoints.coap.insecure }}
           volumeMounts:
             - mountPath: /etc/endpoint
@@ -117,4 +122,4 @@ spec:
 
         - name: client-secret
           secret:
-            secretName: keycloak-client-secret-drogue
+            secretName: keycloak-client-secret-services

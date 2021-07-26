@@ -59,7 +59,6 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-
             - name: SSO_URL
               value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
             - name: COMMAND_SOURCE_KAFKA__TOPIC
@@ -88,9 +87,6 @@ spec:
           ports:
             - containerPort: {{ if .Values.endpoints.http.insecure }}8080{{ else }}8443{{ end }}
               name: endpoint
-              protocol: TCP
-            - containerPort: 8081
-              name: command
               protocol: TCP
 
           readinessProbe:
