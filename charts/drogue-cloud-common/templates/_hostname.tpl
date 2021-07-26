@@ -1,3 +1,15 @@
+
+{{/*
+Service host:
+ * root - .
+ * insecure - https or not
+ * prefix - DNS prefix
+*/}}
+{{- define "drogue-cloud-common.ingress.host" -}}
+{{- .ingress.host | default ( printf "%s%s" .prefix .root.Values.global.domain ) -}}
+{{- end }}
+
+
 {{/* HTTP Specific */}}
 
 {{/*
@@ -20,16 +32,6 @@ Service URL:
 :{{ $port }}
 {{- end }}
 
-{{- end }}
-
-{{/*
-Service host:
- * root - .
- * insecure - https or not
- * prefix - DNS prefix
-*/}}
-{{- define "drogue-cloud-common.ingress.host" -}}
-{{- .ingress.host | default ( printf "%s%s" .prefix .root.Values.global.domain ) -}}
 {{- end }}
 
 {{/*
