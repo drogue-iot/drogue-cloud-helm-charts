@@ -109,7 +109,7 @@ spec:
               value: registry
             - name: KAFKA_SENDER__QUEUE_TIMEOUT
               value: 15s
-            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SENDER__CUSTOM__" ) | nindent 12 }}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SENDER__PROPERTIES__" ) | nindent 12 }}
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1

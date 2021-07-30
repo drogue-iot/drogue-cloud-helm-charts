@@ -60,9 +60,9 @@ spec:
               value: "0.0.0.0:9090"
             - name: ENABLE_AUTH
               value: "true"
-            - name: KAFKA_BOOTSTRAP_SERVERS
+            - name: KAFKA__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
-            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_PROPERTIES__" ) | nindent 12 }}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA__PROPERTIES__" ) | nindent 12 }}
             - name: UI__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -103,6 +103,16 @@ spec:
                   name: keycloak-client-secret-services
                   key: CLIENT_ID
             - name: USER_AUTH__CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_SECRET
+            - name: REGISTRY__CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_ID
+            - name: REGISTRY__CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-services

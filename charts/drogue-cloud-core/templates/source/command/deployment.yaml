@@ -97,7 +97,7 @@ spec:
               value: iot-commands
             - name: COMMAND_KAFKA_SINK__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
-            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "COMMAND_KAFKA_SINK__CUSTOM__" ) | nindent 12 }}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "COMMAND_KAFKA_SINK__PROPERTIES__" ) | nindent 12 }}
           ports:
             - containerPort: 8080
               name: endpoint
