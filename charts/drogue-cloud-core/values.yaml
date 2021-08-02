@@ -29,6 +29,11 @@ integrations:
     ingress:
       port: 8883
 
+  websocket:
+    insecure: false
+    ingress:
+      port: 443
+
 
 services:
   console:

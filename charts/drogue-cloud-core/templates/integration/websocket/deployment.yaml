@@ -1,0 +1,120 @@
+{{- $ref := dict "root" . "name" "websocket-integration" "component" "integrations" -}}
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: websocket-integration
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
+    spec:
+      initContainers:
+        - name: wait-for-client-secret
+          image: registry.access.redhat.com/ubi8-minimal
+          imagePullPolicy: IfNotPresent
+          command:
+            - bash
+            - -c
+            - |
+              echo "Waiting for client secret to be populated (/etc/client-secret/CLIENT_SECRET)..."
+              while test -z "$(cat /etc/client-secret/CLIENT_SECRET)"; do
+                sleep 1
+              done
+          volumeMounts:
+            - mountPath: /etc/client-secret
+              name: client-secret
+              readOnly: true
+      containers:
+        - name: service
+          image: {{ include "drogue-cloud-core.image-repo" . }}websocket-integration:{{ include "drogue-cloud-core.image-tag" . }}
+          imagePullPolicy: {{ include "drogue-cloud-core.image-pull-policy" . }}
+          env:
+            - name: RUST_LOG
+              value: debug
+            - name: BIND_ADDR
+              value: "0.0.0.0:8080"
+            - name: HEALTH__BIND_ADDR
+              value: "0.0.0.0:9090"
+            - name: INSTANCE
+              valueFrom:
+                configMapKeyRef:
+                  name: configuration
+                  key: instance
+            - name: OAUTH__DROGUE__CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-drogue
+                  key: CLIENT_ID
+            - name: OAUTH__DROGUE__CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-drogue
+                  key: CLIENT_SECRET
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: USER_AUTH__CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_ID
+            - name: USER_AUTH__CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_SECRET
+            - name: REGISTRY__CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_ID
+            - name: REGISTRY__CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_SECRET
+            - name: SSO_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+            - name: KAFKA__BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . -}}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA__PROPERTIES__" ) | nindent 12 }}
+            - name: COMMAND_KAFKA_SINK__TOPIC
+              value: iot-commands
+            - name: COMMAND_KAFKA_SINK__BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . -}}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "COMMAND_KAFKA_SINK__PROPERTIES__" ) | nindent 12 }}
+          ports:
+            - containerPort: 8080
+              name: service
+              protocol: TCP
+          resources:
+            limits:
+              memory: 64Mi
+          readinessProbe:
+            initialDelaySeconds: 2
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 3
+            httpGet:
+              port: 9090
+              path: /readiness
+          livenessProbe:
+            initialDelaySeconds: 2
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 3
+            httpGet:
+              port: 9090
+              path: /liveness
+      volumes:
+        - name: client-secret
+          secret:
+            secretName: keycloak-client-secret-drogue

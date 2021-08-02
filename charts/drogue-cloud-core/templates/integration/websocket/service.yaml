@@ -1,0 +1,27 @@
+{{ $ref := dict "root" . "name" "websocket-integration" "component" "integrations" }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: websocket-integration
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+spec:
+  selector:
+    {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
+
+  {{- if eq .Values.global.cluster "openshift" }}
+  type: ClusterIP
+  {{- else if has .Values.global.cluster (list "minikube" "kind" ) }}
+  type: NodePort
+  {{- else }}
+  type: LoadBalancer
+  {{- end }}
+
+  ports:
+    - name: service
+      protocol: TCP
+      port: 8080
+      targetPort: service
+      {{- if has .Values.global.cluster (list "minikube" "kind" ) }}
+      nodePort: {{ .Values.integrations.websocket.ingress.port }}
+      {{- end }}
