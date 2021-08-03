@@ -4,7 +4,7 @@ global:
 
 grafana:
   adminPassword: admin123456
-  image: docker.io/grafana/grafana:7.5.6
+  image: docker.io/grafana/grafana:8.0.6
   podSecurityContext:
     enabled: false
   ingress: {}
@@ -19,7 +19,7 @@ kafka:
 
 influx:
   database:
-    image: docker.io/library/influxdb:1.8
+    image: docker.io/library/influxdb:2.0
   pusher:
     image: ghcr.io/drogue-iot/influxdb-pusher:0.5.0
 
@@ -32,4 +32,3 @@ consumer:
     - events-example-app
   groups:
     - influxdb
-
