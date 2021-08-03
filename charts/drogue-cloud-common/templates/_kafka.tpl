@@ -63,6 +63,7 @@ Kafka .spec.net configuration for Knative KafkaSource:
 Args (dict):
   * root - .
   * secretName - the name of the secret to use, align with the call to "drogue-cloud-common.knative-kafka-net-secret-data"
+  * userName - optional default name of the kafka user/user resource which is used internally
 */}}
 {{- define "drogue-cloud-common.knative-kafka-net" -}}
 
@@ -107,7 +108,7 @@ Args (dict):
             key: username
       password:
         secretKeyRef:
-            name: drogue-iot
+            name: {{ .userName | default "drogue-iot" | quote }}
             key: password
 
 {{- end }}{{/* external.enabled */}}
@@ -117,22 +118,22 @@ Args (dict):
 Secret for the Kafka .spec.net configuration for Knative KafkaSource:
 Args (dict):
   * root - .
-  * name - the name of the topic resource (might not be the topic name itself)
+  * userName - The name of the Kafka user resource and user
 */}}
 {{- define "drogue-cloud-common.knative-kafka-net-secret-data" -}}
 
-{{- if .Values.kafka.external.enabled }}
+{{- if .root.Values.kafka.external.enabled }}
 
-{{- if .Values.kafka.external.sasl.enabled }}
-mechanism: {{ .Values.kafka.external.sasl.mechanism | b64enc }}
-username: {{ .Values.kafka.external.sasl.username | b64enc }}
-password: {{ .Values.kafka.external.sasl.password | b64enc }}
+{{- if .root.Values.kafka.external.sasl.enabled }}
+mechanism: {{ .root.Values.kafka.external.sasl.mechanism | b64enc }}
+username: {{ .root.Values.kafka.external.sasl.username | b64enc }}
+password: {{ .root.Values.kafka.external.sasl.password | b64enc }}
 {{- end }}
 
 {{- else -}}{{/* external.enabled */}}
 
 mechanism: {{ "SCRAM-SHA-512" | b64enc }}
-username: {{ "drogue-iot" | b64enc }}
+username: {{ .userName | default "drogue-iot" | b64enc }}
 
 {{- end }}{{/* external.enabled */}}
 
