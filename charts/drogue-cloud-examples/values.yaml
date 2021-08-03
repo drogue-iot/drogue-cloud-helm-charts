@@ -27,5 +27,9 @@ services:
   sso:
     ingress: {}
 
-topics:
-  - events-example-app
+consumer:
+  topics:
+    - events-example-app
+  groups:
+    - influxdb
+

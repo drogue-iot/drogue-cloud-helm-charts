@@ -11,7 +11,7 @@ spec:
   authorization:
     type: simple
     acls:
-{{- range .Values.topics }}
+{{- range .Values.consumer.topics }}
       - resource:
           type: topic
           name: {{ . | quote }}
@@ -19,4 +19,14 @@ spec:
         operation: Read
         host: "*"
 {{- end }}
+
+{{- range .Values.consumer.groups }}
+      - resource:
+          type: group
+          name: {{ . | quote }}
+          patternType: literal
+        operation: Read
+        host: "*"
+{{- end }}
+
 {{- end }}
