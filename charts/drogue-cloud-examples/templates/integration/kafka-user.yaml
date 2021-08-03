@@ -1,3 +1,4 @@
+{{- if not .Values.kafka.external.enabled -}}
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaUser
 metadata:
@@ -17,4 +18,5 @@ spec:
           patternType: literal
         operation: Read
         host: "*"
+{{- end }}
 {{- end }}

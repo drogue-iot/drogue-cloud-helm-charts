@@ -14,7 +14,7 @@ spec:
   topics:
     {{ .Values.topics | toYaml | nindent 4 }}
 
-  {{- include "drogue-cloud-common.knative-kafka-net" (dict "root" . "secretName" "external-kafka-secret" ) }}
+  {{- include "drogue-cloud-common.knative-kafka-net" (dict "root" . "secretName" "example-kafka-secret" ) }}
 
   sink:
     ref:
