@@ -26,3 +26,6 @@ influx:
 services:
   sso:
     ingress: {}
+
+topics:
+  - events-example-app

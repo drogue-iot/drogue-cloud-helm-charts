@@ -10,15 +10,11 @@ spec:
   authorization:
     type: simple
     acls:
+{{- range .Values.topics }}
       - resource:
           type: topic
-          name: events-example-app
+          name: {{.}}
           patternType: literal
         operation: Read
         host: "*"
-      - resource:
-          type: topic
-          name: commands-example-app
-          patternType: literal
-        operation: Write
-        host: "*"
+{{- end }}
