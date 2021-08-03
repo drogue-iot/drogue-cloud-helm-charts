@@ -19,7 +19,7 @@ kafka:
 
 influx:
   database:
-    image: docker.io/library/influxdb:2.0
+    image: docker.io/library/influxdb:1.8
   pusher:
     image: ghcr.io/drogue-iot/influxdb-pusher:0.5.0
 
