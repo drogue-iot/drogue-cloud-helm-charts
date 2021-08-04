@@ -35,7 +35,6 @@ spec:
       - "phone"
     defaultRoles:
       - "drogue-user"
-      - "drogue-admin"
     protocolMappers:
       - name: add-audience
         protocol: openid-connect
