@@ -18,7 +18,7 @@ spec:
     standardFlowEnabled: false
     directAccessGrantsEnabled: false
     serviceAccountsEnabled: true
-    fullScopeAllowed: false
+    fullScopeAllowed: true
     defaultRoles:
       - "drogue-user"
       - "drogue-admin"

@@ -18,7 +18,7 @@ spec:
     standardFlowEnabled: true
     directAccessGrantsEnabled: true
     serviceAccountsEnabled: false
-    fullScopeAllowed: false
+    fullScopeAllowed: true
     redirectUris:
       - {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}
       - {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}/*
