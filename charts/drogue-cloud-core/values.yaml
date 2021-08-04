@@ -60,7 +60,7 @@ keycloak:
     mode: drogue  # reuse drogue instance
     # username: foo
     # password: bar
-    # you can provider either:
+    # you can provide either:
     #   url: jdbc:postgresql://foo/bar
     # or:
     #   host: postgres
