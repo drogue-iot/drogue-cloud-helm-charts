@@ -85,6 +85,8 @@ kafka:
     enabled: true
     port: 9094
     type: nodeport
+    tls:
+      enabled: true
 
   # external can be used to configure Drogue Cloud to use an external Kafka instance
   external:
