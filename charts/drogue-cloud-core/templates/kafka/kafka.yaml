@@ -39,6 +39,13 @@ spec:
         type: {{ .Values.kafka.externalAccess.type }}
         authentication:
           type: scram-sha-512
+        {{- with .Values.kafka.externalAccess.tls.secret }}
+        configuration:
+          brokerCertChainAndKey:
+            secretName: {{ .  | quote }}
+            certificate: tls.crt
+            key: tls.key
+        {{- end }}
 {{- end }}
     replicas: 1
     storage:
