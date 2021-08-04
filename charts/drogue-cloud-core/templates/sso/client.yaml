@@ -23,6 +23,11 @@ spec:
       - {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}
       - {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}/*
       - "http://localhost:*" {{/* used for the CLI */}}
+    defaultClientScopes:
+      - "profile"
+      - "email"
+    optionalClientScopes:
+      - "offline_access"
     defaultRoles:
       - "drogue-user"
       - "drogue-admin"
