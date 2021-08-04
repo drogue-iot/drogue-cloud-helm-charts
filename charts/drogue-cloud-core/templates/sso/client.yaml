@@ -13,7 +13,7 @@ spec:
     clientAuthenticatorType: client-secret
     enabled: true
     rootUrl: ""
-    publicClient: true
+    publicClient: false
     implicitFlowEnabled: true
     standardFlowEnabled: true
     directAccessGrantsEnabled: true
