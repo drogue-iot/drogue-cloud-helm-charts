@@ -6,10 +6,18 @@ metadata:
     {{- include "drogue-cloud-core.labels" (dict "root" . "name" "keycloak" "component" "sso") | nindent 4 }}
 spec:
   instances: 1
+
   externalAccess:
+{{- if eq .Values.global.cluster "openshift" }}
+    # Post 12.x versions of the keycloak operator reject setting a hostname in OpenShift.
+    # So we need to take matters into our own hand.
+    enabled: false
+{{- else }}
     enabled: true
     host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+{{- end }}
   {{- if ne .Values.keycloak.postgres.mode "operator" }}
+
   externalDatabase:
     enabled: true
   {{- end }}

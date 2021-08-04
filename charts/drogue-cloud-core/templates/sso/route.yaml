@@ -1,0 +1,18 @@
+{{- $ref := dict "root" . "name" "sso" "component" "sso" -}}
+{{ if eq .Values.global.cluster "openshift" }}
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: sso
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+spec:
+  host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+  to:
+    kind: Service
+    name: keycloak
+  port:
+    targetPort: keycloak
+  tls:
+    termination: reencrypt
+{{- end }}
