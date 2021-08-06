@@ -9,5 +9,5 @@ Selector labels
 {{- define "drogue-cloud-common.selectorLabels" -}}
 app.kubernetes.io/name: {{ .name }}
 app.kubernetes.io/component: {{ .component }}
-app.kubernetes.io/instance: {{ .releaseName | default .root.Release.Name }}
+app.kubernetes.io/instance: {{ .root.Values.coreReleaseName | default .root.Release.Name }}
 {{- end }}
