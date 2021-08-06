@@ -35,7 +35,7 @@ spec:
               subPath: pgdata
   volumeClaimTemplates:
     - metadata:
-        name: timescaledb
+        name: storage
       spec:
         accessModes: [ "ReadWriteOnce" ]
         resources:
