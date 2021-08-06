@@ -17,6 +17,13 @@ kafka:
     sasl:
       enabled: false
 
+timescale:
+  database:
+    image: docker.io/timescale/timescaledb:latest-pg12
+    adminUser: admin
+    adminPassword: admin123456
+    name: example
+
 influx:
   database:
     image: docker.io/library/influxdb:1.8
