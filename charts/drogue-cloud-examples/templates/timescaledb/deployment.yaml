@@ -28,9 +28,12 @@ spec:
            value: {{ .Values.timescale.database.adminPassword }}
          - name: POSTGRES_DB
            value: {{ .Values.timescale.database.name }}
+         - name: PGDATA
+           value: /var/lib/storage/pgdata
        volumeMounts:
-       - mountPath: /var/lib/postgresql/data
+       - mountPath: /var/lib/storage
          name: storage
+         subPath: pgdata
      volumes:
      - name: storage
        persistentVolumeClaim:
