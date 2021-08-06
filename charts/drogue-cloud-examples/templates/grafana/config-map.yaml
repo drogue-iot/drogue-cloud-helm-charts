@@ -20,11 +20,11 @@ data:
       - name: TimescaleDB
         type: postgres
         access: proxy
-        database: $DS_DATABASE
+        database: $TIMESCALE_DATABASE
         url: timescaledb:5432
-        user: $DS_USERNAME
+        user: $TIMESCALE_USERNAME
         secureJsonData:
-          password: $DS_PASSWORD
+          password: $TIMESCALE_PASSWORD
         jsonData:
           sslmode: "disable"
           timescaledb: true

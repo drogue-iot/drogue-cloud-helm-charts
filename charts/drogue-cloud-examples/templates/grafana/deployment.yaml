@@ -117,6 +117,21 @@ spec:
                 configMapKeyRef:
                   name: influxdb-config
                   key: databaseName
+            - name: TIMESCALE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: timescaledb-secret
+                  key: read.username
+            - name: TIMESCALE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: timescaledb-secret
+                  key: read.password
+            - name: TIMESCALE_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: timescaledb-config
+                  key: databaseName
           readinessProbe:
             httpGet:
               path: /
