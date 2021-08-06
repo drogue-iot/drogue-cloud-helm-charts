@@ -17,6 +17,19 @@ data:
         secureJsonData:
           password: $DS_PASSWORD
         editable: false
+      - name: TimescaleDB
+        type: postgres
+        access: proxy
+        database: $DS_DATABASE
+        url: timescaledb:5432
+        user: $DS_USERNAME
+        secureJsonData:
+          password: $DS_PASSWORD
+        jsonData:
+          sslmode: "disable"
+          timescaledb: true
+          postgresVersion: 1200
+        editable: false
 ---
 kind: ConfigMap
 apiVersion: v1
