@@ -1,0 +1,43 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: timescaledb
+  labels:
+    app: timescaledb
+    app.kubernetes.io/part-of: example-app
+spec:
+  replicas: 1
+  serviceName: timescaledb
+  selector:
+    matchLabels:
+      app: timescaledb
+  template:
+    metadata:
+      labels:
+        app: timescaledb
+    spec:
+      containers:
+        - name: timescaledb
+          image: {{ .Values.timescale.database.image }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POSTGRES_USER
+              value: {{ .Values.timescale.database.adminUser }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.timescale.database.adminPassword }}
+            - name: POSTGRES_DB
+              value: {{ .Values.timescale.database.name }}
+            - name: PGDATA
+              value: /var/lib/storage/pgdata
+          volumeMounts:
+            - mountPath: /var/lib/storage
+              name: storage
+              subPath: pgdata
+  volumeClaimTemplates:
+    - metadata:
+        name: timescaledb
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 5Gi
