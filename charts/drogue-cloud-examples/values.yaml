@@ -19,7 +19,7 @@ kafka:
 
 timescale:
   database:
-    image: docker.io/timescale/timescaledb:latest-pg12
+    image: docker.io/timescale/timescaledb-postgis:latest-pg12
     adminUser: admin
     adminPassword: admin123456
     name: example
