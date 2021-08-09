@@ -110,3 +110,7 @@ spec:
           resources:
             limits:
               memory: 128Mi
+      volumes:
+        - name: client-secret-services
+          secret:
+            secretName: keycloak-client-secret-services
