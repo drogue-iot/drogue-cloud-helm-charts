@@ -18,6 +18,7 @@ spec:
     metadata:
       labels:
         app: grafana
+      annotations:
         checksum/config: {{ include (print $.Template.BasePath "/grafana/configmap.yaml") . | sha256sum }}
         checksum/config-timescale: {{ include (print $.Template.BasePath "/timescaledb/configmap.yaml") . | sha256sum }}
         checksum/secret-timescale: {{ include (print $.Template.BasePath "/timescaledb/secret.yaml") . | sha256sum }}
