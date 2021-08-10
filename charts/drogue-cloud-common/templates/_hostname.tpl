@@ -96,3 +96,46 @@ Ingress CoAP protocol:
     {{- end }}{{/* end-if defined .insecure */}}
     {{- end }}{{/* end-with .ingress.coap-proto */}}
 {{- end }}
+
+{{/* WS specific */}}
+
+{{/*
+WS Service URL:
+ * root - .
+ * insecure - wss or not
+ * prefix - DNS prefix
+*/}}
+{{- define "drogue-cloud-common.ingress.ws-url" -}}
+{{- include "drogue-cloud-common.ingress.ws-proto" . -}}
+://
+{{- include "drogue-cloud-common.ingress.host" . -}}
+
+{{- $port := .ingress.port | default 443 | toString -}}
+{{- /*
+  The next line means:
+    !( port == 80 && insecure ) || ( port == 443 && !insecure)
+*/ -}}
+{{- if not (or (and (eq $port "80") .insecure) (and (eq $port "443") (not .insecure )) ) -}}
+:{{ $port }}
+{{- end }}
+
+{{- end }}
+
+{{/*
+Ingress WS protocol:
+ * root - .
+ * insecure - wss or not
+*/}}
+{{- define "drogue-cloud-common.ingress.ws-proto" -}}
+    {{- with .ingress.proto -}}{{ . }}{{- else -}}
+    {{- if not ( kindIs "invalid" .insecure ) -}}
+        {{- if .insecure -}}ws{{- else -}}wss{{- end -}}
+    {{- else -}}
+        {{- if eq .root.Values.global.cluster "openshift" -}}
+            wss
+        {{- else -}}
+            ws
+        {{- end }}
+    {{- end }}{{/* end-if defined .insecure */}}
+    {{- end }}{{/* end-with .ingress.ws-proto */}}
+{{- end }}

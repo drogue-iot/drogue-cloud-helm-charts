@@ -159,6 +159,8 @@ spec:
               value: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-integration" "ingress" .Values.integrations.mqtt.ingress ) }}
             - name: ENDPOINTS__MQTT_INTEGRATION_PORT
               value: "{{ .Values.integrations.mqtt.ingress.port }}"
+            - name: ENDPOINTS__WEBSOCKET_INTEGRATION_URL
+              value: {{ include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "websocket-integration" "ingress" .Values.integrations.websocket.ingress "insecure" .Values.integrations.websocket.insecure ) }}
           ports:
             - containerPort: 8080
               name: endpoint
