@@ -16,6 +16,24 @@ spec:
       labels:
         app: timescaledb
     spec:
+      initContainers:
+        # we need this to gather the existing init script from timescale db and our
+        # into a complete set up init scripts
+        - name: gather-init-scripts
+          image: {{ .Values.timescale.database.image }}
+          imagePullPolicy: IfNotPresent
+          command:
+            - bash
+            - -c
+            - |
+              cp -v /docker-entrypoint-initdb.d/* /var/lib/docker-entrypoint-initdb.d
+              cp -v /etc/docker-entrypoint-initdb.d/* /var/lib/docker-entrypoint-initdb.d
+          volumeMounts:
+            - mountPath: /etc/docker-entrypoint-initdb.d
+              name: initdb-config
+            - mountPath: /var/lib/docker-entrypoint-initdb.d
+              name: initdb
+              readOnly: false
       containers:
         - name: timescaledb
           image: {{ .Values.timescale.database.image }}
@@ -33,6 +51,14 @@ spec:
             - mountPath: /var/lib/storage
               name: storage
               subPath: pgdata
+            - mountPath: /docker-entrypoint-initdb.d
+              name: initdb
+      volumes:
+        - name: initdb
+          emptyDir: {}
+        - name: initdb-config
+          configMap:
+            name: timescaledb-initdb
   volumeClaimTemplates:
     - metadata:
         name: storage

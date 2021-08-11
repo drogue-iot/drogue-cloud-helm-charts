@@ -12,264 +12,186 @@
       }
     ]
   },
-  "description": "This dashboard shows a \"temperature\" sent by devices using the example command.",
   "editable": true,
   "gnetId": null,
-  "graphTooltip": 0,
-  "iteration": 1624977364744,
+  "graphTooltip": 2,
+  "id": 3,
+  "iteration": 1628757951588,
   "links": [],
   "panels": [
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "IoT",
+      "datasource": "TimescaleDB",
+      "description": "",
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": 10000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
-        "h": 10,
-        "w": 19,
+        "h": 8,
+        "w": 21,
         "x": 0,
         "y": 0
       },
-      "hiddenSeries": false,
       "id": 2,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
+      "interval": "1s",
       "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.5.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:284",
-          "alias": "measurements",
-          "yaxis": 2
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
         }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      },
       "targets": [
         {
-          "alias": "temperature ($tag_device_id)",
-          "groupBy": [
+          "format": "time_series",
+          "group": [
             {
               "params": [
-                "$__interval"
+                "$__interval",
+                "none"
               ],
               "type": "time"
-            },
-            {
-              "params": [
-                "device_id"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "previous"
-              ],
-              "type": "fill"
             }
           ],
-          "measurement": "temperatures",
-          "orderByTime": "ASC",
-          "policy": "default",
+          "hide": false,
+          "metricColumn": "device_id",
+          "queryType": "randomWalk",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  avg(temperature) AS \"temperature\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id IN ($device_id)\nGROUP BY 1,2\nORDER BY 1,2",
           "refId": "A",
-          "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
                   "temperature"
                 ],
-                "type": "field"
+                "type": "column"
               },
               {
-                "params": [],
-                "type": "mean"
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "temperature"
+                ],
+                "type": "alias"
               }
             ]
           ],
-          "tags": [
+          "table": "temperatures",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
             {
-              "key": "device_id",
-              "operator": "=~",
-              "value": "/^$device_id$/"
-            }
-          ]
-        },
-        {
-          "alias": "measurements",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
             },
             {
+              "datatype": "varchar",
+              "name": "",
               "params": [
-                "null"
+                "device_id",
+                "IN",
+                "($device_id)"
               ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "temperatures",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "temperature"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "count"
-              },
-              {
-                "params": [
-                  10
-                ],
-                "type": "moving_average"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "device_id",
-              "operator": "=~",
-              "value": "/^$device_id$/"
+              "type": "expression"
             }
           ]
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Temperatures",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:262",
-          "decimals": null,
-          "format": "celsius",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:263",
-          "decimals": null,
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": "20",
-          "min": "0",
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "title": "Temperature",
+      "type": "timeseries"
     },
     {
-      "datasource": "IoT",
+      "datasource": "TimescaleDB",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 1,
           "mappings": [],
-          "max": 100,
-          "min": -273.15,
+          "max": 60,
+          "min": 0,
+          "noValue": "n/a",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-blue",
+                "color": "light-blue",
                 "value": null
               },
               {
-                "color": "semi-dark-blue",
-                "value": -100
-              },
-              {
-                "color": "blue",
-                "value": -50
-              },
-              {
-                "color": "light-blue",
-                "value": -15
-              },
-              {
-                "color": "super-light-blue",
-                "value": 0
-              },
-              {
                 "color": "super-light-green",
-                "value": 5
-              },
-              {
-                "color": "light-green",
                 "value": 10
               },
               {
-                "color": "super-light-yellow",
-                "value": 25
+                "color": "semi-dark-green",
+                "value": 20
               },
               {
                 "color": "#EAB839",
                 "value": 30
               },
               {
-                "color": "dark-orange",
+                "color": "semi-dark-orange",
                 "value": 40
               },
               {
-                "color": "dark-red",
+                "color": "semi-dark-red",
                 "value": 50
               }
             ]
@@ -279,459 +201,689 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
-        "w": 5,
-        "x": 19,
+        "h": 8,
+        "w": 3,
+        "x": 21,
         "y": 0
       },
-      "id": 4,
-      "interval": "1m",
-      "maxDataPoints": 1,
+      "id": 6,
       "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
         },
-        "text": {},
-        "textMode": "value"
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
       },
-      "pluginVersion": "7.5.6",
+      "pluginVersion": "8.0.6",
       "targets": [
         {
-          "groupBy": [
+          "format": "time_series",
+          "group": [
             {
               "params": [
-                "1m"
+                "$__interval",
+                "none"
               ],
               "type": "time"
-            },
-            {
-              "params": [
-                "previous"
-              ],
-              "type": "fill"
             }
           ],
-          "measurement": "temperatures",
-          "orderByTime": "ASC",
-          "policy": "default",
+          "metricColumn": "none",
+          "queryType": "randomWalk",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  avg(temperature) AS \"temperature\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\")\nGROUP BY 1\nORDER BY 1",
           "refId": "A",
-          "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
                   "temperature"
                 ],
-                "type": "field"
+                "type": "column"
               },
               {
-                "params": [],
-                "type": "median"
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "temperature"
+                ],
+                "type": "alias"
               }
             ]
           ],
-          "tags": [
+          "table": "temperatures",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
             {
-              "key": "device_id",
-              "operator": "=~",
-              "value": "/^$device_id$/"
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
             }
           ]
         }
       ],
       "timeFrom": "1m",
-      "timeShift": null,
-      "transformations": [
-        {
-          "id": "reduce",
-          "options": {
-            "reducers": []
-          }
-        }
-      ],
-      "type": "stat"
+      "title": "Temperature",
+      "type": "gauge"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "IoT",
+      "datasource": "TimescaleDB",
+      "description": "",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": 10000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
           "unit": "humidity"
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
-        "h": 10,
-        "w": 19,
+        "h": 8,
+        "w": 21,
         "x": 0,
-        "y": 10
+        "y": 8
       },
-      "hiddenSeries": false,
-      "id": 6,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
+      "id": 3,
+      "interval": "1s",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "7.5.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
-          "alias": "humidity ($tag_device_id)",
-          "groupBy": [
+          "format": "time_series",
+          "group": [
             {
               "params": [
-                "$__interval"
+                "$__interval",
+                "none"
               ],
               "type": "time"
-            },
-            {
-              "params": [
-                "device_id"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "previous"
-              ],
-              "type": "fill"
             }
           ],
-          "measurement": "temperatures",
-          "orderByTime": "ASC",
-          "policy": "default",
+          "hide": false,
+          "metricColumn": "device_id",
           "queryType": "randomWalk",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  avg(humidity) AS \"humidity\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id IN ($device_id)\nGROUP BY 1,2\nORDER BY 1,2",
           "refId": "A",
-          "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
                   "humidity"
                 ],
-                "type": "field"
+                "type": "column"
               },
               {
-                "params": [],
-                "type": "mean"
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "humidity"
+                ],
+                "type": "alias"
               }
             ]
           ],
-          "tags": [
+          "table": "temperatures",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
             {
-              "key": "device_id",
-              "operator": "=~",
-              "value": "/^$device_id$/"
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "varchar",
+              "name": "",
+              "params": [
+                "device_id",
+                "IN",
+                "($device_id)"
+              ],
+              "type": "expression"
             }
           ]
         }
       ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
       "title": "Humidity",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "humidity",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "timeseries"
     },
     {
-      "datasource": "IoT",
+      "datasource": "TimescaleDB",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "fixed"
+            "mode": "thresholds"
           },
-          "decimals": 1,
           "mappings": [],
-          "max": 100,
+          "max": 60,
           "min": 0,
+          "noValue": "n/a",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
           "unit": "humidity"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
-        "w": 5,
-        "x": 19,
-        "y": 10
+        "h": 8,
+        "w": 3,
+        "x": 21,
+        "y": 8
       },
       "id": 7,
-      "interval": "1m",
-      "maxDataPoints": 1,
       "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
         },
-        "text": {},
-        "textMode": "value"
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
       },
-      "pluginVersion": "7.5.6",
+      "pluginVersion": "8.0.6",
       "targets": [
         {
-          "groupBy": [
+          "format": "time_series",
+          "group": [
             {
               "params": [
-                "1m"
+                "$__interval",
+                "none"
               ],
               "type": "time"
-            },
-            {
-              "params": [
-                "previous"
-              ],
-              "type": "fill"
             }
           ],
-          "measurement": "temperatures",
-          "orderByTime": "ASC",
-          "policy": "default",
+          "metricColumn": "none",
+          "queryType": "randomWalk",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  avg(humidity) AS \"humidity\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\")\nGROUP BY 1\nORDER BY 1",
           "refId": "A",
-          "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
                   "humidity"
                 ],
-                "type": "field"
+                "type": "column"
               },
               {
-                "params": [],
-                "type": "median"
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "humidity"
+                ],
+                "type": "alias"
               }
             ]
           ],
-          "tags": [
+          "table": "temperatures",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
             {
-              "key": "device_id",
-              "operator": "=~",
-              "value": "/^$device_id$/"
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
             }
           ]
         }
       ],
       "timeFrom": "1m",
-      "timeShift": null,
-      "transformations": [
-        {
-          "id": "reduce",
-          "options": {
-            "reducers": []
-          }
-        }
-      ],
-      "type": "stat"
+      "title": "Humidity",
+      "type": "gauge"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "IoT",
+      "datasource": "TimescaleDB",
+      "description": "",
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": 10000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
-        "h": 8,
+        "h": 12,
         "w": 7,
         "x": 0,
-        "y": 20
+        "y": 16
       },
-      "hiddenSeries": false,
-      "id": 9,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
+      "id": 8,
+      "interval": "1s",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "7.5.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
-          "alias": "battery ($tag_device_id)",
-          "groupBy": [
+          "format": "time_series",
+          "group": [
             {
               "params": [
-                "$__interval"
+                "$__interval",
+                "none"
               ],
               "type": "time"
-            },
-            {
-              "params": [
-                "device_id"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "previous"
-              ],
-              "type": "fill"
             }
           ],
-          "measurement": "temperatures",
-          "orderByTime": "ASC",
-          "policy": "default",
+          "hide": false,
+          "metricColumn": "device_id",
           "queryType": "randomWalk",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  avg(battery) AS \"battery\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id IN ($device_id)\nGROUP BY 1,2\nORDER BY 1,2",
           "refId": "A",
-          "resultFormat": "time_series",
           "select": [
             [
               {
                 "params": [
                   "battery"
                 ],
-                "type": "field"
+                "type": "column"
               },
               {
-                "params": [],
-                "type": "mean"
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "battery"
+                ],
+                "type": "alias"
               }
             ]
           ],
-          "tags": [
+          "table": "temperatures",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
             {
-              "key": "device_id",
-              "operator": "=~",
-              "value": "/^$device_id$/"
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "varchar",
+              "name": "",
+              "params": [
+                "device_id",
+                "IN",
+                "($device_id)"
+              ],
+              "type": "expression"
             }
           ]
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "Battery",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
+      "type": "timeseries"
+    },
+    {
+      "datasource": "TimescaleDB",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "left",
+            "displayMode": "auto"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-red",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 5
+              }
+            ]
+          },
+          "unit": "percent"
         },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Device"
+            },
+            "properties": [
+              {
+                "id": "custom.align",
+                "value": "left"
+              },
+              {
+                "id": "custom.width",
+                "value": 120
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Battery Level"
+            },
+            "properties": [
+              {
+                "id": "custom.align",
+                "value": "right"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "color-background-solid"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 3,
+        "x": 7,
+        "y": 16
+      },
+      "id": 4,
+      "interval": "1m",
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
         {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
+          "format": "table",
+          "group": [
+            {
+              "params": [
+                "device_id"
+              ],
+              "type": "column"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "device_id",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "SELECT device_id as \"Device\", min(battery) as \"Battery Level\" FROM temperatures WHERE battery < 10 AND $__timeFilter(time) GROUP BY device_id ORDER BY 1,2;",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "battery"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "battery"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "temperatures",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "float8",
+              "name": "",
+              "params": [
+                "battery",
+                "<",
+                "10"
+              ],
+              "type": "expression"
+            }
+          ]
         }
       ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "timeFrom": "1m",
+      "title": "Battery",
+      "type": "table"
+    },
+    {
+      "circleMaxSize": "10",
+      "circleMinSize": 2,
+      "colors": [
+        "#C0D8FF",
+        "#C8F2C2",
+        "#56A64B",
+        "#E0B400",
+        "#FA6400",
+        "#C4162A"
+      ],
+      "datasource": "TimescaleDB",
+      "decimals": 0,
+      "description": "",
+      "esMetric": "Count",
+      "gridPos": {
+        "h": 12,
+        "w": 14,
+        "x": 10,
+        "y": 16
+      },
+      "hideEmpty": false,
+      "hideTimeOverride": true,
+      "hideZero": false,
+      "id": 10,
+      "initialZoom": "2",
+      "locationData": "table",
+      "mapCenter": "custom",
+      "mapCenterLatitude": "20",
+      "mapCenterLongitude": "0",
+      "maxDataPoints": 1,
+      "mouseWheelZoom": true,
+      "showLegend": true,
+      "stickyLabels": false,
+      "tableQueryOptions": {
+        "geohashField": "geohash",
+        "labelField": "device_id",
+        "latitudeField": "lat",
+        "longitudeField": "lon",
+        "metricField": "temperature",
+        "queryType": "coordinates"
+      },
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "device_id",
+          "queryType": "randomWalk",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  device_id,\n  temperature,\n  lat,\n  lon\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\")\n  AND lat IS NOT NULL\n  AND lon IS NOT NULL\nORDER BY 1,2",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "temperature"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "lat"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "lon"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "temperatures",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": "0,10,20,30,40",
+      "timeFrom": "1m",
+      "type": "grafana-worldmap-panel",
+      "unitPlural": "°C",
+      "unitSingle": "",
+      "unitSingular": "°C",
+      "valueName": "current"
     }
   ],
-  "refresh": "5s",
-  "schemaVersion": 27,
+  "refresh": "10s",
+  "schemaVersion": 30,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -747,8 +899,8 @@
             "$__all"
           ]
         },
-        "datasource": "IoT",
-        "definition": "SHOW TAG VALUES WITH KEY = \"device_id\"",
+        "datasource": "TimescaleDB",
+        "definition": "select distinct device_id from temperatures",
         "description": null,
         "error": null,
         "hide": 0,
@@ -757,39 +909,22 @@
         "multi": true,
         "name": "device_id",
         "options": [],
-        "query": "SHOW TAG VALUES WITH KEY = \"device_id\"",
+        "query": "select distinct device_id from temperatures",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "sort": 1,
+        "type": "query"
       }
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-30m",
     "to": "now"
   },
-  "timepicker": {
-    "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
-    ]
-  },
+  "timepicker": {},
   "timezone": "",
   "title": "Example Dashboard",
-  "uid": "YYGTNzdMk",
-  "version": 2
+  "uid": "F96MiCMnz",
+  "version": 24
 }

@@ -1,0 +1,62 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: timescaledb-pusher
+  annotations:
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"StatefulSet","name":"timescaledb"}]'
+  labels:
+    app.kubernetes.io/part-of: custom-app-1
+    networking.knative.dev/visibility: cluster-local
+spec:
+  template:
+    spec:
+      containers:
+        - image: {{ .Values.timescale.pusher.image }}
+          env:
+            - name: RUST_LOG
+              value: debug
+            - name: RUST_BACKTRACE
+              value: "1"
+
+            - name: POSTGRESQL__CONNECTION__HOST
+              value: timescaledb
+            - name: POSTGRESQL__CONNECTION__DBNAME
+              value: {{ .Values.timescale.database.name }}
+            - name: POSTGRESQL__CONNECTION__USER
+              value: {{ .Values.timescale.database.adminUser }}
+            - name: POSTGRESQL__CONNECTION__PASSWORD
+              value: {{ .Values.timescale.database.adminPassword }}
+
+            - name: POSTGRESQL__TIME_COLUMN
+              value: time
+
+            - name: POSTGRESQL__TABLE
+              value: temperatures
+
+            - name: FIELD_TEMPERATURE
+              value: $.temp
+            - name: TYPE_FIELD_TEMPERATURE
+              value: float
+            - name: FIELD_BATTERY
+              value: $.batt
+            - name: TYPE_FIELD_BATTERY
+              value: float
+            - name: FIELD_HUMIDITY
+              value: $.hum
+            - name: TYPE_FIELD_HUMIDITY
+              value: float
+            - name: TAG_DEVICE_ID
+              value: $.device
+
+            - name: FIELD_LAT
+              value: $.geoloc.lat
+            - name: TYPE_FIELD_LAT
+              value: float
+            - name: FIELD_LON
+              value: $.geoloc.lon
+            - name: TYPE_FIELD_LON
+              value: float
+
+          resources:
+            limits:
+              memory: 64Mi

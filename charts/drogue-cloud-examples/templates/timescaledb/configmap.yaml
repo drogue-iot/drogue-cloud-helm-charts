@@ -1,6 +1,19 @@
+---
 kind: ConfigMap
 apiVersion: v1
 metadata:
   name: timescaledb-config
 data:
   databaseName: {{ .Values.timescale.database.name }}
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: timescaledb-initdb
+  labels:
+    app: timescaledb
+data:
+  {{ range $path, $_ :=  .Files.Glob  "scripts/timescaledb/*" }}
+  {{ base $path }}: |
+  {{- $.Files.Get $path | nindent 4 }}
+  {{ end }}

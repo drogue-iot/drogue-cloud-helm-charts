@@ -106,21 +106,9 @@ spec:
             - name: GF_SERVER_ROOT_URL
               value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "grafana" "ingress" .Values.grafana.ingress ) }}
 
-            - name: DS_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: influxdb-secret
-                  key: read.username
-            - name: DS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: influxdb-secret
-                  key: read.password
-            - name: DS_DATABASE
-              valueFrom:
-                configMapKeyRef:
-                  name: influxdb-config
-                  key: databaseName
+            - name: GF_INSTALL_PLUGINS
+              value: grafana-worldmap-panel
+
             - name: TIMESCALE_USERNAME
               valueFrom:
                 secretKeyRef:

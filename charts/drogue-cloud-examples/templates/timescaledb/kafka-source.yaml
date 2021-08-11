@@ -1,12 +1,12 @@
 apiVersion: sources.knative.dev/v1alpha1
 kind: KafkaSource
 metadata:
-  name: influxdb
+  name: timescaledb
   labels:
-    app.kubernetes.io/name: influxdb
+    app.kubernetes.io/name: timescaledb
     app.kubernetes.io/part-of: custom-app-1
 spec:
-  consumerGroup: influxdb
+  consumerGroup: timescaledb
 
   bootstrapServers:
     - {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
@@ -20,4 +20,4 @@ spec:
     ref:
       apiVersion: v1
       kind: Service
-      name: influxdb-pusher
+      name: timescaledb-pusher

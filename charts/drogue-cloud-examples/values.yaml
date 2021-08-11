@@ -23,6 +23,8 @@ timescale:
     adminUser: admin
     adminPassword: admin123456
     name: example
+  pusher:
+    image: ghcr.io/drogue-iot/postgresql-pusher:0.1.0
 
 influx:
   database:
@@ -38,4 +40,4 @@ consumer:
   topics:
     - events-example-app
   groups:
-    - influxdb
+    - "*"
