@@ -234,7 +234,7 @@
           "metricColumn": "none",
           "queryType": "randomWalk",
           "rawQuery": false,
-          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  avg(temperature) AS \"temperature\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\")\nGROUP BY 1\nORDER BY 1",
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  max(temperature) AS \"temperature\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\")\nGROUP BY 1\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -246,7 +246,7 @@
               },
               {
                 "params": [
-                  "avg"
+                  "max"
                 ],
                 "type": "aggregate"
               },
@@ -420,7 +420,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "max": 60,
+          "max": 100,
           "min": 0,
           "noValue": "n/a",
           "thresholds": {
@@ -471,7 +471,7 @@
           "metricColumn": "none",
           "queryType": "randomWalk",
           "rawQuery": false,
-          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  avg(humidity) AS \"humidity\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\")\nGROUP BY 1\nORDER BY 1",
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  max(humidity) AS \"humidity\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\")\nGROUP BY 1\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -483,7 +483,7 @@
               },
               {
                 "params": [
-                  "avg"
+                  "max"
                 ],
                 "type": "aggregate"
               },
