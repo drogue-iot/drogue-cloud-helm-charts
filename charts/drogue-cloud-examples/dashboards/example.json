@@ -15,8 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 2,
-  "id": 3,
-  "iteration": 1628757951588,
+  "iteration": 1628769225869,
   "links": [],
   "panels": [
     {
@@ -46,7 +45,7 @@
               "type": "linear"
             },
             "showPoints": "never",
-            "spanNulls": 10000,
+            "spanNulls": 300000,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -175,23 +174,23 @@
                 "value": null
               },
               {
-                "color": "super-light-green",
+                "color": "semi-dark-green",
                 "value": 10
               },
               {
-                "color": "semi-dark-green",
+                "color": "dark-yellow",
                 "value": 20
               },
               {
-                "color": "#EAB839",
+                "color": "semi-dark-orange",
                 "value": 30
               },
               {
-                "color": "semi-dark-orange",
+                "color": "semi-dark-red",
                 "value": 40
               },
               {
-                "color": "semi-dark-red",
+                "color": "semi-dark-purple",
                 "value": 50
               }
             ]
@@ -302,7 +301,7 @@
               "type": "linear"
             },
             "showPoints": "never",
-            "spanNulls": 10000,
+            "spanNulls": 300000,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -539,7 +538,7 @@
               "type": "linear"
             },
             "showPoints": "never",
-            "spanNulls": 10000,
+            "spanNulls": 300000,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -926,5 +925,5 @@
   "timezone": "",
   "title": "Example Dashboard",
   "uid": "F96MiCMnz",
-  "version": 24
+  "version": 2
 }
