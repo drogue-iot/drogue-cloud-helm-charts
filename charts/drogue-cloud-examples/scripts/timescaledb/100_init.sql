@@ -1,7 +1,7 @@
 CREATE TABLE temperatures (
     time TIMESTAMP WITH TIME ZONE NOT NULL,
 
-    device_id VARCHAR(64),
+    device_id VARCHAR(64) NOT NULL,
 
     temperature DOUBLE PRECISION NOT NULL,
     humidity DOUBLE PRECISION,
