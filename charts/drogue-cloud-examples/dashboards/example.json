@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 2,
-  "iteration": 1628770225799,
+  "iteration": 1628867165732,
   "links": [],
   "panels": [
     {
@@ -105,8 +105,8 @@
           "hide": false,
           "metricColumn": "device_id",
           "queryType": "randomWalk",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  avg(temperature) AS \"temperature\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id IN ($device_id)\nGROUP BY 1,2\nORDER BY 1,2",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  avg(temperature) AS \"temperature\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id = ANY (ARRAY[$device_id]::varchar[])\nGROUP BY 1,2\nORDER BY 1,2",
           "refId": "A",
           "select": [
             [
@@ -233,8 +233,8 @@
           ],
           "metricColumn": "none",
           "queryType": "randomWalk",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  max(temperature) AS \"temperature\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\")\nGROUP BY 1\nORDER BY 1",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  max(temperature) AS \"temperature\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id = ANY (ARRAY[$device_id]::varchar[])\nGROUP BY 1\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -361,8 +361,8 @@
           "hide": false,
           "metricColumn": "device_id",
           "queryType": "randomWalk",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  avg(humidity) AS \"humidity\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id IN ($device_id)\nGROUP BY 1,2\nORDER BY 1,2",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  avg(humidity) AS \"humidity\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id = ANY (ARRAY[$device_id]::varchar[])\nGROUP BY 1,2\nORDER BY 1,2",
           "refId": "A",
           "select": [
             [
@@ -470,8 +470,8 @@
           ],
           "metricColumn": "none",
           "queryType": "randomWalk",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  max(humidity) AS \"humidity\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\")\nGROUP BY 1\nORDER BY 1",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  max(humidity) AS \"humidity\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id = ANY (ARRAY[$device_id]::varchar[])\nGROUP BY 1\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -598,8 +598,8 @@
           "hide": false,
           "metricColumn": "device_id",
           "queryType": "randomWalk",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  avg(battery) AS \"battery\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id IN ($device_id)\nGROUP BY 1,2\nORDER BY 1,2",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  avg(battery) AS \"battery\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id = ANY (ARRAY[$device_id]::varchar[])\nGROUP BY 1,2\nORDER BY 1,2",
           "refId": "A",
           "select": [
             [
@@ -925,5 +925,5 @@
   "timezone": "",
   "title": "Example Dashboard",
   "uid": "F96MiCMnz",
-  "version": 3
+  "version": 1
 }
