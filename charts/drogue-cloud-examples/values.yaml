@@ -29,7 +29,7 @@ grafana:
     realm: drogue
     client:
       # create can be used to deploy a keycloak client, works only when deployed alongside keycloak
-      # create: false
+      create: false
       # id contains the OAuth2 client ID
       # id: <id>
       # secret contains the optional OAuth2 client secret

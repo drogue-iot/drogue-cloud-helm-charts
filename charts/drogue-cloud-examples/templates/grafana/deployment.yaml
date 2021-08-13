@@ -82,22 +82,28 @@ spec:
             - name: GF_AUTH_GENERIC_OAUTH_ALLOWED_ORGANIZATIONS
               value: ""
 
-            {{- with .Values.grafana.keycloak.client.kubernetesSecret }}
+            {{- if .Values.grafana.keycloak.client.id }}
+
+            - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+              value: {{ .Values.grafana.keycloak.client.id | quote }}
+            {{- with .Values.grafana.keycloak.client.secret }}
+            - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+              value: {{ . | quote }}
+            {{- end }}
+
+            {{- else }}
+
             - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ . | quote }}
+                  name: {{ .Values.grafana.keycloak.client.kubernetesSecret | quote }}
                   key: CLIENT_ID
             - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ . | quote }}
+                  name: {{ .Values.grafana.keycloak.client.kubernetesSecret | quote }}
                   key: CLIENT_SECRET
-            {{- else }}
-            - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
-              value: {{ .Values.grafana.keycloak.client.id | quote }}
-            - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
-              value: {{ .Values.grafana.keycloak.client.secret | quote }}
+
             {{- end }}
 
             - name: GF_AUTH_GENERIC_OAUTH_SCOPES
