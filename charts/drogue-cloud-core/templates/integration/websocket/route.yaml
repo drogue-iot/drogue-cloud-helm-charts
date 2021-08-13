@@ -15,5 +15,5 @@ spec:
   port:
     targetPort: service
   tls:
-    termination: passthrough
+    termination: edge
 {{- end }}
