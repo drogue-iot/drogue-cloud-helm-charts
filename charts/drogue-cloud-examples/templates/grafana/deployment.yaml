@@ -25,7 +25,7 @@ spec:
     spec:
       serviceAccountName: grafana
       initContainers:
-        {{- if .Values.grafana.keycloak.enabled }}{{- with .Values.grafana.keycloak.client.kubernetesSecret }}
+        {{- if .Values.grafana.keycloak.enabled }}{{- if eq .Values.grafana.keycloak.client.id "" }}
         - name: wait-for-client-secret
           image: registry.access.redhat.com/ubi8-minimal
           imagePullPolicy: IfNotPresent
