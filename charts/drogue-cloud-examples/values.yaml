@@ -2,12 +2,10 @@ global:
   cluster: kubernetes
   domain: .my-cluster.dns
 
-grafana:
-  adminPassword: admin123456
-  image: docker.io/grafana/grafana:8.0.6
-  podSecurityContext:
-    enabled: false
-  ingress: {}
+drogueApplication:
+  name: example-app
+  # eventTopic can provide an explicit event topic
+  # eventTopic: <topic name>
 
 kafka:
   external:
@@ -16,6 +14,28 @@ kafka:
       enabled: false
     sasl:
       enabled: false
+    bootstrapServers: my-bootstrap-server:9092
+
+grafana:
+  adminPassword: admin123456
+  image: docker.io/grafana/grafana:8.0.6
+  podSecurityContext:
+    enabled: false
+  ingress: {}
+
+  keycloak:
+    enabled: false
+    ingress: {}
+    realm: drogue
+    client:
+      # create can be used to deploy a keycloak client, works only when deployed alongside keycloak
+      # create: false
+      # id contains the OAuth2 client ID
+      # id: <id>
+      # secret contains the optional OAuth2 client secret
+      # secret: <secret>
+      # kubernetesSecret allows to configure a secret that will contain the client secrets
+      kubernetesSecret: keycloak-client-secret-grafana # kubernetes secret
 
 timescale:
   database:
@@ -25,13 +45,3 @@ timescale:
     name: example
   pusher:
     image: ghcr.io/drogue-iot/postgresql-pusher:0.1.0
-
-services:
-  sso:
-    ingress: {}
-
-consumer:
-  topics:
-    - events-example-app
-  groups:
-    - "*"

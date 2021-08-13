@@ -4,7 +4,7 @@ metadata:
   name: timescaledb
   labels:
     app.kubernetes.io/name: timescaledb
-    app.kubernetes.io/part-of: custom-app-1
+    app.kubernetes.io/part-of: example-app
 spec:
   consumerGroup: timescaledb
 
@@ -12,7 +12,7 @@ spec:
     - {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
 
   topics:
-    {{ .Values.consumer.topics | toYaml | nindent 4 }}
+    - {{ include "drogue-cloud-common.kafka-event-topic" (dict "application" .Values.drogueApplication ) }}
 
   {{- include "drogue-cloud-common.knative-kafka-net" (dict "root" . "secretName" "example-kafka-secret" "userName" "example-user" ) }}
 

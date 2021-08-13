@@ -138,3 +138,16 @@ username: {{ .userName | default "drogue-iot" | b64enc }}
 {{- end }}{{/* external.enabled */}}
 
 {{- end }}
+
+{{/*
+Event topic:
+Args (dict):
+  * application - The application configuration
+*/}}
+{{- define "drogue-cloud-common.kafka-event-topic" -}}
+{{- with .application.eventTopic -}}
+{{- . -}}
+{{- else -}}
+events-{{- .application.name -}}
+{{- end -}}
+{{- end }}

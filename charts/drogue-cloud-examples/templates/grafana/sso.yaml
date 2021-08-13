@@ -1,9 +1,11 @@
+{{- if and .Values.grafana.keycloak.enabled .Values.grafana.keycloak.client.create }}
 apiVersion: keycloak.org/v1alpha1
 kind: KeycloakClient
 metadata:
   name: client-grafana
   labels:
-    app.kubernetes.io/part-of: console
+    app.kubernetes.io/name: client-grafana
+    app.kubernetes.io/part-of: example-app
 spec:
   realmSelector:
     matchLabels:
@@ -34,3 +36,4 @@ spec:
           claim.name: "roles"
           jsonType.label: "String"
           usermodel.clientRoleMapping.clientId: "grafana"
+{{- end }}

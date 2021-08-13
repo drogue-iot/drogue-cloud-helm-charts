@@ -4,9 +4,9 @@ metadata:
   name: grafana
   labels:
     app: grafana
-    app.kubernetes.io/part-of: custom-app-1
+    app.kubernetes.io/part-of: example-app
   annotations:
-    app.openshift.io/connects-to: influxdb
+    app.openshift.io/connects-to: timescaledb
 spec:
   replicas: 1
   selector:
@@ -25,6 +25,7 @@ spec:
     spec:
       serviceAccountName: grafana
       initContainers:
+        {{- if .Values.grafana.keycloak.enabled }}{{- with .Values.grafana.keycloak.client.kubernetesSecret }}
         - name: wait-for-client-secret
           image: registry.access.redhat.com/ubi8-minimal
           imagePullPolicy: IfNotPresent
@@ -40,6 +41,7 @@ spec:
             - mountPath: /etc/client-secret
               name: client-secret
               readOnly: true
+        {{- end }}{{- end}}
         - name: collect-dashboards
           image: ghcr.io/ctron/kubectl:1.19
           imagePullPolicy: IfNotPresent
@@ -68,40 +70,50 @@ spec:
             - name: GF_LOG_LEVEL
               value: "debug"
 
+            {{- if .Values.grafana.keycloak.enabled }}
             - name: GF_AUTH_GENERIC_OAUTH_ENABLED
               value: "true"
             - name: GF_AUTH_GENERIC_OAUTH_NAME
-              value: "Drogue IoT cloud"
+              value: {{ .Values.grafana.keycloak.displayName | default "Drogue IoT cloud" | quote }}
             - name: GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP
               value: "true"
             - name: GF_AUTH_GENERIC_OAUTH_TEAM_IDS
               value: ""
             - name: GF_AUTH_GENERIC_OAUTH_ALLOWED_ORGANIZATIONS
               value: ""
+
+            {{- with .Values.grafana.keycloak.client.kubernetesSecret }}
             - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: keycloak-client-secret-grafana
+                  name: {{ . | quote }}
                   key: CLIENT_ID
             - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: keycloak-client-secret-grafana
+                  name: {{ . | quote }}
                   key: CLIENT_SECRET
+            {{- else }}
+            - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+              value: {{ .Values.grafana.keycloak.client.id | quote }}
+            - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+              value: {{ .Values.grafana.keycloak.client.secret | quote }}
+            {{- end }}
+
             - name: GF_AUTH_GENERIC_OAUTH_SCOPES
-              value: "openid profile email"
+              value: {{ .Values.grafana.keycloak.scopes | default "openid profile email" | quote }}
 
             - name: SSO_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
-
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.grafana.keycloak.ingress ) }}
             - name: GF_AUTH_GENERIC_OAUTH_AUTH_URL
-              value: $(SSO_URL)/auth/realms/drogue/protocol/openid-connect/auth
+              value: $(SSO_URL)/auth/realms/{{ .Values.grafana.keycloak.realm }}/protocol/openid-connect/auth
             - name: GF_AUTH_GENERIC_OAUTH_TOKEN_URL
-              value: $(SSO_URL)/auth/realms/drogue/protocol/openid-connect/token
+              value: $(SSO_URL)/auth/realms/{{ .Values.grafana.keycloak.realm }}/protocol/openid-connect/token
             - name: GF_AUTH_GENERIC_OAUTH_API_URL
-              value: $(SSO_URL)/auth/realms/drogue/protocol/openid-connect/userinfo
+              value: $(SSO_URL)/auth/realms/{{ .Values.grafana.keycloak.realm }}/protocol/openid-connect/userinfo
             - name: GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH
               value: "contains(roles[*], 'grafana-admin') && 'Admin' || contains(roles[*], 'grafana-editor') && 'Editor' || 'Viewer'"
+            {{- end }}
 
             - name: GF_SERVER_ROOT_URL
               value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "grafana" "ingress" .Values.grafana.ingress ) }}
@@ -167,6 +179,8 @@ spec:
             name: grafana-dashboard-providers
         - name: grafana-dashboards
           emptyDir: {}
+        {{- with .Values.grafana.keycloak.client.kubernetesSecret }}
         - name: client-secret
           secret:
-            secretName: keycloak-client-secret-drogue
+            secretName: {{ . | quote }}
+        {{- end }}
