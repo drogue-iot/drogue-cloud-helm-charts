@@ -15,4 +15,5 @@ spec:
     registrationAllowed: true
     resetPasswordAllowed: true
     loginWithEmailAllowed: false
-  identityProviders: {{ .Values.keycloak.identityProviders | toYaml | nindent 4 }}
+    identityProviders:
+      {{- .Values.keycloak.identityProviders | toYaml | nindent 6 }}
