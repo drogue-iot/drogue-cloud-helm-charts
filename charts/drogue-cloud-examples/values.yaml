@@ -35,7 +35,7 @@ grafana:
       # secret contains the optional OAuth2 client secret
       # secret: <secret>
       # kubernetesSecret allows to configure a secret that will contain the client secrets
-      kubernetesSecret: keycloak-client-secret-grafana # kubernetes secret
+      kubernetesSecret: keycloak-client-secret-grafana  # kubernetes secret
 
 timescale:
   database:
