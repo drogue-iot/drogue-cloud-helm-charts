@@ -15,21 +15,6 @@ spec:
         {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
     spec:
       initContainers:
-        - name: wait-for-client-secret-drogue
-          image: registry.access.redhat.com/ubi8-minimal
-          imagePullPolicy: IfNotPresent
-          command:
-            - bash
-            - -c
-            - |
-              echo "Waiting for client secret to be populated (/etc/client-secret/CLIENT_SECRET)..."
-              while test -z "$(cat /etc/client-secret/CLIENT_SECRET)"; do
-                sleep 1
-              done
-          volumeMounts:
-            - mountPath: /etc/client-secret
-              name: client-secret-drogue
-              readOnly: true
         - name: wait-for-client-secret-services
           image: registry.access.redhat.com/ubi8-minimal
           imagePullPolicy: IfNotPresent
@@ -71,6 +56,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-drogue
                   key: CLIENT_SECRET
+                  optional: true
             - name: OAUTH__SERVICES__CLIENT_ID
               valueFrom:
                 secretKeyRef:

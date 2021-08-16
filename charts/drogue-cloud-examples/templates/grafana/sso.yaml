@@ -19,9 +19,19 @@ spec:
     implicitFlowEnabled: false
     standardFlowEnabled: true
     serviceAccountsEnabled: false
-    fullScopeAllowed: true
+    fullScopeAllowed: false
     redirectUris:
       - {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "grafana" "ingress" .Values.grafana.ingress ) }}/login/generic_oauth
+    defaultClientScopes:
+      - "email"
+      - "profile"
+      - "roles"
+      - "web-origins"
+    optionalClientScopes:
+      - "address"
+      - "microprofile-jwt"
+      - "offline_access"
+      - "phone"
     defaultRoles:
       - "grafana-admin"
       - "grafana-editor"
