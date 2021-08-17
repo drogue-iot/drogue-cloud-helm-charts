@@ -21,3 +21,9 @@ spec:
   externalDatabase:
     enabled: true
   {{- end }}
+
+  keycloakDeploymentSpec:
+    {{- with .Values.keycloak.resources }}
+    resources:
+      {{ . | toYaml | nindent 8 }}
+    {{- end }}

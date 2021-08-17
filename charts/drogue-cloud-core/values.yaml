@@ -71,7 +71,8 @@ keycloak:
     #   host: postgres
     #   port: 5678
     #   databaseName: keycloak
-
+  # resources can be used to define the resource requirements
+  # resources:
 
 postgres:
   databaseName: registry
