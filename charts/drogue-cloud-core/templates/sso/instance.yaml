@@ -16,11 +16,11 @@ spec:
     enabled: true
     host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
 {{- end }}
-  {{- if ne .Values.keycloak.postgres.mode "operator" }}
 
+{{- if ne .Values.keycloak.postgres.mode "operator" }}
   externalDatabase:
     enabled: true
-  {{- end }}
+{{- end }}
 
   keycloakDeploymentSpec:
     {{- with .Values.keycloak.resources }}
