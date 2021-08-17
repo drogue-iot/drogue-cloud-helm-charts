@@ -6,9 +6,7 @@ metadata:
   labels:
     {{- include "drogue-cloud-core.labels" (dict "root" . "name" "drogue-iot" "component" "kafka") | nindent 4 }}
 spec:
-  entityOperator:
-    topicOperator: {}
-    userOperator: {}
+
   kafka:
     authorization:
       type: simple
@@ -51,9 +49,14 @@ spec:
         {{- else }}
         tls: false
         {{- end }}
-
 {{- end }}
-    replicas: 1
+
+    {{- with .Values.kafka.kafka.resources }}
+    resources:
+      {{- . | toYaml | nindent 6 }}
+    {{- end }}
+
+    replicas: {{ .Values.kafka.kafka.replicas }}
     storage:
       type: persistent-claim
       size: 10Gi
@@ -66,12 +69,17 @@ spec:
         {{- else }}
         {}
         {{- end }}
+
   zookeeper:
-    replicas: 1
+    replicas: {{ .Values.kafka.zookeeper.replicas }}
     storage:
       type: persistent-claim
       size: 1Gi
       deleteClaim: true
+    {{- with .Values.kafka.zookeeper.resources }}
+    resources:
+    {{- . | toYaml | nindent 6 }}
+    {{- end }}
     template:
       pod:
         {{- if .Values.kafka.podSecurityContext.enabled }}
@@ -80,3 +88,20 @@ spec:
         {}
         {{- end }}
 {{- end }}
+
+  entityOperator:
+    topicOperator:
+      {{- with .Values.kafka.topicOperator.resources }}
+      resources:
+      {{- . | toYaml | nindent 8 }}
+    {{- end }}
+    userOperator:
+      {{- with .Values.kafka.userOperator.resources }}
+      resources:
+      {{- . | toYaml | nindent 8 }}
+    {{- end }}
+    tlsSidecar:
+      {{- with .Values.kafka.tlsSidecar.resources }}
+      resources:
+      {{- . | toYaml | nindent 8 }}
+  {{- end }}

@@ -109,3 +109,13 @@ kafka:
 
     # properties allow you to provide arbitrary additional properties
     properties: {}
+
+  kafka:
+    replicas: 1
+
+  zookeeper:
+    replicas: 1
+
+  topicOperator: {}
+  userOperator: {}
+  tlsSidecar: {}
