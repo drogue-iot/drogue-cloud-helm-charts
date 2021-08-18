@@ -90,11 +90,13 @@ spec:
 
   entityOperator:
     topicOperator:
+      watchedNamespace: {{ .Release.Namespace }}
       {{- with .Values.kafka.topicOperator.resources }}
       resources:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
     userOperator:
+      watchedNamespace: {{ .Release.Namespace }}
       {{- with .Values.kafka.userOperator.resources }}
       resources:
         {{- . | toYaml | nindent 8 }}
