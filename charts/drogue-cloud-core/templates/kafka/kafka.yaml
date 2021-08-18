@@ -92,17 +92,17 @@ spec:
     topicOperator:
       {{- with .Values.kafka.topicOperator.resources }}
       resources:
-    {{- . | toYaml | nindent 8 }}
-    {{- end }}
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
     userOperator:
       {{- with .Values.kafka.userOperator.resources }}
       resources:
-    {{- . | toYaml | nindent 8 }}
-    {{- end }}
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
     tlsSidecar:
       {{- with .Values.kafka.tlsSidecar.resources }}
       resources:
-      {{- . | toYaml | nindent 8 }}
+        {{- . | toYaml | nindent 8 }}
       {{- end }}
 
 {{- end }}
