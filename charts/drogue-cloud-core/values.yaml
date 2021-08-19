@@ -43,7 +43,6 @@ services:
   sso:
     ingress: {}
 
-
 defaults:
   images:
     repository: ghcr.io/drogue-iot
@@ -53,6 +52,8 @@ defaults:
     # tag The container tag to apply. Defaults to the chart's application version
     # tag: latest
 
+helper:
+  image: registry.access.redhat.com/ubi8-minimal:latest
 
 keycloak:
   adminPassword: admin123456

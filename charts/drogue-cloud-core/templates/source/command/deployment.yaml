@@ -15,24 +15,10 @@ spec:
         {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
     spec:
       initContainers:
-        - name: wait-for-client-secret-services
-          image: registry.access.redhat.com/ubi8-minimal
-          imagePullPolicy: IfNotPresent
-          command:
-            - bash
-            - -c
-            - |
-              echo "Waiting for client secret to be populated (/etc/client-secret/CLIENT_SECRET)..."
-              while test -z "$(cat /etc/client-secret/CLIENT_SECRET)"; do
-                sleep 1
-              done
-          volumeMounts:
-            - mountPath: /etc/client-secret
-              name: client-secret-services
-              readOnly: true
+        {{- include "drogue-cloud-core.init-container.wait-for-client-secret" ( dict "root" . "volume" "client-secret-services")  | nindent 8 }}
       containers:
         - name: endpoint
-          image: {{ include "drogue-cloud-core.image-repo" . }}command-endpoint:{{ include "drogue-cloud-core.image-tag" . }}
+          image: {{ include "drogue-cloud-core.image" $ref | quote }}
           imagePullPolicy: {{ include "drogue-cloud-core.image-pull-policy" . }}
           env:
             - name: RUST_LOG
@@ -105,9 +91,6 @@ spec:
               port: 9090
               path: /liveness
       volumes:
-        - name: client-secret-drogue
-          secret:
-            secretName: keycloak-client-secret-drogue
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services

@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: service
-          image: {{ include "drogue-cloud-core.image-repo" . }}outbox-controller:{{ include "drogue-cloud-core.image-tag" . }}
+          image: {{ include "drogue-cloud-core.image" $ref | quote }}
           imagePullPolicy: {{ include "drogue-cloud-core.image-pull-policy" . }}
           env:
             - name: RUST_LOG

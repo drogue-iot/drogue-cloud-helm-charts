@@ -20,7 +20,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: diesel-migrate
-          image: {{ include "drogue-cloud-core.image-repo" . }}database-migration:{{ include "drogue-cloud-core.image-tag" . }}
+          image: {{ include "drogue-cloud-core.image" ( dict "root" . "name" "database-migration") | quote }}
           imagePullPolicy: {{ include "drogue-cloud-core.image-pull-policy" . }}
           env:
             - name: POSTGRES_DB
