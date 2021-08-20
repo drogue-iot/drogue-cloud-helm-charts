@@ -8,6 +8,9 @@ spec:
   realmSelector:
     matchLabels:
       {{- include "drogue-cloud-common.selectorLabels" (dict "root" . "name" "drogue" "component" "sso") | nindent 6 }}
+  roles:
+    - name: drogue-user
+    - name: drogue-admin
   client:
     clientId: drogue
     clientAuthenticatorType: client-secret
@@ -18,7 +21,7 @@ spec:
     standardFlowEnabled: true
     directAccessGrantsEnabled: true
     serviceAccountsEnabled: false
-    fullScopeAllowed: true
+    fullScopeAllowed: false
     redirectUris:
       - {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}
       - {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}/*

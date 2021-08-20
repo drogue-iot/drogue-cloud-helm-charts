@@ -22,8 +22,8 @@ spec:
     enabled: true
 {{- end }}
 
-  keycloakDeploymentSpec:
     {{- with .Values.keycloak.resources }}
+  keycloakDeploymentSpec:
     resources:
       {{ . | toYaml | nindent 8 }}
     {{- end }}

@@ -15,5 +15,9 @@ spec:
     registrationAllowed: true
     resetPasswordAllowed: true
     loginWithEmailAllowed: false
+#    roles:
+#      realm:
+#      - name: "drogue-user"
+#      - name: "drogue-admin"
     identityProviders:
       {{- .Values.keycloak.identityProviders | toYaml | nindent 6 }}
