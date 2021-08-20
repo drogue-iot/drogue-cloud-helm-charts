@@ -15,6 +15,8 @@ spec:
       labels:
         {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
     spec:
+      initContainers:
+        {{- include "drogue-cloud-core.init-container.wait-for-client-secret" ( dict "root" . "volume" "client-secret-services")  | nindent 8 }}
       containers:
         - name: service
           image: {{ include "drogue-cloud-core.image" $ref | quote }}
@@ -100,6 +102,6 @@ spec:
               port: 9090
               path: /liveness
       volumes:
-        - name: client-secret
+        - name: client-secret-services
           secret:
-            secretName: keycloak-client-secret-drogue
+            secretName: keycloak-client-secret-services
