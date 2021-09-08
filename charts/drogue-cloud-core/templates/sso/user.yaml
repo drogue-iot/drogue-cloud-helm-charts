@@ -24,7 +24,7 @@ spec:
 #      - "drogue-user"
       - "offline_access"
     clientRoles:
-      client:
+      drogue:
         - "drogue-user"
         - "drogue-admin"
       grafana:
