@@ -20,13 +20,10 @@ spec:
         value: {{ .Values.keycloak.adminPassword }}
         temporary: false
     realmRoles:
-#      - "drogue-admin"
-#      - "drogue-user"
+      - "drogue-admin"
+      - "drogue-user"
       - "offline_access"
     clientRoles:
-      drogue:
-        - "drogue-user"
-        - "drogue-admin"
       grafana:
         - "grafana-admin"
         - "grafana-editor"

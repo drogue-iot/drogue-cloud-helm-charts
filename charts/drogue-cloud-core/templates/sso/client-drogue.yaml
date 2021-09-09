@@ -8,9 +8,6 @@ spec:
   realmSelector:
     matchLabels:
       {{- include "drogue-cloud-common.selectorLabels" (dict "root" . "name" "drogue" "component" "sso") | nindent 6 }}
-  roles:
-    - name: drogue-user
-    - name: drogue-admin
   client:
     clientId: drogue
     clientAuthenticatorType: client-secret

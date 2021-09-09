@@ -74,6 +74,8 @@ keycloak:
     #   databaseName: keycloak
   # resources can be used to define the resource requirements
   # resources:
+  admin:
+    image: quay.io/keycloak/keycloak:15.0.1
 
 postgres:
   databaseName: registry
