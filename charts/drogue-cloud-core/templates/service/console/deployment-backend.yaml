@@ -133,6 +133,8 @@ spec:
               value: "{{ .Values.integrations.mqtt.ingress.port }}"
             - name: ENDPOINTS__WEBSOCKET_INTEGRATION_URL
               value: {{ include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "websocket-integration" "ingress" .Values.integrations.websocket.ingress "insecure" .Values.integrations.websocket.insecure ) }}
+            - name: ENDPOINTS__KAFKA_BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
           ports:
             - containerPort: 8080
               name: endpoint
