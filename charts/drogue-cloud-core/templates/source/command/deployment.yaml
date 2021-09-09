@@ -63,6 +63,16 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
+            - name: USER_AUTH__CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_ID
+            - name: USER_AUTH__CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_SECRET
             - name: SSO_URL
               value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
             - name: COMMAND_KAFKA_SINK__TOPIC
