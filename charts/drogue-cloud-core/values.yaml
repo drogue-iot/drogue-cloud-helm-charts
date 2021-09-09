@@ -74,7 +74,11 @@ keycloak:
     #   databaseName: keycloak
   # resources can be used to define the resource requirements
   # resources:
-  admin:
+  # postInstall is used to create a job which fixes up roles for a newly deployed Keycloak 15.x instance.
+  postInstall:
+    # enabled can be used to disable the job, in case you don't need it or are upgrading from
+    # a Keycloak 12 instance, in which case you need to manually configure the roles.
+    enabled: true
     image: quay.io/keycloak/keycloak:15.0.1
 
 postgres:
