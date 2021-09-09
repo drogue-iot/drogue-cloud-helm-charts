@@ -10,6 +10,9 @@ spec:
   realmSelector:
     matchLabels:
       {{- include "drogue-cloud-common.selectorLabels" (dict "root" . "name" "drogue" "component" "sso") | nindent 6 }}
+  roles:
+    - name: "grafana-admin"
+    - name: "grafana-editor"
   client:
     clientId: grafana
     clientAuthenticatorType: client-secret
@@ -32,9 +35,6 @@ spec:
       - "microprofile-jwt"
       - "offline_access"
       - "phone"
-    defaultRoles:
-      - "grafana-admin"
-      - "grafana-editor"
     protocolMappers:
       - name: add-grafana-roles
         protocol: "openid-connect"
