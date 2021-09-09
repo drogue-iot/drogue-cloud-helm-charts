@@ -16,7 +16,7 @@ spec:
     publicClient: true
     implicitFlowEnabled: true
     standardFlowEnabled: true
-    directAccessGrantsEnabled: true
+    directAccessGrantsEnabled: false
     serviceAccountsEnabled: false
     fullScopeAllowed: false
     redirectUris:
