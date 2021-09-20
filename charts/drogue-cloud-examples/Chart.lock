@@ -1,6 +1,6 @@
 dependencies:
 - name: drogue-cloud-common
   repository: file://../drogue-cloud-common
-  version: 0.3.0-alpha2
-digest: sha256:86f205e5b9a93e885a3c5bd9e76b7ff27d7577165d9ff91c21f1a437bbe28735
-generated: "2021-09-07T14:09:50.882696865+02:00"
+  version: 0.3.0-alpha3
+digest: sha256:a23aba7d33dba53b70493ff376153b9e07be5e6d2e38638be9c0ff8820963dd5
+generated: "2021-09-20T13:45:57.25148641+02:00"
