@@ -35,6 +35,24 @@
         }
       }
     },
+    "console": {
+      "type": "object",
+      "properties": {
+        "overrides": {
+          "type": "object",
+          "properties": {
+            "kafka": {
+              "type": "object",
+              "properties": {
+                "servers": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "endpoints": {
       "type": "object",
       "properties": {

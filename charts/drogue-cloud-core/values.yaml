@@ -6,6 +6,26 @@ global:
   # instance is the ID of the installation
   instance: drogue
 
+console:
+  # allow overriding certain aspects of the console
+  overrides:
+    api:
+      # url: https://foo-bar
+    console:
+      # url: https://foo-bar
+    coapEndpoint:
+      # url: coap://foo-bar
+    httpEndpoint:
+      # url: https://foo-bar
+    mqttEndpoint:
+      # port: 8883
+    mqttIntegration:
+      # port: 8883
+    wsIntegration:
+      # url: wss://foo-bar
+    kafka:
+      # servers: bootstrap:1234
+
 endpoints:
 
   http:
