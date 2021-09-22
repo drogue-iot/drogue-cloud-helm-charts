@@ -9,21 +9,21 @@ global:
 console:
   # allow overriding certain aspects of the console
   overrides:
-    api:
+    api: {}
       # url: https://foo-bar
-    console:
+    console: {}
       # url: https://foo-bar
-    coapEndpoint:
+    coapEndpoint: {}
       # url: coap://foo-bar
-    httpEndpoint:
+    httpEndpoint: {}
       # url: https://foo-bar
-    mqttEndpoint:
+    mqttEndpoint: {}
       # port: 8883
-    mqttIntegration:
+    mqttIntegration: {}
       # port: 8883
-    wsIntegration:
+    wsIntegration: {}
       # url: wss://foo-bar
-    kafka:
+    kafka: {}
       # servers: bootstrap:1234
 
 endpoints:
