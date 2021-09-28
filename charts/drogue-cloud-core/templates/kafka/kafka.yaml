@@ -59,9 +59,7 @@ spec:
 
     replicas: {{ .Values.kafka.kafka.replicas }}
     storage:
-      type: persistent-claim
-      size: 10Gi
-      deleteClaim: true
+      {{- .Values.kafka.kafka.storage | toYaml | nindent 6 }}
     version: {{ .Values.kafka.version }}
     template:
       pod:
@@ -74,9 +72,7 @@ spec:
   zookeeper:
     replicas: {{ .Values.kafka.zookeeper.replicas }}
     storage:
-      type: persistent-claim
-      size: 1Gi
-      deleteClaim: true
+      {{- .Values.kafka.zookeeper.storage | toYaml | nindent 6 }}
     {{- with .Values.kafka.zookeeper.resources }}
     resources:
     {{- . | toYaml | nindent 6 }}

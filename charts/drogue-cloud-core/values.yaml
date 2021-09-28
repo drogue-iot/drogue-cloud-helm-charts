@@ -143,9 +143,17 @@ kafka:
 
   kafka:
     replicas: 1
+    storage:
+      type: persistent-claim
+      size: 10Gi
+      deleteClaim: true
 
   zookeeper:
     replicas: 1
+    storage:
+      type: persistent-claim
+      size: 1Gi
+      deleteClaim: true
 
   topicOperator: {}
   userOperator: {}
