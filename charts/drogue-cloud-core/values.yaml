@@ -6,6 +6,11 @@ global:
   # instance is the ID of the installation
   instance: drogue
 
+experimental:
+  # dualStack enables some workarounds for IPv4/IPv6 dual stack support. Enabling this flag shouldn't
+  # interfere with a IPv4-only cluster.
+  dualStack: false
+
 console:
   # allow overriding certain aspects of the console
   overrides:
