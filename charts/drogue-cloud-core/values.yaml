@@ -111,6 +111,9 @@ postgres:
 
 kafka:
 
+  version: "2.8.0"
+  logVersion: "2.8"
+
   podSecurityContext:
     enabled: false
 
