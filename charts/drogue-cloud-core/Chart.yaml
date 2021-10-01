@@ -13,7 +13,7 @@ maintainers:
 
 type: application
 
-version: 0.3.5
+version: 0.3.6
 appVersion: 0.7.0
 
 kubeVersion: ">= 1.19.0"
