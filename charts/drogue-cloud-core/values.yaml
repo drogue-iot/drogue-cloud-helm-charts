@@ -76,6 +76,10 @@ defaults:
     # pullPolicy: IfNotPresent
     # tag The container tag to apply. Defaults to the chart's application version
     # tag: latest
+  ingress:
+    # className The ingress class name to use. Defaults to none, to let the cluster decide.
+    # className: nginx
+    annotations: {}
 
 helper:
   image: registry.access.redhat.com/ubi8-minimal:latest

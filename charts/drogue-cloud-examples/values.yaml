@@ -7,6 +7,10 @@ drogueApplication:
   # eventTopic can provide an explicit event topic
   # eventTopic: <topic name>
 
+knative:
+  kafkaSource:
+    apiVersion: v1beta1
+
 kafka:
   external:
     enabled: false

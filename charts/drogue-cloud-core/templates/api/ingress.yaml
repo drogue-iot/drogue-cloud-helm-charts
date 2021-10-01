@@ -4,14 +4,11 @@ apiVersion: networking.k8s.io/v1
 metadata:
   name: api
   annotations:
-    {{ if eq .Values.global.cluster "openshift" }}
-    route.openshift.io/termination: "edge"
-    {{- else }}
-    kubernetes.io/ingress.class: "nginx"
-    {{- end }}
+    {{- include "drogue-cloud-core.ingress.annotations" (dict "root" . "ingress" .Values.services.api.ingress ) | nindent 4 }}
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
+  {{- include "drogue-cloud-core.ingress.className" ( dict "root" . "ingress" .Values.services.api.ingress) | nindent 2 }}
   rules:
     - host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) }}
       http:
