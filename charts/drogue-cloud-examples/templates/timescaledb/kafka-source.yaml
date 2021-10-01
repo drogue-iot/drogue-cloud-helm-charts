@@ -1,4 +1,4 @@
-apiVersion: sources.knative.dev/v1alpha1
+apiVersion: sources.knative.dev/{{ .Values.knative.kafkaSource.apiVersion }}
 kind: KafkaSource
 metadata:
   name: timescaledb

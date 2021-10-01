@@ -8,14 +8,10 @@ spec:
   instances: 1
 
   externalAccess:
-{{- if eq .Values.global.cluster "openshift" }}
-    # Post 12.x versions of the keycloak operator reject setting a hostname in OpenShift.
-    # So we need to take matters into our own hand.
+    # External Access must be disabled. It is broken for OpenShift for KeyCloak 12+ and also causes issues
+    # with the nginx ingress controller. The controller sets the ingressClass to "nginx" and the keycloak
+    # operator removes this again. Resulting in constant updates and failures of the Ingress resource.
     enabled: false
-{{- else }}
-    enabled: true
-    host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
-{{- end }}
 
 {{- if ne .Values.keycloak.postgres.mode "operator" }}
   externalDatabase:
