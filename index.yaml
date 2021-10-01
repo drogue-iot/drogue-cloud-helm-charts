@@ -226,6 +226,29 @@ entries:
   drogue-cloud-core:
   - apiVersion: v2
     appVersion: 0.7.0
+    created: "2021-10-01T14:17:57.677693373Z"
+    dependencies:
+    - name: drogue-cloud-common
+      repository: file://../drogue-cloud-common
+      version: ^0.3.0
+    description: Drogue IoT Cloud core installation
+    digest: b7416ea53eb8d82219173df633535b3f4a5526f24fbd85739aa172a6d4796927
+    home: https://drogue.io
+    icon: https://blog.drogue.io/favicon.svg
+    keywords:
+    - IoT
+    kubeVersion: '>= 1.19.0'
+    maintainers:
+    - email: ctron@dentrassi.de
+      name: ctron
+      url: https://dentrassi.de
+    name: drogue-cloud-core
+    type: application
+    urls:
+    - https://github.com/drogue-iot/drogue-cloud-helm-charts/releases/download/drogue-cloud-core-0.3.7/drogue-cloud-core-0.3.7.tgz
+    version: 0.3.7
+  - apiVersion: v2
+    appVersion: 0.7.0
     created: "2021-10-01T08:42:49.762080728Z"
     dependencies:
     - name: drogue-cloud-common
@@ -1508,4 +1531,4 @@ entries:
     urls:
     - https://github.com/drogue-iot/drogue-cloud-helm-charts/releases/download/drogue-cloud-twin-0.1.0/drogue-cloud-twin-0.1.0.tgz
     version: 0.1.0
-generated: "2021-10-01T14:06:33.054801078Z"
+generated: "2021-10-01T14:17:57.678109779Z"
