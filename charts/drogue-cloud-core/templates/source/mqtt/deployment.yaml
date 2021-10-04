@@ -32,10 +32,6 @@ spec:
               value: "0.0.0.0:8080"
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
-            - name: CERT_BUNDLE_FILE
-              value: /etc/endpoint/tls.crt
-            - name: KEY_FILE
-              value: /etc/endpoint/tls.key
             - name: INSTANCE
               valueFrom:
                 configMapKeyRef:
@@ -65,8 +61,19 @@ spec:
             - name: DOWNSTREAM_KAFKA_SINK__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "DOWNSTREAM_KAFKA_SINK__PROPERTIES__" ) | nindent 12 }}
+
+            {{ if .Values.endpoints.mqtt.insecure }}
+            - name: DISABLE_TLS
+              value: "true"
+            {{ else }}
+            - name: CERT_BUNDLE_FILE # TLS
+              value: /etc/endpoint/tls.crt
+            - name: KEY_FILE # TLS
+              value: /etc/endpoint/tls.key
+            {{ end }}
+
           ports:
-            - containerPort: 8883
+            - containerPort: {{ if .Values.endpoints.mqtt.insecure }}1883{{- else -}}8883{{- end }}
               name: endpoint
               protocol: TCP
 
