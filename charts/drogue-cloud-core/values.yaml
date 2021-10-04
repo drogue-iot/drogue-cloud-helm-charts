@@ -39,6 +39,7 @@ endpoints:
       port: 443
 
   mqtt:
+    insecure: false
     ingress:
       port: 8883
 

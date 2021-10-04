@@ -20,7 +20,7 @@ spec:
   ports:
     - name: endpoint
       protocol: TCP
-      port: 443
+      port: {{ if .Values.endpoints.mqtt.insecure }}1883{{- else -}}8883{{- end }}
       targetPort: endpoint
       {{- if has .Values.global.cluster (list "minikube" "kind" ) }}
       nodePort: {{ .Values.endpoints.mqtt.ingress.port }}
