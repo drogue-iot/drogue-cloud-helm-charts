@@ -27,7 +27,7 @@ spec:
             - name: RUST_BACKTRACE
               value: "1"
             - name: BIND_ADDR_MQTT
-              value: "0.0.0.0:8883"
+              value: "0.0.0.0:{{ if .Values.endpoints.mqtt.insecure }}1883{{- else -}}8883{{- end }}"
             - name: BIND_ADDR_HTTP
               value: "0.0.0.0:8080"
             - name: HEALTH__BIND_ADDR
@@ -96,13 +96,21 @@ spec:
           resources:
             limits:
               memory: 64Mi
+
+          {{- if not .Values.endpoints.mqtt.insecure }}
           volumeMounts:
             - mountPath: /etc/endpoint
               name: endpoint-tls
+          {{- end }}
+
       volumes:
+
+        {{- if not .Values.endpoints.mqtt.insecure }}
         - name: endpoint-tls
           secret:
             secretName: mqtt-endpoint-tls
+        {{- end }}
+
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
