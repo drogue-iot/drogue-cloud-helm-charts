@@ -20,7 +20,7 @@ spec:
   ports:
     - name: service
       protocol: TCP
-      port: 8883
+      port: {{ if .Values.integrations.mqtt.insecure }}1883{{- else -}}8883{{- end }}
       targetPort: service
       {{- if has .Values.global.cluster (list "minikube" "kind" ) }}
       nodePort: {{ .Values.integrations.mqtt.ingress.port }}

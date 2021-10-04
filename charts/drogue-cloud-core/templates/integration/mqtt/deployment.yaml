@@ -25,13 +25,9 @@ spec:
             - name: RUST_LOG
               value: debug
             - name: BIND_ADDR_MQTT
-              value: "0.0.0.0:8883"
+              value: "0.0.0.0:{{ if .Values.endpoints.mqtt.insecure }}1883{{- else -}}8883{{- end }}"
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
-            - name: CERT_BUNDLE_FILE
-              value: /etc/endpoint/tls.crt
-            - name: KEY_FILE
-              value: /etc/endpoint/tls.key
             - name: INSTANCE
               valueFrom:
                 configMapKeyRef:
@@ -82,16 +78,25 @@ spec:
             - name: COMMAND_KAFKA_SINK__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . -}}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "COMMAND_KAFKA_SINK__PROPERTIES__" ) | nindent 12 }}
+
+            {{ if .Values.integrations.mqtt.insecure }}
+            - name: DISABLE_TLS
+              value: "true"
+            {{ else }}
+            - name: CERT_BUNDLE_FILE # TLS
+              value: /etc/endpoint/tls.crt
+            - name: KEY_FILE # TLS
+              value: /etc/endpoint/tls.key
+            {{ end }}
+
           ports:
-            - containerPort: 8883
+            - containerPort: {{ if .Values.integrations.mqtt.insecure }}1883{{- else -}}8883{{- end }}
               name: service
               protocol: TCP
           resources:
             limits:
               memory: 64Mi
-          volumeMounts:
-            - mountPath: /etc/endpoint
-              name: endpoint-tls
+
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1
@@ -108,10 +113,21 @@ spec:
             httpGet:
               port: 9090
               path: /liveness
+
+          {{- if not .Values.integrations.mqtt.insecure }}
+          volumeMounts:
+            - mountPath: /etc/endpoint
+              name: endpoint-tls
+          {{- end }}
+
       volumes:
+
+        {{- if not .Values.integrations.mqtt.insecure }}
         - name: endpoint-tls
           secret:
             secretName: mqtt-endpoint-tls
+        {{- end }}
+
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
