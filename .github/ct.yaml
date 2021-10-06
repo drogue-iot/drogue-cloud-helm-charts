@@ -1,6 +1,8 @@
 # See https://github.com/helm/chart-testing#configuration
 remote: origin
 target-branch: main
+helm-extra-args: --timeout 600s
 chart-dirs:
   - charts
-helm-extra-args: --timeout 600s
+chart-repos:
+  - drogue-iot=https://drogue-iot.github.io/drogue-cloud-helm-charts

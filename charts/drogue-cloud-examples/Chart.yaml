@@ -13,7 +13,7 @@ maintainers:
 
 type: application
 
-version: 0.3.1
+version: 0.3.2
 appVersion: 0.7.0
 
 kubeVersion: ">= 1.19.0"
@@ -21,4 +21,4 @@ kubeVersion: ">= 1.19.0"
 dependencies:
   - name: drogue-cloud-common
     version: ^0.3.0
-    repository: file://../drogue-cloud-common
+    repository: "@drogue-iot"
