@@ -1,6 +1,0 @@
-dependencies:
-- name: drogue-cloud-common
-  repository: https://drogue-iot.github.io/drogue-cloud-helm-charts/
-  version: 0.3.0
-digest: sha256:799c5d034be3d66cfc85b797b7d542e92754a2ed9e665c6693bc4a6ebff7143f
-generated: "2021-10-06T18:18:00.632694009+02:00"
