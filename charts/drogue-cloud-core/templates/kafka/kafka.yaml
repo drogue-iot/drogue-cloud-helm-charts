@@ -86,23 +86,26 @@ spec:
         {{- end }}
 
   entityOperator:
+
     topicOperator:
       watchedNamespace: {{ .Release.Namespace }}
       {{- with .Values.kafka.topicOperator.resources }}
       resources:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
+
     userOperator:
       watchedNamespace: {{ .Release.Namespace }}
       {{- with .Values.kafka.userOperator.resources }}
       resources:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
+
+    {{- with .Values.kafka.tlsSidecar.resources }}
     tlsSidecar:
-      {{- with .Values.kafka.tlsSidecar.resources }}
       resources:
         {{- . | toYaml | nindent 8 }}
-      {{- end }}
+    {{- end }}
 
 {{- end }}
 
