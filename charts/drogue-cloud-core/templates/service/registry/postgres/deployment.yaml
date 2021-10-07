@@ -59,8 +59,12 @@ spec:
               name: postgres
               protocol: TCP
           resources:
+            {{- with .Values.postgres.resources }}
+            {{ . | toYaml | nindent 12 }}
+            {{- else }}
             limits:
               memory: 512Mi
+            {{- end }}
           volumeMounts:
             - mountPath: /bitnami/postgresql
               name: storage
