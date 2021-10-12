@@ -6,7 +6,7 @@ metadata:
     app: grafana
     app.kubernetes.io/part-of: example-app
   annotations:
-    app.openshift.io/connects-to: timescaledb
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"StatefulSet","name":"timescaledb"}]'
 spec:
   replicas: 1
   selector:
