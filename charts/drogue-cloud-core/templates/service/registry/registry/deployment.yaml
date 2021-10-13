@@ -70,6 +70,16 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
+            - name: USER_AUTH__CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_ID
+            - name: USER_AUTH__CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_SECRET
             - name: INSTANCE
               valueFrom:
                 configMapKeyRef:
