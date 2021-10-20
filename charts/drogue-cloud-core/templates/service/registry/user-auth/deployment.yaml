@@ -59,12 +59,14 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: admin.password
-            - name: OAUTH__SERVICES__CLIENT_ID
+            - name: OAUTH__SSO_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+            - name: OAUTH__CLIENTS__SERVICES__CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_ID
-            - name: OAUTH__SERVICES__CLIENT_SECRET
+            - name: OAUTH__CLIENTS__SERVICES__CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-services
@@ -85,8 +87,6 @@ spec:
             - name: "KEYCLOAK__TLS_NOVERIFY"
               value: "true"
             {{- end }}
-            - name: SSO_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1

@@ -49,23 +49,25 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: admin.password
-            - name: OAUTH__DROGUE__CLIENT_ID
+            - name: OAUTH__SSO_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+            - name: OAUTH__CLIENTS__DROGUE__CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-drogue
                   key: CLIENT_ID
-            - name: OAUTH__DROGUE__CLIENT_SECRET
+            - name: OAUTH__CLIENTS__DROGUE__CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-drogue
                   key: CLIENT_SECRET
                   optional: true
-            - name: OAUTH__SERVICES__CLIENT_ID
+            - name: OAUTH__CLIENTS__SERVICES__CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_ID
-            - name: OAUTH__SERVICES__CLIENT_SECRET
+            - name: OAUTH__CLIENTS__SERVICES__CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-services
@@ -80,13 +82,13 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
+            - name: USER_AUTH__SSO_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
             - name: INSTANCE
               valueFrom:
                 configMapKeyRef:
                   name: configuration
                   key: instance
-            - name: SSO_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
             - name: KAFKA_SENDER__TOPIC
               value: registry
             - name: KAFKA_SENDER__QUEUE_TIMEOUT

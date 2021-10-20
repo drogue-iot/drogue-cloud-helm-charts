@@ -45,7 +45,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            - name: SSO_URL
+            - name: REGISTRY__SSO_URL
               value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
             - name: CONTROLLER__TOPIC_NAMESPACE
               valueFrom:

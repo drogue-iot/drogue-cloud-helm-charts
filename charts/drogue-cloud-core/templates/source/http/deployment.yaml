@@ -35,17 +35,17 @@ spec:
                 configMapKeyRef:
                   name: configuration
                   key: instance
-            - name: CLIENT_ID
+            - name: AUTH__CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_ID
-            - name: CLIENT_SECRET
+            - name: AUTH__CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            - name: SSO_URL
+            - name: AUTH__SSO_URL
               value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
             - name: COMMAND_SOURCE_KAFKA__TOPIC
               value: iot-commands

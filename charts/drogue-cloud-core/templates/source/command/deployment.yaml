@@ -32,23 +32,27 @@ spec:
                 configMapKeyRef:
                   name: configuration
                   key: instance
-            - name: OAUTH__DROGUE__CLIENT_ID
+            - name: SSO_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+            - name: OAUTH__SSO_URL
+              value: $(SSO_URL)
+            - name: OAUTH__CLIENTS__DROGUE__CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-drogue
                   key: CLIENT_ID
-            - name: OAUTH__DROGUE__CLIENT_SECRET
+            - name: OAUTH__CLIENTS__DROGUE__CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-drogue
                   key: CLIENT_SECRET
                   optional: true
-            - name: OAUTH__SERVICES__CLIENT_ID
+            - name: OAUTH__CLIENTS__SERVICES__CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_ID
-            - name: OAUTH__SERVICES__CLIENT_SECRET
+            - name: OAUTH__CLIENTS__SERVICES__CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-services
@@ -63,6 +67,8 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
+            - name: REGISTRY__SSO_URL
+              value: $(SSO_URL)
             - name: USER_AUTH__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -73,8 +79,8 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            - name: SSO_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+            - name: USER_AUTH__SSO_URL
+              value: $(SSO_URL)
             - name: COMMAND_KAFKA_SINK__TOPIC
               value: iot-commands
             - name: COMMAND_KAFKA_SINK__BOOTSTRAP_SERVERS

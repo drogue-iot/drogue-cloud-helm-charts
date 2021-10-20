@@ -33,12 +33,16 @@ spec:
                 configMapKeyRef:
                   name: configuration
                   key: instance
-            - name: OAUTH__DROGUE__CLIENT_ID
+            - name: SSO_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+            - name: OAUTH__SSO_URL
+              value: $(SSO_URL)
+            - name: OAUTH__CLIENTS__DROGUE__CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-drogue
                   key: CLIENT_ID
-            - name: OAUTH__DROGUE__CLIENT_SECRET
+            - name: OAUTH__CLIENTS__DROGUE__CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-drogue
@@ -58,6 +62,8 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
+            - name: USER_AUTH__SSO_URL
+              value: $(SSO_URL)
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -68,8 +74,9 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            - name: SSO_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+            - name: REGISTRY__SSO_URL
+              value: $(SSO_URL)
+
             - name: KAFKA__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . -}}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA__PROPERTIES__" ) | nindent 12 }}

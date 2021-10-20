@@ -34,6 +34,8 @@ spec:
             - name: KAFKA__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA__PROPERTIES__" ) | nindent 12 }}
+            - name: SSO_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
             - name: UI__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -44,22 +46,26 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-drogue
                   key: CLIENT_SECRET
-            - name: OAUTH__DROGUE__CLIENT_ID
+            - name: UI__SSO_URL
+              value: $(SSO_URL)
+            - name: OAUTH__SSO_URL
+              value: $(SSO_URL)
+            - name: OAUTH__CLIENTS__DROGUE__CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-drogue
                   key: CLIENT_ID
-            - name: OAUTH__DROGUE__CLIENT_SECRET
+            - name: OAUTH__CLIENTS__DROGUE__CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-drogue
                   key: CLIENT_SECRET
-            - name: OAUTH__SERVICES__CLIENT_ID
+            - name: OAUTH__CLIENTS__SERVICES__CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_ID
-            - name: OAUTH__SERVICES__CLIENT_SECRET
+            - name: OAUTH__CLIENTS__SERVICES__CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: keycloak-client-secret-services
@@ -78,6 +84,8 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
+            - name: USER_AUTH__SSO_URL
+              value: $(SSO_URL)
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -89,6 +97,8 @@ spec:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
                   optional: true
+            - name: REGISTRY__SSO_URL
+              value: $(SSO_URL)
             - name: KEYCLOAK__URL
               value: https://keycloak.$(NAMESPACE).svc.cluster.local.:8443
             - name: KEYCLOAK__ADMIN_USERNAME
@@ -107,10 +117,10 @@ spec:
             - name: "KEYCLOAK__TLS_NOVERIFY"
               value: "true"
             {{- end }}
-            - name: SSO_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
             - name: ENDPOINTS__API_URL
               value: {{ .Values.console.overrides.api.url | default ( include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) ) }}
+            - name: ENDPOINTS__SSO_URL
+              value: $(SSO_URL)
             - name: ENDPOINTS__CONSOLE_URL
               value: {{ .Values.console.overrides.console.url | default ( include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) ) }}
             - name: ENDPOINTS__REDIRECT_URL
