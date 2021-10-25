@@ -89,11 +89,31 @@ spec:
                 configMapKeyRef:
                   name: configuration
                   key: instance
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
             - name: KAFKA_SENDER__TOPIC
               value: registry
             - name: KAFKA_SENDER__QUEUE_TIMEOUT
               value: 15s
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SENDER__PROPERTIES__" ) | nindent 12 }}
+            - name: KEYCLOAK__URL
+              value: https://keycloak.$(NAMESPACE).svc.cluster.local.:8443
+            - name: KEYCLOAK__ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: ADMIN_USERNAME
+                  name: credential-sso
+            - name: KEYCLOAK__ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: ADMIN_PASSWORD
+                  name: credential-sso
+            {{ if ne .Values.global.cluster "openshift" }}
+            - name: "KEYCLOAK__TLS_NOVERIFY"
+              value: "true"
+            {{- end }}
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1
