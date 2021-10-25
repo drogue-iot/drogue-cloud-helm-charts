@@ -4,5 +4,3 @@ target-branch: main
 helm-extra-args: --timeout 600s
 chart-dirs:
   - charts
-chart-repos:
-  - drogue-iot=https://drogue-iot.github.io/drogue-cloud-helm-charts/
