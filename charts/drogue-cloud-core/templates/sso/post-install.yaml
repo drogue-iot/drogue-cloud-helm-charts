@@ -1,4 +1,4 @@
-{{- $ref := dict "root" . "name" "migrate-database" "component" "device-registry" -}}
+{{- $ref := dict "root" . "name" "post-install-keycloak" "component" "sso" -}}
 {{- if .Values.keycloak.postInstall.enabled -}}
 kind: Job
 apiVersion: batch/v1
