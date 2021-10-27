@@ -1,0 +1,14 @@
+{{- if not .Values.kafka.external.enabled -}}
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  annotations:
+    drogue.io/application-name: example-app
+  labels:
+    strimzi.io/cluster: drogue-iot
+  name: {{ include "drogue-cloud-common.kafka-event-topic" (dict "application" .Values.drogueApplication ) | quote }}
+spec:
+  partitions: 3
+  replicas: 1
+  topicName: {{ include "drogue-cloud-common.kafka-event-topic" (dict "application" .Values.drogueApplication ) | quote }}
+{{- end }}
