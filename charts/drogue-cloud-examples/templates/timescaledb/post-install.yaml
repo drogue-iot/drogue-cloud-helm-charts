@@ -1,0 +1,54 @@
+{{- $ref := dict "root" . "name" "post-install-timescaledb" "component" "database" -}}
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: post-install-timescaledb
+  labels:
+    {{ include "drogue-cloud-examples.labels" $ref | nindent 4 }}
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  backoffLimit: 1000
+  completions: 1
+  parallelism: 1
+
+  template:
+    metadata:
+      labels:
+        {{ include "drogue-cloud-examples.labels" $ref | nindent 8 }}
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: migrate
+          image: {{ .Values.timescale.postInstall.image }}
+          env:
+            - name:  PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: timescaledb-secret
+                  key: admin.username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: timescaledb-secret
+                  key: admin.password
+            - name:  PGDATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: timescaledb-config
+                  key: databaseName
+          command:
+            - psql
+            - -h
+            - timescaledb
+            - -c
+            - |
+              DO $$$$
+              BEGIN
+              CREATE USER {{ .Values.timescale.database.readUser }};
+              EXCEPTION WHEN duplicate_object THEN RAISE NOTICE '%, skipping', SQLERRM USING ERRCODE = SQLSTATE;
+              END
+              $$$$;
+              ALTER USER {{ .Values.timescale.database.readUser }} WITH PASSWORD '{{ .Values.timescale.database.readPassword }}';
+              GRANT SELECT ON ALL TABLES IN SCHEMA public TO {{ .Values.timescale.database.readUser }};

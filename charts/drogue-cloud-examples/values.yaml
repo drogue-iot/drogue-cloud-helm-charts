@@ -46,6 +46,10 @@ timescale:
     image: docker.io/timescale/timescaledb-postgis:latest-pg12
     adminUser: admin
     adminPassword: admin123456
+    readUser: reader
+    readPassword: reader1234
     name: example
+  postInstall:
+    image: docker.io/library/postgres:14
   pusher:
     image: ghcr.io/drogue-iot/postgresql-pusher:0.1.0
