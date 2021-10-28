@@ -12,7 +12,6 @@ spec:
     clientId: services
     clientAuthenticatorType: client-secret
     enabled: true
-    rootUrl: ""
     publicClient: false
     implicitFlowEnabled: false
     standardFlowEnabled: false
@@ -36,7 +35,6 @@ spec:
       - name: add-audience
         protocol: openid-connect
         protocolMapper: oidc-audience-mapper
-        consentRequired: false
         config:
           "included.client.audience": "services"
           "id.token.claim": "false"
