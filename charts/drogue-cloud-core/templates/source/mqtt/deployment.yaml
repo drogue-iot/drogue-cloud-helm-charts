@@ -55,12 +55,9 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-            - name: COMMAND_SOURCE_KAFKA__BOOTSTRAP_SERVERS
+            - name: KAFKA_CONFIG__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
-            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "COMMAND_SOURCE_KAFKA__PROPERTIES__" ) | nindent 12 }}
-            - name: DOWNSTREAM_KAFKA_SINK__BOOTSTRAP_SERVERS
-              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
-            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "DOWNSTREAM_KAFKA_SINK__PROPERTIES__" ) | nindent 12 }}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_CONFIG__PROPERTIES__" ) | nindent 12 }}
 
             {{ if .Values.endpoints.mqtt.insecure }}
             - name: DISABLE_TLS
