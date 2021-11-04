@@ -21,4 +21,4 @@ kubeVersion: ">= 1.19.0"
 dependencies:
   - name: drogue-cloud-common
     version: ^0.3.0
-    repository: "@drogue-iot"
+    repository: file://../drogue-cloud-common
