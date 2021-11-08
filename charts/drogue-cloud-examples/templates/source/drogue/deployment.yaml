@@ -1,0 +1,35 @@
+{{- if .Values.source.drogue.enabled -}}
+{{- $ref := dict "root" . "name" "drogue-event-source" "component" "source" -}}
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: drogue-event-source
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drogue-event-source
+  template:
+    metadata:
+      labels:
+        app: drogue-event-source
+    spec:
+      containers:
+        - name: drogue-event-source
+          image: {{ .Values.source.drogue.image }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: RUST_LOG
+              value: debug
+            - name: RUST_BACKTRACE
+              value: "1"
+
+            - name: K_SINK
+              value: http://timescaledb-pusher:8080
+            - name: DROGUE_ENDPOINT
+              value: {{ .Values.source.drogue.endpoint }}
+            - name: DROGUE_TOKEN
+              value: {{ .Values.source.drogue.token }}
+            - name: DROGUE_APP
+              value: {{ .Values.drogueApplication.name }}
+{{- end -}}

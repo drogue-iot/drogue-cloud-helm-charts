@@ -1,0 +1,72 @@
+{{- if and (.Values.pusher.enabled) (not .Values.pusher.knative) -}}
+{{- $ref := dict "root" . "name" "timescaledb-pusher" "component" "pusher" -}}
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: timescaledb-pusher
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: timescaledb-pusher
+  template:
+    metadata:
+      labels:
+        app: timescaledb-pusher
+    spec:
+      containers:
+        - name: timescaledb-pusher
+          image: {{ .Values.pusher.image }}
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 8080
+            name: web
+            protocol: TCP
+          env:
+            - name: RUST_LOG
+              value: debug
+            - name: RUST_BACKTRACE
+              value: "1"
+
+            - name: ACTIX__BIND_ADDR
+              value: 0.0.0.0:8080
+
+            - name: POSTGRESQL__CONNECTION__HOST
+              value: timescaledb
+            - name: POSTGRESQL__CONNECTION__DBNAME
+              value: {{ .Values.timescale.database.name }}
+            - name: POSTGRESQL__CONNECTION__USER
+              value: {{ .Values.timescale.database.adminUser }}
+            - name: POSTGRESQL__CONNECTION__PASSWORD
+              value: {{ .Values.timescale.database.adminPassword }}
+
+            - name: POSTGRESQL__TIME_COLUMN
+              value: time
+
+            - name: POSTGRESQL__TABLE
+              value: temperatures
+
+            - name: FIELD_TEMPERATURE
+              value: $.temp
+            - name: TYPE_FIELD_TEMPERATURE
+              value: float
+            - name: FIELD_BATTERY
+              value: $.batt
+            - name: TYPE_FIELD_BATTERY
+              value: float
+            - name: FIELD_HUMIDITY
+              value: $.hum
+            - name: TYPE_FIELD_HUMIDITY
+              value: float
+            - name: TAG_DEVICE_ID
+              value: $.device
+
+            - name: FIELD_LAT
+              value: $.geoloc.lat
+            - name: TYPE_FIELD_LAT
+              value: float
+            - name: FIELD_LON
+              value: $.geoloc.lon
+            - name: TYPE_FIELD_LON
+              value: float
+{{- end -}}

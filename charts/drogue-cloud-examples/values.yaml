@@ -3,7 +3,7 @@ global:
   domain: .my-cluster.dns
 
 drogueApplication:
-  name: example-app
+  name: drogue-public-temperature
   # eventTopic can provide an explicit event topic
   # eventTopic: <topic name>
 
@@ -51,5 +51,19 @@ timescale:
     name: example
   postInstall:
     image: docker.io/library/postgres:14
-  pusher:
-    image: ghcr.io/drogue-iot/postgresql-pusher:0.1.0
+
+pusher:
+  enabled: true
+  knative: false
+  image: ghcr.io/drogue-iot/postgresql-pusher:0.1.0
+
+source:
+  kafka:
+    enabled: false
+  drogue:
+    enabled: true
+    image: ghcr.io/drogue-iot/drogue-event-source:0.1.0
+    endpoint: wss://ws-integration.sandbox.drogue.cloud
+    # Grab your token with `drg whoami -t`
+    # token: XXX
+    sink: http://timescaledb-pusher:8080
