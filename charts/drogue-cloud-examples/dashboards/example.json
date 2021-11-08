@@ -8,6 +8,12 @@
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
@@ -15,7 +21,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 2,
-  "iteration": 1628867165732,
+  "iteration": 1635961302363,
   "links": [],
   "panels": [
     {
@@ -106,7 +112,7 @@
           "metricColumn": "device_id",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  avg(temperature) AS \"temperature\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id = ANY (ARRAY[$device_id]::varchar[])\nGROUP BY 1,2\nORDER BY 1,2",
+          "rawSql": "SELECT $__timeGroupAlias(\"time\",$__interval), device_id as metric, avg(avg(temperature)) OVER w as temp\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id = ANY (ARRAY[$device_id]::varchar[])\nGROUP BY time, device_id\nWINDOW w as (PARTITION BY device_id ORDER BY time RANGE '5 minute'::INTERVAL PRECEDING)\nORDER BY time, device_id",
           "refId": "A",
           "select": [
             [
@@ -218,7 +224,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.0.6",
+      "pluginVersion": "8.1.1",
       "targets": [
         {
           "format": "time_series",
@@ -362,7 +368,7 @@
           "metricColumn": "device_id",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  avg(humidity) AS \"humidity\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id = ANY (ARRAY[$device_id]::varchar[])\nGROUP BY 1,2\nORDER BY 1,2",
+          "rawSql": "SELECT $__timeGroupAlias(\"time\",$__interval), device_id as metric, avg(avg(humidity)) OVER w as hum\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id = ANY (ARRAY[$device_id]::varchar[])\nGROUP BY time, device_id\nWINDOW w as (PARTITION BY device_id ORDER BY time RANGE '5 minute'::INTERVAL PRECEDING)\nORDER BY time, device_id",
           "refId": "A",
           "select": [
             [
@@ -455,7 +461,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.0.6",
+      "pluginVersion": "8.1.1",
       "targets": [
         {
           "format": "time_series",
@@ -599,7 +605,7 @@
           "metricColumn": "device_id",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  avg(battery) AS \"battery\"\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id = ANY (ARRAY[$device_id]::varchar[])\nGROUP BY 1,2\nORDER BY 1,2",
+          "rawSql": "SELECT $__timeGroupAlias(\"time\",$__interval), device_id as metric, avg(avg(battery)) OVER w as batt\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id = ANY (ARRAY[$device_id]::varchar[])\nGROUP BY time, device_id\nWINDOW w as (PARTITION BY device_id ORDER BY time RANGE '60 minute'::INTERVAL PRECEDING)\nORDER BY time, device_id",
           "refId": "A",
           "select": [
             [
@@ -723,7 +729,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "8.0.6",
+      "pluginVersion": "8.1.1",
       "targets": [
         {
           "format": "table",
