@@ -1,0 +1,15 @@
+{{- if and (.Values.pusher.enabled) (not .Values.pusher.knative) -}}
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: timescaledb-pusher
+  name: timescaledb-pusher
+spec:
+  ports:
+    - name: web
+      port: 8080
+      protocol: TCP
+  selector:
+    app: timescaledb-pusher
+{{- end -}}

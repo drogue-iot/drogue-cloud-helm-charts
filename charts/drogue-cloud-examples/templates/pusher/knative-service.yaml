@@ -1,3 +1,4 @@
+{{- if and (.Values.pusher.enabled) (.Values.pusher.knative) -}}
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
@@ -11,7 +12,7 @@ spec:
   template:
     spec:
       containers:
-        - image: {{ .Values.timescale.pusher.image }}
+        - image: {{ .Values.pusher.image }}
           env:
             - name: RUST_LOG
               value: debug
@@ -60,3 +61,4 @@ spec:
           resources:
             limits:
               memory: 64Mi
+{{- end -}}
