@@ -7,4 +7,11 @@ metadata:
 spec:
   mongoDb:
     host: mongodb
-  enableDummyAuth: true
+    username:
+      value: {{ index .Values.mongodb.auth.usernames 0 | quote }}
+    password:
+      value: {{ index .Values.mongodb.auth.passwords 0 | quote }}
+    database:
+      value: {{ index .Values.mongodb.auth.databases 0 | quote }}
+  ingress:
+    host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "ditto" "ingress" .Values.ditto.ingress ) }}

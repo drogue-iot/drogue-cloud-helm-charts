@@ -1,8 +1,9 @@
-apiVersion: sources.knative.dev/v1alpha1
+apiVersion: sources.knative.dev/{{ .Values.knative.kafkaSource.apiVersion }}
 kind: KafkaSource
 metadata:
-  name: digital-twin-kafka-source
+  name: digital-twin
   labels:
+    app.kubernetes.io/name: digital-twin
     app.kubernetes.io/part-of: digital-twin
 spec:
   consumerGroup: digital-twin
@@ -11,12 +12,9 @@ spec:
     - {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
 
   topics:
-      iot-events
+    - {{ include "drogue-cloud-common.kafka-event-topic" (dict "application" .Values.drogueApplication ) }}
 
-  {{- include "drogue-cloud-common.knative-kafka-net" (dict "root" . "secretName" "external-kafka-secret" ) }}
+  {{- include "drogue-cloud-common.knative-kafka-net" (dict "root" . "secretName" "example-kafka-secret" "userName" "example-user" ) }}
 
   sink:
-    ref:
-      apiVersion: flows.knative.dev/v1
-      kind: Sequence
-      name: digital-twin
+    uri: http://ditto:ditto@ditto-nginx.drogue-iot.svc.cluster.local:8080/api/2/cloudevents

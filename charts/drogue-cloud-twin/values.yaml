@@ -2,8 +2,30 @@ global:
   cluster: kubernetes
   domain: .my-cluster.dns
 
+drogueApplication:
+  name: example-app
+  # eventTopic can provide an explicit event topic
+  # eventTopic: <topic name>
+
+mongodb:
+  fullnameOverride: mongodb
+  enabled: true
+  auth:
+    enabled: true
+    rootPassword: admin123456
+    usernames:
+      - ditto
+    passwords:
+      - ditto1234
+    databases:
+      - ditto
+
 ditto:
   ingress: {}
+
+knative:
+  kafkaSource:
+    apiVersion: v1beta1
 
 kafka:
   external:
