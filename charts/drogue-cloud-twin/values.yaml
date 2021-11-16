@@ -20,6 +20,11 @@ mongodb:
     databases:
       - ditto
 
+keycloak:
+  # realm to use
+  # realm: drogue
+  ingress: {}
+
 ditto:
   ingress: {}
 

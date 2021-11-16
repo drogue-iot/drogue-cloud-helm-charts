@@ -22,6 +22,88 @@
           "description": "The base DNS domain"
         }
       }
+    },
+    "keycloak": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "realm": {
+          "type": "string"
+        },
+        "client": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/value-or-reference"
+            },
+            "secret": {
+              "$ref": "#/$defs/value-or-reference"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "value-or-reference": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "secret"
+          ],
+          "properties": {
+            "secret": {
+              "$ref": "#/$defs/reference"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "configMap"
+          ],
+          "properties": {
+            "configMap": {
+              "$ref": "#/$defs/reference"
+            }
+          }
+        }
+      ]
+    },
+    "reference": {
+      "type": "object",
+      "required": [
+        "key"
+      ],
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "optional": {
+          "type": "boolean"
+        }
+      }
     }
   }
 }

@@ -1,0 +1,34 @@
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakClient
+metadata:
+  name: client-ditto
+  labels:
+    app.kubernetes.io/name: client-ditto
+    app.kubernetes.io/part-of: digital-twin
+spec:
+  realmSelector:
+    matchLabels:
+      {{- include "drogue-cloud-common.selectorLabels" (dict "root" . "name" "drogue" "component" "sso") | nindent 6 }}
+  client:
+    clientId: ditto
+    clientAuthenticatorType: client-secret
+    enabled: true
+    rootUrl: ""
+    publicClient: false
+    implicitFlowEnabled: true
+    standardFlowEnabled: true
+    serviceAccountsEnabled: false
+    fullScopeAllowed: false
+    redirectUris:
+      - {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "ditto" "ingress" .Values.ditto.ingress ) }}/oauth2/callback
+      - {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "ditto" "ingress" .Values.ditto.ingress ) }}/oauth2-redirect.html
+    defaultClientScopes:
+      - "email"
+      - "profile"
+      - "roles"
+      - "web-origins"
+    optionalClientScopes:
+      - "address"
+      - "microprofile-jwt"
+      - "offline_access"
+      - "phone"

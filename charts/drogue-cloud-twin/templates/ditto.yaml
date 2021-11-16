@@ -5,6 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: ditto
 spec:
+
   mongoDb:
     host: mongodb
     username:
@@ -13,5 +14,29 @@ spec:
       value: {{ index .Values.mongodb.auth.passwords 0 | quote }}
     database:
       value: {{ index .Values.mongodb.auth.databases 0 | quote }}
+
   ingress:
     host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "ditto" "ingress" .Values.ditto.ingress ) }}
+
+  keycloak:
+    url: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.keycloak.ingress ) }}
+    redirectUrl: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "ditto" "ingress" .Values.ditto.ingress ) }}/oauth2/callback
+    realm: {{ .Values.keycloak.realm | default "drogue" }}
+    label: "Drogue Cloud"
+    description: "Log in using Drogue Cloud"
+
+    {{- with .Values.keycloak.client }}
+    clientId:
+      {{ .id | nindent 6 }}
+    clientSecret:
+      {{ .secret | nindent 6 }}
+    {{- else }}
+    clientId:
+      secret:
+        name: keycloak-client-secret-ditto
+        key: CLIENT_ID
+    clientSecret:
+      secret:
+        name: keycloak-client-secret-ditto
+        key: CLIENT_SECRET
+    {{- end }}
