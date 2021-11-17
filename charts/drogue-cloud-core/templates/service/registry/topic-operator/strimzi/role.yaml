@@ -1,3 +1,4 @@
+{{- if eq .Values.services.registry.topicOperator.type "strimzi" }}
 {{- $ref := dict "root" . "name" "topic-operator" "component" "device-registry" -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -15,3 +16,4 @@ rules:
   - apiGroups: [ "" ]
     resources: [ "secrets" ]
     verbs: [ "get", "watch", "list", "create", "update", "delete", "patch" ]
+{{- end }}

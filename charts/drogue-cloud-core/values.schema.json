@@ -132,6 +132,61 @@
         }
       }
     },
+    "services": {
+      "type": "object",
+      "properties": {
+        "registry": {
+          "type": "object",
+          "properties": {
+            "topicOperator": {
+              "type": "object",
+              "oneOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "type"
+                  ],
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "strimzi"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "numberOfPartitions",
+                    "numberOfReplicas"
+                  ],
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "admin"
+                    },
+                    "numberOfPartitions": {
+                      "type": "number",
+                      "minimum": 1
+                    },
+                    "numberOfReplicas": {
+                      "type": "number",
+                      "minimum": 1
+                    },
+                    "properties": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
     "defaults": {
       "type": "object",
       "properties": {

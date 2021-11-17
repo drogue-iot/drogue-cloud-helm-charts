@@ -1,0 +1,104 @@
+{{- if eq .Values.services.registry.topicOperator.type "strimzi" }}
+{{- $ref := dict "root" . "name" "topic-operator" "component" "device-registry" -}}
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: topic-operator
+  annotations:
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"device-management-service"}]'
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
+    spec:
+      serviceAccountName: topic-operator
+      initContainers:
+        {{- include "drogue-cloud-core.init-container.wait-for-client-secret" ( dict "root" . "volume" "client-secret-services")  | nindent 8 }}
+      containers:
+        - name: service
+          image: {{ include "drogue-cloud-core.image" (dict "root" . "name" "topic-strimzi-operator" ) | quote }}
+          imagePullPolicy: {{ include "drogue-cloud-core.image-pull-policy" . }}
+          env:
+            - name: RUST_LOG
+              value: debug
+            - name: RUST_BACKTRACE
+              value: "1"
+            - name: HEALTH__BIND_ADDR
+              value: "0.0.0.0:9090"
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: REGISTRY__CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_ID
+            - name: REGISTRY__CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_SECRET
+            - name: REGISTRY__SSO_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+            - name: CONTROLLER__TOPIC_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: CONTROLLER__CLUSTER_NAME
+              value: drogue-iot
+            - name: WORK_QUEUE__INSTANCE
+              value: topic-operator
+            - name: WORK_QUEUE__PG__HOST
+              value: postgres
+            - name: WORK_QUEUE__PG__DBNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: databaseName
+            - name: WORK_QUEUE__PG__USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: admin.username
+            - name: WORK_QUEUE__PG__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: admin.password
+            - name: KAFKA_SOURCE__TOPIC
+              value: registry
+            - name: KAFKA_SOURCE__CONSUMER_GROUP
+              value: topic-operator
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SOURCE__PROPERTIES__" ) | nindent 12 }}
+          readinessProbe:
+            initialDelaySeconds: 2
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 3
+            httpGet:
+              port: 9090
+              path: /readiness
+          livenessProbe:
+            initialDelaySeconds: 2
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 3
+            httpGet:
+              port: 9090
+              path: /liveness
+          resources:
+            limits:
+              memory: 128Mi
+      volumes:
+        - name: client-secret-services
+          secret:
+            secretName: keycloak-client-secret-services
+{{- end }}{{/* if type == "strimzi" */}}

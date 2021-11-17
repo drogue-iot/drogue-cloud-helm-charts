@@ -69,6 +69,12 @@ services:
     ingress: {}
   sso:
     ingress: {}
+  registry:
+    topicOperator:
+      type: admin
+      numberOfPartitions: 1
+      numberOfReplicas: 1
+      properties: {}
 
 defaults:
   images:

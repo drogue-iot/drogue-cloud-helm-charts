@@ -12,6 +12,21 @@ Kafka bootstrap server
 {{- end }}
 
 {{/*
+Encodes Kafka properties from "foo.bar.baz" to "FOO_BAR_BAZ"
+Arguments (dict):
+  * properties(dict) - the properties to encode
+  * prefix(string) - the value to prefix all env-var names with
+*/}}
+{{- define "drogue-cloud-common.translate-kafka-properties" -}}
+{{- if .properties -}}
+{{- range $key, $value := .properties }}
+- name: {{ .prefix }}{{ $key | upper | replace "." "_" }}
+  value: {{ $value | quote }}
+{{- end }}
+{{- end -}}
+{{- end }}
+
+{{/*
 Kafka connection properties
 */}}
 {{- define "drogue-cloud-common.kafka-properties" -}}
@@ -23,12 +38,7 @@ Kafka connection properties
   value: {{ if .root.Values.kafka.external.sasl.enabled -}}sasl_ssl{{- else -}}ssl{{- end }}
 {{- end }}
 
-{{- if .root.Values.kafka.external.properties -}}
-{{- range $key, $value := .root.Values.kafka.external.properties }}
-- name: {{ .prefix }}{{ $key | upper | replace "." "_" }}
-  value: {{ $value | quote }}
-{{- end }}
-{{- end -}}
+{{- include "drogue-cloud-common.translate-kafka-properties" ( dict "prefix" .prefix "properties" .root.Values.kafka.external.properties ) -}}
 
 {{- if .root.Values.kafka.external.sasl.enabled }}
 - name: {{ .prefix }}SASL_MECHANISMS
