@@ -4,7 +4,7 @@ Kafka bootstrap server
 {{- define "drogue-cloud-common.kafka-bootstrap-server" -}}
 
     {{- if .Values.kafka.external.enabled -}}
-        {{- .Values.kafka.external.bootstrapServers -}}
+        {{- .Values.kafka.external.bootstrapServer | quote -}}
     {{- else -}}
         drogue-iot-kafka-bootstrap.{{ .Release.Namespace }}.svc.cluster.local.:9092
     {{- end }}

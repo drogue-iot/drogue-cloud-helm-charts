@@ -1,4 +1,4 @@
-{{- if eq .Values.services.registry.topicOperator.type "strimzi" }}
+{{- if eq (include "drogue-cloud-core.topic-operator.type" .) "strimzi" }}
 {{- $ref := dict "root" . "name" "topic-operator" "component" "device-registry" -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role

@@ -1,4 +1,4 @@
-{{- if eq .Values.services.registry.topicOperator.type "strimzi" }}
+{{- if eq (include "drogue-cloud-core.topic-operator.type" .) "strimzi" }}
 {{- $ref := dict "root" . "name" "topic-operator" "component" "device-registry" -}}
 kind: Deployment
 apiVersion: apps/v1
@@ -77,6 +77,8 @@ spec:
               value: registry
             - name: KAFKA_SOURCE__CONSUMER_GROUP
               value: topic-operator
+            - name: KAFKA_SOURCE__BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SOURCE__PROPERTIES__" ) | nindent 12 }}
           readinessProbe:
             initialDelaySeconds: 2

@@ -54,6 +54,8 @@ spec:
               value: registry
             - name: KAFKA_SOURCE__CONSUMER_GROUP
               value: outbox-controller
+            - name: KAFKA_SOURCE__BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SOURCE__PROPERTIES__" ) | nindent 12 }}
           readinessProbe:
             initialDelaySeconds: 2

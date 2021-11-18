@@ -70,11 +70,7 @@ services:
   sso:
     ingress: {}
   registry:
-    topicOperator:
-      type: admin
-      numberOfPartitions: 1
-      numberOfReplicas: 1
-      properties: {}
+    topicOperator: {}
 
 defaults:
   images:
@@ -146,12 +142,12 @@ kafka:
     enabled: false
     # bootstrapServer lists the boostrap server
     # bootstrapServer: my-server:9002
-    # tls defined if TLS should be used or not
+    # tls defines if TLS should be used or not
     tls:
       enabled: true
     sasl:
       enabled: false
-      mechanism: plain
+      mechanism: SCRAM-SHA-512 # or PLAIN
       # username: my-user
       # password: my-password
 
