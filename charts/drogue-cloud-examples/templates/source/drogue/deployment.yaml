@@ -28,8 +28,10 @@ spec:
               value: http://timescaledb-pusher:8080
             - name: DROGUE_ENDPOINT
               value: {{ .Values.source.drogue.endpoint }}
-            - name: DROGUE_TOKEN
-              value: {{ .Values.source.drogue.token }}
             - name: DROGUE_APP
               value: {{ .Values.drogueApplication.name }}
+            - name: DROGUE_USER
+              value: {{ .Values.source.drogue.user }}
+            - name: DROGUE_TOKEN
+              value: {{ .Values.source.drogue.token }}
 {{- end -}}

@@ -62,8 +62,9 @@ source:
     enabled: false
   drogue:
     enabled: true
-    image: ghcr.io/drogue-iot/drogue-event-source:0.1.0
+    image: ghcr.io/drogue-iot/drogue-event-source:0.1.1
     endpoint: wss://ws-integration.sandbox.drogue.cloud
-    # Grab your token with `drg whoami -t`
+    # user: XXX
+    # Create your token with `drg admin tokens create`
     # token: XXX
     sink: http://timescaledb-pusher:8080
