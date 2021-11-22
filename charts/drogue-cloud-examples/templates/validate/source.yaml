@@ -1,0 +1,3 @@
+{{- if and .Values.source.kafka.enabled .Values.source.drogue.enabled }}
+{{- fail "Cannot enable more than one source (kafka, drogue)" }}
+{{- end }}

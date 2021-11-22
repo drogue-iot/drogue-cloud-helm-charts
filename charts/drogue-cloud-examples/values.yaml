@@ -7,6 +7,18 @@ drogueApplication:
   # eventTopic can provide an explicit event topic
   # eventTopic: <topic name>
 
+# autoCreate controls the automatic creation of an application and device after the installation of the example
+#
+# Note that this will only work if the example is deployed next to the Drogue Core installation, as it needs access
+# to the OAuth2 secret for the "services" client. Also will the process only to create the application and device.
+# Disabling the process later, will neither delete the device nor the application.
+autoCreate:
+  # enabled it used to control the auto-creation process.
+  enabled: false
+  device:
+    name: device1
+    password: device1234
+
 knative:
   kafkaSource:
     apiVersion: v1beta1
@@ -43,7 +55,7 @@ grafana:
 
 timescale:
   database:
-    image: docker.io/timescale/timescaledb-postgis:latest-pg12
+    image: docker.io/timescale/timescaledb-ha:pg13-ts2.5-latest
     adminUser: admin
     adminPassword: admin123456
     readUser: reader

@@ -1,0 +1,75 @@
+{{- if .Values.autoCreate.enabled }}
+{{ $ref := (dict "root" . "partOf" "deployment" "component" "post-install" "name" "post-install-auto-create" ) }}
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: post-install-auto-create
+  labels:
+    {{- include "drogue-cloud-common.selectorLabels" $ref  | nindent 4 }}
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  backoffLimit: 1000
+  completions: 1
+  parallelism: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      labels:
+        {{- include "drogue-cloud-common.selectorLabels" $ref  | nindent 8 }}
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: "post-install"
+          image: "ghcr.io/ctron/kubectl:1.21"
+          env:
+            - name: DROGUE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_ID
+            - name: DROGUE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_SECRET
+            - name: DROGUE_CONSOLE_BACKEND
+              value: http://console-backend:8080
+            - name: DROGUE_REGISTRY_URL
+              value: http://device-management-service:80
+          command:
+            - /bin/bash
+            - -exc
+            - |
+              # get SSO endpoint
+              ISSUER_URL="$(curl -svL ${DROGUE_CONSOLE_BACKEND}/.well-known/drogue-endpoints | jq -r .issuer_url )"
+              echo
+
+              # get bearer token for client
+              DROGUE_TOKEN="$(curl -sL -k -o - -X POST -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=$DROGUE_CLIENT_ID" -d "client_secret=$DROGUE_CLIENT_SECRET" -d "grant_type=client_credentials" ${ISSUER_URL}/protocol/openid-connect/token | jq -r .access_token)"
+              echo
+
+              # test access
+              curl -svL -f -X GET -H "Authorization: Bearer $DROGUE_TOKEN" -H "Content-Type: application/json" ${DROGUE_REGISTRY_URL}/api/registry/v1alpha1/apps
+              echo
+
+              # create Drogue Cloud application
+              curl -svL -f -X POST -H "Authorization: Bearer $DROGUE_TOKEN" -H "Content-Type: application/json" --data-binary @/etc/post-install/drogue-cloud-application.json ${DROGUE_REGISTRY_URL}/api/registry/v1alpha1/apps || true
+              echo
+
+              # create Drogue Cloud device
+              curl -svL -f -X POST -H "Authorization: Bearer $DROGUE_TOKEN" -H "Content-Type: application/json" --data-binary @/etc/post-install/drogue-cloud-device.json ${DROGUE_REGISTRY_URL}/api/registry/v1alpha1/apps/{{ .Values.drogueApplication.name | urlquery }}/devices || true
+              echo
+
+          volumeMounts:
+            - name: data
+              mountPath: "/etc/post-install"
+              readOnly: true
+
+      volumes:
+        - name: data
+          secret:
+            secretName: post-install-auto-create
+
+{{- end }}
