@@ -147,7 +147,7 @@ kafka:
       enabled: true
     sasl:
       enabled: false
-      mechanism: SCRAM-SHA-512 # or PLAIN
+      mechanism: SCRAM-SHA-512  # or PLAIN
       # username: my-user
       # password: my-password
 
