@@ -79,4 +79,4 @@ source:
     # user: XXX
     # Create your token with `drg admin tokens create`
     # token: XXX
-    sink: http://timescaledb-pusher:8080
+    sink: http://timescaledb-pusher:80
