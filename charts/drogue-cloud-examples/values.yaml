@@ -17,7 +17,7 @@ autoCreate:
   enabled: false
   device:
     name: device1
-    password: device1234
+    password: foobar
 
 knative:
   kafkaSource:
