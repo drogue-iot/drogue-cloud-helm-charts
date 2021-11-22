@@ -49,6 +49,8 @@ spec:
               value: registry
             - name: KAFKA_SENDER__QUEUE_TIMEOUT
               value: 15s
+            - name: KAFKA_SENDER__BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SENDER__PROPERTIES__" ) | nindent 12 }}
             - name: KAFKA_SOURCE__TOPIC
               value: registry
