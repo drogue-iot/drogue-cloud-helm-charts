@@ -3,7 +3,7 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
   annotations:
-    drogue.io/application-name: {{ .Values.drogueApplication }}
+    drogue.io/application-name: {{ .Values.drogueApplication.name }}
   labels:
     strimzi.io/cluster: drogue-iot
   name: {{ include "drogue-cloud-common.kafka-event-topic" (dict "application" .Values.drogueApplication ) | quote }}
