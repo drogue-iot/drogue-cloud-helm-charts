@@ -41,7 +41,7 @@ spec:
                 name: console-backend
                 port:
                   name: endpoint
-          - path: /api/keys/
+          - path: /api/tokens/
             pathType: Prefix
             backend:
               service:
