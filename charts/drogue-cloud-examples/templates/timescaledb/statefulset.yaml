@@ -53,8 +53,12 @@ spec:
               subPath: pgdata
             - mountPath: /docker-entrypoint-initdb.d
               name: initdb
+            - mountPath: /var/run/postgresql
+              name: run-postgres
       volumes:
         - name: initdb
+          emptyDir: {}
+        - name: run-postgres
           emptyDir: {}
         - name: initdb-config
           configMap:
