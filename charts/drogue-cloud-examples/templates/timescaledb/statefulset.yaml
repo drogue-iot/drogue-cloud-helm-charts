@@ -17,8 +17,8 @@ spec:
         app: timescaledb
     spec:
       initContainers:
-        # we need this to gather the existing init script from timescale db and our
-        # into a complete set up init scripts
+        # we need this to gather the existing init script from timescale db and ours
+        # into a complete set up of init scripts
         - name: gather-init-scripts
           image: {{ .Values.timescale.database.image }}
           imagePullPolicy: IfNotPresent
