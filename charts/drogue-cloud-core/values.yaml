@@ -6,10 +6,24 @@ global:
   # instance is the ID of the installation
   instance: drogue
 
-experimental:
-  # dualStack enables some workarounds for IPv4/IPv6 dual stack support. Enabling this flag shouldn't
-  # interfere with a IPv4-only cluster.
-  dualStack: false
+
+defaults:
+  images:
+    repository: ghcr.io/drogue-iot
+    # pullPolicy Sets the pull policy explicitly. Defaults to Always when using the 'latest'
+    #   tag and to IfNotPresent otherwise.
+    # pullPolicy: IfNotPresent
+    # tag The container tag to apply. Defaults to the chart's application version
+    # tag: latest
+  ingress:
+    # className The ingress class name to use. Defaults to none, to let the cluster decide.
+    # className: nginx
+    annotations: {}
+  logging:
+    debug: false
+    rust:
+      # log: info
+      # backtrace: true
 
 console:
   # allow overriding certain aspects of the console
@@ -30,6 +44,7 @@ console:
       # url: wss://foo-bar
     kafka: {}
       # servers: bootstrap:1234
+
 
 endpoints:
 
@@ -71,19 +86,11 @@ services:
     ingress: {}
   registry:
     topicOperator: {}
-
-defaults:
-  images:
-    repository: ghcr.io/drogue-iot
-    # pullPolicy Sets the pull policy explicitly. Defaults to Always when using the 'latest'
-    #   tag and to IfNotPresent otherwise.
-    # pullPolicy: IfNotPresent
-    # tag The container tag to apply. Defaults to the chart's application version
-    # tag: latest
-  ingress:
-    # className The ingress class name to use. Defaults to none, to let the cluster decide.
-    # className: nginx
-    annotations: {}
+    outbox: {}
+    ttnOperator: {}
+  auth: {}
+  userAuth: {}
+  command: {}
 
 helper:
   image: registry.access.redhat.com/ubi8-minimal:latest
@@ -171,3 +178,8 @@ kafka:
   topicOperator: {}
   userOperator: {}
   tlsSidecar: {}
+
+experimental:
+  # dualStack enables some workarounds for IPv4/IPv6 dual stack support. Enabling this flag shouldn't
+  # interfere with a IPv4-only cluster.
+  dualStack: false

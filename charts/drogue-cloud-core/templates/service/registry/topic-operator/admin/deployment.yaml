@@ -25,6 +25,7 @@ spec:
           image: {{ include "drogue-cloud-core.image" (dict "root" . "name" "topic-admin-operator" ) | quote }}
           imagePullPolicy: {{ include "drogue-cloud-core.image-pull-policy" . }}
           env:
+            {{ include "drogue-cloud-core.rust.logging" ( dict "root" . "app" .Values.services.registry.topicOperator)  | nindent 12 }}
             - name: RUST_LOG
               value: debug
             - name: RUST_BACKTRACE

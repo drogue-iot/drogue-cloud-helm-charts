@@ -22,8 +22,7 @@ spec:
           image: {{ include "drogue-cloud-core.image" $ref | quote }}
           imagePullPolicy: {{ include "drogue-cloud-core.image-pull-policy" . }}
           env:
-            - name: RUST_LOG
-              value: debug
+            {{- include "drogue-cloud-core.rust.logging" ( dict "root" . "app" .Values.integrations.mqtt ) | nindent 12 }}
             - name: BIND_ADDR_MQTT
               value: "0.0.0.0:{{ if .Values.endpoints.mqtt.insecure }}1883{{- else -}}8883{{- end }}"
             - name: HEALTH__BIND_ADDR

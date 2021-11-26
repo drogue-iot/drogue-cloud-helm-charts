@@ -22,10 +22,7 @@ spec:
           image: {{ include "drogue-cloud-core.image" $ref | quote }}
           imagePullPolicy: {{ include "drogue-cloud-core.image-pull-policy" . }}
           env:
-            - name: RUST_LOG
-              value: debug
-            - name: RUST_BACKTRACE
-              value: "1"
+            {{- include "drogue-cloud-core.rust.logging" ( dict "root" . "app" .Values.endpoints.http ) | nindent 12 }}
             - name: BIND_ADDR
               value: "0.0.0.0:{{ if .Values.endpoints.http.insecure }}8080{{ else }}8443{{ end }}"
             - name: HEALTH__BIND_ADDR
