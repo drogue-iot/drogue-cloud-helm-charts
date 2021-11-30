@@ -127,6 +127,9 @@ spec:
             - name: GF_INSTALL_PLUGINS
               value: grafana-worldmap-panel
 
+            - name: GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH
+              value: /var/lib/grafana/dashboards/grafana-dashboards-temperatures.json
+
             - name: TIMESCALE_USERNAME
               valueFrom:
                 secretKeyRef:
