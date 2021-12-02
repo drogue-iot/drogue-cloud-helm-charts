@@ -1,0 +1,34 @@
+{{- $ref := dict "root" . "name" "client-ditto-infra" "component" "digital-twin" -}}
+apiVersion: keycloak.org/v1alpha1
+kind: KeycloakClient
+metadata:
+  name: client-ditto-infra
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+spec:
+  realmSelector:
+    matchLabels:
+      {{- include "drogue-cloud-common.selectorLabels" (dict "root" . "name" "drogue" "component" "sso") | nindent 6 }}
+  client:
+    clientId: ditto-infra
+    clientAuthenticatorType: client-secret
+    enabled: true
+    publicClient: false
+    implicitFlowEnabled: false
+    standardFlowEnabled: false
+    directAccessGrantsEnabled: false
+    serviceAccountsEnabled: true
+    fullScopeAllowed: true
+    defaultClientScopes:
+      - "email"
+      - "profile"
+      - "roles"
+      - "web-origins"
+    optionalClientScopes:
+      - "address"
+      - "microprofile-jwt"
+      - "offline_access"
+      - "phone"
+    defaultRoles:
+      - "drogue-user"
+      - "drogue-admin"
