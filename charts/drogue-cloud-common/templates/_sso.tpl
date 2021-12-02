@@ -5,7 +5,7 @@ Arguments: (dict)
 * root - the content
 * volume - the name of the volume to map
 */}}
-{{- define "drogue-cloud-core.init-container.wait-for-client-secret" -}}
+{{- define "drogue-cloud-common.init-container.wait-for-client-secret" -}}
 - name: wait-for-client-secret
   image: {{ .root.Values.helper.image }}
   imagePullPolicy: IfNotPresent
