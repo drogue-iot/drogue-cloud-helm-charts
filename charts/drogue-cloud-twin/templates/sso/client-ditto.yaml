@@ -1,10 +1,10 @@
+{{- $ref := dict "root" . "name" "client-ditto" "component" "digital-twin" -}}
 apiVersion: keycloak.org/v1alpha1
 kind: KeycloakClient
 metadata:
   name: client-ditto
   labels:
-    app.kubernetes.io/name: client-ditto
-    app.kubernetes.io/part-of: digital-twin
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
 spec:
   realmSelector:
     matchLabels:
@@ -18,7 +18,7 @@ spec:
     implicitFlowEnabled: true
     standardFlowEnabled: true
     serviceAccountsEnabled: false
-    fullScopeAllowed: false
+    fullScopeAllowed: true
     redirectUris:
       - {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "ditto" "ingress" .Values.ditto.ingress ) }}/oauth2/callback
       - {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "ditto" "ingress" .Values.ditto.ingress ) }}/oauth2-redirect.html

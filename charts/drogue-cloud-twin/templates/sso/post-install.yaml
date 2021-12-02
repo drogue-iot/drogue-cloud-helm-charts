@@ -1,0 +1,58 @@
+{{- $ref := dict "root" . "name" "post-install-keycloak-ditto" "component" "digital-twin" -}}
+{{- if .Values.sso.postInstall.enabled -}}
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: post-install-keycloak-ditto
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+spec:
+  backoffLimit: 1000
+  completions: 1
+  parallelism: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: post-install
+          image: {{ .Values.sso.postInstall.image }}
+          imagePullPolicy: IfNotPresent
+
+          env:
+            - name: ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: credential-sso
+                  key: ADMIN_USERNAME
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: credential-sso
+                  key: ADMIN_PASSWORD
+            - name: KEYCLOAK_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.sso.ingress ) }}
+
+          command:
+            - bash
+            - -exc
+            - |
+              # log in to keycloak
+              /opt/jboss/keycloak/bin/kcadm.sh config credentials config --config /tmp/kcadm.config --server "$KEYCLOAK_URL/auth" --realm master --user "$ADMIN_USERNAME" --password "$ADMIN_PASSWORD"
+
+              # add drogue-admin to service account roles
+
+              # get all client (we don't know the ID)
+              /opt/jboss/keycloak/bin/kcadm.sh get --config /tmp/kcadm.config -r drogue clients
+              # get client roles
+              /opt/jboss/keycloak/bin/kcadm.sh get-roles --config /tmp/kcadm.config -r drogue --uusername service-account-ditto-infra
+              # add drogue-admin to service account roles
+              /opt/jboss/keycloak/bin/kcadm.sh add-roles --config /tmp/kcadm.config -r drogue --uusername service-account-ditto-infra --rolename drogue-admin
+              # list again
+              /opt/jboss/keycloak/bin/kcadm.sh get-roles --config /tmp/kcadm.config -r drogue --uusername service-account-ditto-infra
+{{- end -}}

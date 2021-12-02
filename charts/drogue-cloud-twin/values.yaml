@@ -2,10 +2,26 @@ global:
   cluster: kubernetes
   domain: .my-cluster.dns
 
-drogueApplication:
-  name: example-app
-  # eventTopic can provide an explicit event topic
-  # eventTopic: <topic name>
+defaults:
+  images:
+    repository: ghcr.io/drogue-iot
+    # pullPolicy Sets the pull policy explicitly. Defaults to Always when using the 'latest'
+    #   tag and to IfNotPresent otherwise.
+    # pullPolicy: IfNotPresent
+    # tag The container tag to apply. Defaults to the chart's application version
+    # tag: latest
+  ingress:
+    # className The ingress class name to use. Defaults to none, to let the cluster decide.
+    # className: nginx
+    annotations: {}
+  logging:
+    debug: false
+    rust:
+    # log: info
+    # backtrace: true
+
+helper:
+  image: registry.access.redhat.com/ubi8-minimal:latest
 
 mongodb:
   fullnameOverride: mongodb
@@ -20,17 +36,25 @@ mongodb:
     databases:
       - ditto
 
-keycloak:
+sso:
   # realm to use
   # realm: drogue
   ingress: {}
+  postInstall:
+    # enabled can be used to disable the job, in case you don't need it or are upgrading from
+    # a Keycloak 12 instance, in which case you need to manually configure the roles.
+    enabled: true
+    image: quay.io/keycloak/keycloak:15.0.1
 
 ditto:
   ingress: {}
+  # version: latest
+  # registry: docker.io/eclipse
+  # pullPolicy: Always
+  devops:
+    password: devops123456
 
-knative:
-  kafkaSource:
-    apiVersion: v1beta1
+operator: {}
 
 kafka:
   external:

@@ -1,0 +1,126 @@
+{{- $ref := dict "root" . "name" "ditto-registry-operator" "component" "digital-twin" -}}
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: ditto-registry-operator
+  annotations:
+    app.openshift.io/connects-to: |
+      [
+        {"apiVersion":"apps/v1","kind":"Deployment","name":"device-management-service"},
+        {"apiVersion":"apps/v1","kind":"Deployment","name":"ditto-gateway"},
+      ]
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "drogue-cloud-twin.labels" $ref | nindent 8 }}
+    spec:
+      initContainers:
+        {{ include "drogue-cloud-common.init-container.wait-for-client-secret" ( dict "root" . "volume" "client-secret-services") | nindent 8 }}
+        {{ include "drogue-cloud-common.init-container.wait-for-client-secret" ( dict "root" . "volume" "client-secret-ditto-infra") | nindent 8 }}
+      containers:
+        - name: service
+          image: {{ include "drogue-cloud-common.image" (dict "root" . "name" "ditto-registry-operator" ) | quote }}
+          imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
+          env:
+            {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.operator ) | nindent 12 }}
+            - name: HEALTH__BIND_ADDR
+              value: "0.0.0.0:9090"
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: CONTROLLER__DITTO_DEVOPS__URL
+              value: http://ditto-gateway:8080
+            - name: CONTROLLER__DITTO_DEVOPS__USERNAME
+              value: devops
+            - name: CONTROLLER__DITTO_DEVOPS__PASSWORD
+              value: {{ .Values.ditto.devops.password }}
+            - name: CONTROLLER__DITTO_ADMIN__SSO_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.sso.ingress ) }}
+            - name: CONTROLLER__DITTO_ADMIN__CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-ditto-infra
+                  key: CLIENT_ID
+            - name: CONTROLLER__DITTO_ADMIN__CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-ditto-infra
+                  key: CLIENT_SECRET
+            - name: CONTROLLER__KAFKA__BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "CONTROLLER__KAFKA__PROPERTIES__" ) | nindent 12 }}
+            - name: REGISTRY__CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_ID
+            - name: REGISTRY__CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_SECRET
+            - name: REGISTRY__SSO_URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.sso.ingress ) }}
+            - name: WORK_QUEUE__INSTANCE
+              value: topic-operator
+            - name: WORK_QUEUE__PG__HOST
+              value: postgres
+            - name: WORK_QUEUE__PG__DBNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: databaseName
+            - name: WORK_QUEUE__PG__USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: admin.username
+            - name: WORK_QUEUE__PG__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: admin.password
+            - name: KAFKA_SOURCE__TOPIC
+              value: registry
+            - name: KAFKA_SOURCE__CONSUMER_GROUP
+              value: ditto-operator
+            - name: KAFKA_SOURCE__BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SOURCE__PROPERTIES__" ) | nindent 12 }}
+            - name: KAFKA_ADMIN__BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_ADMIN__PROPERTIES__" ) | nindent 12 }}
+          readinessProbe:
+            initialDelaySeconds: 2
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 3
+            httpGet:
+              port: 9090
+              path: /readiness
+          livenessProbe:
+            initialDelaySeconds: 2
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 3
+            httpGet:
+              port: 9090
+              path: /liveness
+          resources:
+            limits:
+              memory: 128Mi
+      volumes:
+        - name: client-secret-services
+          secret:
+            secretName: keycloak-client-secret-services
+        - name: client-secret-ditto-infra
+          secret:
+            secretName: keycloak-client-secret-ditto-infra

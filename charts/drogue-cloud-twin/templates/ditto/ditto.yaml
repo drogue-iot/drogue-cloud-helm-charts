@@ -1,10 +1,26 @@
+{{- $ref := dict "root" . "name" "ditto" "component" "digital-twin" -}}
 kind: Ditto
 apiVersion: iot.eclipse.org/v1alpha1
 metadata:
   name: ditto
   labels:
-    app.kubernetes.io/name: ditto
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
 spec:
+
+  disableInfraProxy: true
+
+  {{ with .Values.ditto.version }}version: {{ . | quote }}{{ end }}
+  {{ with .Values.ditto.registry }}registry: {{ . | quote }}{{ end }}
+  {{ with .Values.ditto.pullPolicy }}pullPolicy: {{ . | quote }}{{ end }}
+
+  services:
+    concierge:
+      additionalProperties:
+        "ditto.concierge.enforcement.restrict-creation.grant.0.auth-subjects.0": "keycloak:drogue-admin"
+
+  devops:
+    password:
+     value: {{ .Values.ditto.devops.password }}
 
   mongoDb:
     host: mongodb
@@ -19,13 +35,14 @@ spec:
     host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "ditto" "ingress" .Values.ditto.ingress ) }}
 
   keycloak:
-    url: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.keycloak.ingress ) }}
+    url: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.sso.ingress ) }}
     redirectUrl: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "ditto" "ingress" .Values.ditto.ingress ) }}/oauth2/callback
-    realm: {{ .Values.keycloak.realm | default "drogue" }}
+    realm: {{ .Values.sso.realm | default "drogue" }}
     label: "Drogue Cloud"
     description: "Log in using Drogue Cloud"
+    disableProxy: true
 
-    {{- with .Values.keycloak.client }}
+    {{- with .Values.sso.client }}
     clientId:
       {{ .id | nindent 6 }}
     clientSecret:
