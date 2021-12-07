@@ -7,4 +7,3 @@
   "transport" "mqtt"
 -}}
 {{- include "drogue-cloud-core.deployment.mqtt-endpoint" $ref -}}
-

@@ -19,10 +19,10 @@ spec:
         {{- include "drogue-cloud-common.init-container.wait-for-client-secret" ( dict "root" .root "volume" "client-secret-services")  | nindent 8 }}
       containers:
         - name: service
-          image: {{ include "drogue-cloud-core.image" (dict "root" .root "name" "mqtt-integration" ) | quote }}
-          imagePullPolicy: {{ include "drogue-cloud-core.image-pull-policy" .root }}
+          image: {{ include "drogue-cloud-common.image" (dict "root" .root "name" "mqtt-integration" ) | quote }}
+          imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" .root }}
           env:
-            {{- include "drogue-cloud-core.rust.logging" ( dict "root" .root "app" .app ) | nindent 12 }}
+            {{- include "drogue-cloud-common.rust.logging" ( dict "root" .root "app" .app ) | nindent 12 }}
             - name: MQTT__BIND_ADDR
               value: "0.0.0.0:1883"
             - name: MQTT__TRANSPORT

@@ -5,9 +5,9 @@ Arguments: (dict)
 * root - the content
 * app - the application
 */}}
-{{- define "drogue-cloud-core.rust.logging" -}}
-{{ include "drogue-cloud-core._rust.backtrace" . }}
-{{ include "drogue-cloud-core._rust.log" . }}
+{{- define "drogue-cloud-common.rust.logging" -}}
+{{ include "drogue-cloud-common._rust.backtrace" . }}
+{{ include "drogue-cloud-common._rust.log" . }}
 {{- end }}{{/* define */}}
 
 
@@ -18,7 +18,7 @@ Arguments: (dict)
 * root - the content
 * app - the application
 */}}
-{{- define "drogue-cloud-core._rust.log" -}}
+{{- define "drogue-cloud-common._rust.log" -}}
 
 {{/* application, specific value */}}
 {{- with ((.app.logging).rust).log }}
@@ -66,7 +66,7 @@ Arguments: (dict)
 * root - the content
 * app - the application
 */}}
-{{- define "drogue-cloud-core._rust.backtrace" -}}
+{{- define "drogue-cloud-common._rust.backtrace" -}}
 
 {{- if ((.app.logging).rust).backtrace | default (.app.logging).debug | default (.root.Values.defaults.logging.rust).backtrace | default .root.Values.defaults.logging.debug }}
 - name: RUST_BACKTRACE

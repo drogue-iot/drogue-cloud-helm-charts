@@ -18,10 +18,10 @@ spec:
         {{- include "drogue-cloud-common.init-container.wait-for-client-secret" ( dict "root" . "volume" "client-secret-services")  | nindent 8 }}
       containers:
         - name: endpoint
-          image: {{ include "drogue-cloud-core.image" $ref | quote }}
-          imagePullPolicy: {{ include "drogue-cloud-core.image-pull-policy" . }}
+          image: {{ include "drogue-cloud-common.image" $ref | quote }}
+          imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
           env:
-            {{- include "drogue-cloud-core.rust.logging" ( dict "root" . "app" .Values.services.command ) | nindent 12 }}
+            {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.services.command ) | nindent 12 }}
             - name: BIND_ADDR
               value: "0.0.0.0:8080"
             - name: HEALTH__BIND_ADDR
