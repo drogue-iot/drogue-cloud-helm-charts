@@ -139,3 +139,7 @@ Ingress WS protocol:
     {{- end }}{{/* end-if defined .insecure */}}
     {{- end }}{{/* end-with .ingress.ws-proto */}}
 {{- end }}
+
+{{- define "drogue-cloud-common.ingress.cert-altnames" -}}
+DNS:{{- include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-endpoint" "ingress" .Values.endpoints.mqtt.ingress ) -}}, DNS:{{- include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "http-endpoint" "ingress" .Values.endpoints.http.ingress ) -}}, DNS:{{- include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "coap-endpoint" "ingress" .Values.endpoints.coap.ingress ) -}}, DNS:{{- include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-integration" "ingress" .Values.integrations.mqtt.ingress ) -}}
+{{- end }}

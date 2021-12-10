@@ -1,0 +1,29 @@
+{{- $ref := dict "root" . "name" "post-install-certgen" "component" "endpoints" -}}
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: cert-gen-job
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+spec:
+  backoffLimit: 1000
+  completions: 1
+  parallelism: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      serviceAccountName: certgen
+      restartPolicy: OnFailure
+      containers:
+        - name: post-install
+          image: ghcr.io/drogue-iot/test-cert-generator:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CERT_ALTNAMES
+              value: "{{- include "drogue-cloud-common.ingress.cert-altnames" . -}}"
+          command: ["make", "deploy"]

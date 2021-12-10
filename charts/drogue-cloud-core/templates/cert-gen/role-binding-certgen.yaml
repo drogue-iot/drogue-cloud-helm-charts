@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: certgen
+
+subjects:
+  - kind: ServiceAccount
+    name: certgen
+
+roleRef:
+  kind: Role
+  name: certgen
+  apiGroup: rbac.authorization.k8s.io
