@@ -21,3 +21,17 @@ app.kubernetes.io/version: {{ .root.Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .root.Release.Service }}
 app.kubernetes.io/part-of: {{ .root.Values.global.partOf | default "drogue-iot" }}
 {{- end }}
+
+{{/*
+Generate certificates and create secretes if they don't already exists
+*/}}
+{{- define "drogue-cloud-core.cert-gen" -}}
+{{- if or
+(lookup "v1" "Secret" .Release.Namespace "http-endpoint-tls")
+(lookup "v1" "Secret" .Release.Namespace "mqtt-endpoint-tls")
+(lookup "v1" "Secret" .Release.Namespace "coap-endpoint-tls")
+-}}
+  {{- else  }}
+true
+{{- end }}
+{{- end }}
