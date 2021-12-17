@@ -1,0 +1,51 @@
+{{- $ref := dict "root" . "name" "console-api" "component" "console" -}}
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: console-api
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
+    spec:
+      containers:
+        - name: endpoint
+          image: docker.io/swaggerapi/swagger-ui:v4.1.3
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: BASE_URL
+              value: /api
+            - name: OAUTH2_REDIRECT_URL
+              value: {{ .Values.console.overrides.console.url | default ( include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) ) }}/api/oauth2-redirect.html
+            - name: VALIDATOR_URL
+              value: none
+            - name: URL
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) }}
+            - name: OAUTH_CLIENT_ID
+              value: drogue
+            - name: OAUTH_SCOPES
+              value: openid
+            - name: OAUTH_ADDITIONAL_PARAMS
+              value: '{nonce: "1"}'
+          ports:
+            - containerPort: 8080
+              name: endpoint
+              protocol: TCP
+          resources:
+            limits:
+              memory: 64Mi
+          readinessProbe:
+            initialDelaySeconds: 2
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 3
+            httpGet:
+              port: 8080
+              path: /api/

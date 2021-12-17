@@ -13,6 +13,13 @@ spec:
     - host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}
       http:
         paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: console-api
+                port:
+                  name: endpoint
           - path: /
             pathType: Prefix
             backend:

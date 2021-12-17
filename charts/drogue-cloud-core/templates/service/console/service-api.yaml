@@ -1,0 +1,19 @@
+{{- $ref := dict "root" . "name" "console-api" "component" "console" -}}
+kind: Service
+apiVersion: v1
+metadata:
+  name: console-api
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+spec:
+
+  selector:
+    {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
+
+  type: ClusterIP
+
+  ports:
+    - name: endpoint
+      protocol: TCP
+      port: 8080
+      targetPort: endpoint
