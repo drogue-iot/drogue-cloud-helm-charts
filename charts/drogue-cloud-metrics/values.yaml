@@ -8,6 +8,8 @@ prometheus:
       scrape_interval: 10s
     service:
       servicePort: 9090
+    ingress:
+      enabled: true
 
 grafana:
   enabled: true
