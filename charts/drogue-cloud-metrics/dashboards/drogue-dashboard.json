@@ -26,6 +26,20 @@
     "liveNow": false,
     "panels": [
       {
+        "collapsed": false,
+        "datasource": "drogue_metrics",
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 6,
+        "panels": [],
+        "title": "Endpoints",
+        "type": "row"
+      },
+      {
         "datasource": null,
         "fieldConfig": {
           "defaults": {
@@ -84,7 +98,7 @@
           "h": 8,
           "w": 12,
           "x": 0,
-          "y": 0
+          "y": 1
         },
         "id": 8,
         "options": {
@@ -109,23 +123,9 @@
         ],
         "title": "Http Endpoint request rate",
         "type": "timeseries"
-      },
-      {
-        "collapsed": true,
-        "datasource": "drogue_metrics",
-        "gridPos": {
-          "h": 1,
-          "w": 24,
-          "x": 0,
-          "y": 8
-        },
-        "id": 6,
-        "panels": [],
-        "title": "Endpoints",
-        "type": "row"
       }
     ],
-    "refresh": "",
+    "refresh": false,
     "schemaVersion": 31,
     "style": "dark",
     "tags": [],
@@ -133,8 +133,8 @@
       "list": []
     },
     "time": {
-      "from": "now-15m",
-      "to": "now"
+      "from": "2021-12-30T10:06:07.902Z",
+      "to": "2021-12-30T10:16:37.632Z"
     },
     "timepicker": {},
     "timezone": "",
