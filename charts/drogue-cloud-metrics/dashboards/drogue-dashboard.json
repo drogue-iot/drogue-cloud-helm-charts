@@ -133,6 +133,87 @@
       "type": "timeseries"
     },
     {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "id": 14,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "drogue_mqtt_connections{}",
+          "interval": "",
+          "legendFormat": "Connections",
+          "refId": "A"
+        }
+      ],
+      "title": "MQTT Connections",
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "datasource": null,
       "gridPos": {
@@ -199,7 +280,32 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "Value"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -221,21 +327,38 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "rate(downstream_events{}[$__interval])",
+          "expr": "sum(rate(drogue_downstream_events{outcome=\"Accepted\"}[$__interval]))",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "Accepted",
           "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(rate(drogue_downstream_events{outcome=\"Rejected\"}[$__interval]))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Rejected",
+          "refId": "B"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(rate(drogue_downstream_events{outcome=\"QueueFull\"}[$__interval]))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Queue Full",
+          "refId": "C"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(rate(drogue_downstream_events{outcome=\"Error\"}[$__interval]))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Error",
+          "refId": "D"
         }
       ],
       "title": "Downstream Events",
-      "transformations": [
-        {
-          "id": "labelsToFields",
-          "options": {
-            "valueLabel": "outcome"
-          }
-        }
-      ],
+      "transformations": [],
       "type": "timeseries"
     }
   ],
@@ -254,5 +377,5 @@
   "timezone": "",
   "title": "Drogue dashboard",
   "uid": "RdhmR4Anz",
-  "version": 2
+  "version": 4
 }
