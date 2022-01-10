@@ -22,8 +22,8 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: post-install
-          image: ghcr.io/drogue-iot/test-cert-generator:latest
-          imagePullPolicy: IfNotPresent
+          image: {{ include "drogue-cloud-core.image" $ref | quote }}
+          imagePullPolicy: {{ include "drogue-cloud-core.image-pull-policy" . }}
           env:
             - name: CERT_ALTNAMES
               value: "{{- include "drogue-cloud-common.ingress.cert-altnames" . -}}"
