@@ -51,8 +51,8 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -62,7 +62,7 @@
             "lineStyle": {
               "fill": "solid"
             },
-            "lineWidth": 1,
+            "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
@@ -101,6 +101,8 @@
         "y": 1
       },
       "id": 8,
+      "interval": "15s",
+      "maxDataPoints": null,
       "options": {
         "legend": {
           "calcs": [],
@@ -114,9 +116,10 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "rate(http_endpoint_http_requests_total{}[$__interval])",
+          "expr": "irate(http_endpoint_http_requests_total{}[$__rate_interval])",
           "hide": false,
           "interval": "",
+          "intervalFactor": 1,
           "legendFormat": "",
           "refId": "A"
         }
@@ -137,22 +140,22 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "continuous-BlYlRd"
           },
           "custom": {
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
             "lineInterpolation": "linear",
-            "lineWidth": 1,
+            "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
@@ -232,15 +235,15 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "continuous-BlYlRd"
           },
           "custom": {
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 14,
+            "gradientMode": "opacity",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -250,7 +253,7 @@
             "lineStyle": {
               "fill": "solid"
             },
-            "lineWidth": 1,
+            "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
@@ -327,14 +330,14 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(rate(drogue_downstream_events{outcome=\"Accepted\"}[$__interval]))",
+          "expr": "sum(irate(drogue_downstream_events{outcome=\"Accepted\"}[$__rate_interval]))",
           "interval": "",
           "legendFormat": "Accepted",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "sum(rate(drogue_downstream_events{outcome=\"Rejected\"}[$__interval]))",
+          "expr": "sum(irate(drogue_downstream_events{outcome=\"Rejected\"}[$__rate_interval]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Rejected",
@@ -342,7 +345,7 @@
         },
         {
           "exemplar": true,
-          "expr": "sum(rate(drogue_downstream_events{outcome=\"QueueFull\"}[$__interval]))",
+          "expr": "sum(irate(drogue_downstream_events{outcome=\"QueueFull\"}[$__rate_interval]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Queue Full",
@@ -350,7 +353,7 @@
         },
         {
           "exemplar": true,
-          "expr": "sum(rate(drogue_downstream_events{outcome=\"Error\"}[$__interval]))",
+          "expr": "sum(irate(drogue_downstream_events{outcome=\"Error\"}[$__rate_interval]))",
           "hide": false,
           "interval": "",
           "legendFormat": "Error",
@@ -377,5 +380,5 @@
   "timezone": "",
   "title": "Drogue dashboard",
   "uid": "RdhmR4Anz",
-  "version": 4
+  "version": 1
 }

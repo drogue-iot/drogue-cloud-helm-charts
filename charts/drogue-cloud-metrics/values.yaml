@@ -1,7 +1,8 @@
 prometheus:
   createInstance: true
-  host:
-  port:
+
+  kubeStateMetrics:
+    enabled: true
 
   server:
     global:
@@ -9,7 +10,7 @@ prometheus:
     service:
       servicePort: 9090
     ingress:
-      enabled: true
+      enabled: false
 
 grafana:
   enabled: true
