@@ -26,6 +26,7 @@ defaults:
       # backtrace: true
 
 console:
+  localCertificates: false
   # allow overriding certain aspects of the console
   overrides:
     api: {}
@@ -38,8 +39,12 @@ console:
       # url: https://foo-bar
     mqttEndpoint: {}
       # port: 8883
+    mqttEndpointWs: {}
+      # url: wss://mqtt-ws
     mqttIntegration: {}
       # port: 8883
+    mqttIntegrationWs: {}
+    # url: wss://mqtt-ws
     wsIntegration: {}
       # url: wss://foo-bar
     kafka: {}
@@ -58,6 +63,11 @@ endpoints:
     ingress:
       port: 8883
 
+  mqttWs:
+    insecure: false
+    ingress:
+      port: 443
+
   coap:
     insecure: true
     ingress:
@@ -70,6 +80,11 @@ integrations:
     insecure: false
     ingress:
       port: 8883
+
+  mqttWs:
+    insecure: false
+    ingress:
+      port: 443
 
   websocket:
     insecure: false

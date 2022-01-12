@@ -23,8 +23,10 @@ spec:
           imagePullPolicy: {{ include "drogue-cloud-core.image-pull-policy" . }}
           env:
             {{- include "drogue-cloud-core.rust.logging" ( dict "root" . "app" .Values.integrations.mqtt ) | nindent 12 }}
-            - name: BIND_ADDR_MQTT
+            - name: MQTT__BIND_ADDR
               value: "0.0.0.0:{{ if .Values.endpoints.mqtt.insecure }}1883{{- else -}}8883{{- end }}"
+            - name: MQTT__BIND_ADDR_WS
+              value: "0.0.0.0:{{ if .Values.endpoints.mqtt.insecure }}80{{- else -}}443{{- end }}"
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
             - name: INSTANCE
@@ -98,6 +100,10 @@ spec:
             - containerPort: {{ if .Values.integrations.mqtt.insecure }}1883{{- else -}}8883{{- end }}
               name: service
               protocol: TCP
+            - containerPort: {{ if .Values.integrations.mqttWs.insecure }}80{{- else -}}443{{- end }}
+              name: service-ws
+              protocol: TCP
+
           resources:
             limits:
               memory: 64Mi

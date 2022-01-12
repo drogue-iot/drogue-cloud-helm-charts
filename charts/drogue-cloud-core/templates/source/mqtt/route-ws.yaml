@@ -1,0 +1,18 @@
+{{- $ref := dict "root" . "name" "mqtt-endpoint-ws" "component" "endpoints" -}}
+{{ if eq .Values.global.cluster "openshift" }}
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: mqtt-endpoint-ws
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+spec:
+  host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-endpoint-ws" "ingress" .Values.endpoints.mqttWs.ingress ) }}
+  to:
+    kind: Service
+    name: mqtt-endpoint-ws
+  port:
+    targetPort: endpoint
+  tls:
+    termination: passthrough
+{{- end }}
