@@ -111,11 +111,11 @@ spec:
                   key: ADMIN_PASSWORD
                   name: credential-sso
             {{ if ne .Values.global.cluster "openshift" }}
-            - name: ENDPOINTS__LOCAL_CERTS
-              value: "true"
-            - name: "KEYCLOAK__TLS_NOVERIFY"
+            - name: KEYCLOAK__TLS_NOVERIFY
               value: "true"
             {{- end }}
+            - name: ENDPOINTS__LOCAL_CERTS
+              value: {{ .Values.console.localCertificates | quote }}
             - name: ENDPOINTS__API_URL
               value: {{ .Values.console.overrides.api.url | default ( include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) ) }}
             - name: ENDPOINTS__SSO_URL
@@ -136,10 +136,22 @@ spec:
               value: {{ .Values.console.overrides.mqttEndpoint.host | default ( include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-endpoint" "ingress" .Values.endpoints.mqtt.ingress ) ) }}
             - name: ENDPOINTS__MQTT_ENDPOINT_PORT
               value: {{ .Values.console.overrides.mqttEndpoint.port | default .Values.endpoints.mqtt.ingress.port | quote }}
+            - name: ENDPOINTS__MQTT_ENDPOINT_WS_HOST
+              value: {{ .Values.console.overrides.mqttEndpointWs.host | default ( include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-endpoint-ws" "ingress" .Values.endpoints.mqttWs.ingress ) ) }}
+            - name: ENDPOINTS__MQTT_ENDPOINT_WS_PORT
+              value: {{ .Values.console.overrides.mqttEndpointWs.port | default .Values.endpoints.mqttWs.ingress.port | quote }}
+            - name: ENDPOINTS__MQTT_ENDPOINT_WS_URL
+              value: {{ .Values.console.overrides.mqttEndpointWs.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "mqtt-endpoint-ws" "ingress" .Values.endpoints.mqttWs.ingress "insecure" .Values.endpoints.http.insecure ) ) }}
             - name: ENDPOINTS__MQTT_INTEGRATION_HOST
               value: {{ .Values.console.overrides.mqttIntegration.host | default ( include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-integration" "ingress" .Values.integrations.mqtt.ingress ) ) }}
             - name: ENDPOINTS__MQTT_INTEGRATION_PORT
               value: {{ .Values.console.overrides.mqttIntegration.port | default .Values.integrations.mqtt.ingress.port | quote }}
+            - name: ENDPOINTS__MQTT_INTEGRATION_WS_HOST
+              value: {{ .Values.console.overrides.mqttIntegrationWs.host | default ( include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-integration-ws" "ingress" .Values.integrations.mqttWs.ingress ) ) }}
+            - name: ENDPOINTS__MQTT_INTEGRATION_WS_PORT
+              value: {{ .Values.console.overrides.mqttIntegrationWs.port | default .Values.integrations.mqttWs.ingress.port | quote }}
+            - name: ENDPOINTS__MQTT_INTEGRATION_WS_URL
+              value: {{ .Values.console.overrides.mqttIntegrationWs.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "mqtt-integration-ws" "ingress" .Values.integrations.mqttWs.ingress "insecure" .Values.endpoints.http.insecure ) ) }}
             - name: ENDPOINTS__WEBSOCKET_INTEGRATION_URL
               value: {{ .Values.console.overrides.wsIntegration.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "websocket-integration" "ingress" .Values.integrations.websocket.ingress "insecure" .Values.integrations.websocket.insecure ) ) }}
             - name: ENDPOINTS__KAFKA_BOOTSTRAP_SERVERS
