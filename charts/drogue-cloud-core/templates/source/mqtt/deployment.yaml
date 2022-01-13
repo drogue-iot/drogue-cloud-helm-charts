@@ -26,7 +26,7 @@ spec:
             - name: MQTT__BIND_ADDR
               value: "0.0.0.0:{{ if .Values.endpoints.mqtt.insecure }}1883{{- else -}}8883{{- end }}"
             - name: MQTT__BIND_ADDR_WS
-              value: "0.0.0.0:{{ if .Values.endpoints.mqtt.insecure }}80{{- else -}}443{{- end }}"
+              value: "0.0.0.0:{{ if .Values.endpoints.mqtt.insecure }}8080{{- else -}}8443{{- end }}"
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
             - name: INSTANCE
@@ -73,7 +73,7 @@ spec:
             - containerPort: {{ if .Values.endpoints.mqtt.insecure }}1883{{- else -}}8883{{- end }}
               name: endpoint
               protocol: TCP
-            - containerPort: {{ if .Values.endpoints.mqttWs.insecure }}80{{- else -}}443{{- end }}
+            - containerPort: {{ if .Values.endpoints.mqttWs.insecure }}8080{{- else -}}8443{{- end }}
               name: endpoint-ws
               protocol: TCP
 

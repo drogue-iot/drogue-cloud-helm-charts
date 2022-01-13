@@ -21,7 +21,7 @@ spec:
   ports:
     - name: endpoint
       protocol: TCP
-      port: {{ if .Values.endpoints.mqttWs.insecure }}80{{- else -}}443{{- end }}
+      port: {{ if .Values.endpoints.mqttWs.insecure }}8080{{- else -}}8443{{- end }}
       targetPort: endpoint-ws
       {{- if has .Values.global.cluster (list "minikube" "kind" ) }}
       nodePort: {{ .Values.endpoints.mqttWs.ingress.port }}
