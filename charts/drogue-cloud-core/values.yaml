@@ -107,6 +107,10 @@ services:
   userAuth: {}
   command: {}
 
+certificates:
+  generator:
+    enabled: true
+
 helper:
   image: registry.access.redhat.com/ubi8-minimal:latest
 

@@ -26,6 +26,7 @@ app.kubernetes.io/part-of: {{ .root.Values.global.partOf | default "drogue-iot" 
 Generate certificates and create secretes if they don't already exists
 */}}
 {{- define "drogue-cloud-core.cert-gen" -}}
+{{- if .Values.certificates.generator.enabled }}
 {{- if or
 (lookup "v1" "Secret" .Release.Namespace "http-endpoint-tls")
 (lookup "v1" "Secret" .Release.Namespace "mqtt-endpoint-tls")
@@ -34,4 +35,5 @@ Generate certificates and create secretes if they don't already exists
   {{- else  }}
 true
 {{- end }}
+{{- else }}false{{- end }}
 {{- end }}
