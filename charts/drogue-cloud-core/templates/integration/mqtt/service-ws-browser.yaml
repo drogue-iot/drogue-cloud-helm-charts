@@ -1,8 +1,8 @@
-{{- $ref := dict "root" . "name" "mqtt-endpoint" "component" "endpoints" -}}
+{{ $ref := dict "root" . "name" "mqtt-integration-ws-browser" "component" "integrations" }}
 kind: Service
 apiVersion: v1
 metadata:
-  name: mqtt-endpoint
+  name: mqtt-integration-ws-browser
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
@@ -18,10 +18,10 @@ spec:
   {{- end }}
 
   ports:
-    - name: endpoint
+    - name: service
       protocol: TCP
       port: 1883
-      targetPort: endpoint
+      targetPort: service
       {{- if has .Values.global.cluster (list "minikube" "kind" ) }}
-      nodePort: {{ .Values.endpoints.mqtt.ingress.port }}
+      nodePort: {{ .Values.integrations.mqttWsBrowser.ingress.port }}
       {{- end }}

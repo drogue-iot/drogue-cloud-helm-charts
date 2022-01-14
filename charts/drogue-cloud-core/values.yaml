@@ -68,6 +68,11 @@ endpoints:
     ingress:
       port: 443
 
+  mqttWsBrowser:
+    insecure: false
+    ingress:
+      port: 443
+
   coap:
     insecure: true
     ingress:
@@ -82,6 +87,11 @@ integrations:
       port: 8883
 
   mqttWs:
+    insecure: false
+    ingress:
+      port: 443
+
+  mqttWsBrowser:
     insecure: false
     ingress:
       port: 443

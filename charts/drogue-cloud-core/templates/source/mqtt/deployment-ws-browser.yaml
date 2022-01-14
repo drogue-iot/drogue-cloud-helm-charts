@@ -1,0 +1,10 @@
+{{- $ref := dict
+  "root" .
+  "name" "mqtt-endpoint-ws-browser"
+  "component" "endpoints"
+  "insecure" .Values.endpoints.mqttWsBrowser.insecure
+  "app" .Values.endpoints.mqttWsBrowser
+  "transport" "websocket"
+  "disableClientCertificates" true
+-}}
+{{- include "drogue-cloud-core.deployment.mqtt-endpoint" $ref -}}
