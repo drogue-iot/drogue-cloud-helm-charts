@@ -1,5 +1,4 @@
 {{- $ref := dict "root" . "name" "mqtt-endpoint-ws" "component" "endpoints" -}}
-{{- $sel := dict "root" . "name" "mqtt-endpoint" "component" "endpoints" -}}
 kind: Service
 apiVersion: v1
 metadata:
@@ -8,7 +7,7 @@ metadata:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   selector:
-    {{- include "drogue-cloud-common.selectorLabels" $sel | nindent 4 }}
+    {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
 
   {{- if eq .Values.global.cluster "openshift" }}
   type: ClusterIP
@@ -21,8 +20,8 @@ spec:
   ports:
     - name: endpoint
       protocol: TCP
-      port: {{ if .Values.endpoints.mqttWs.insecure }}8080{{- else -}}8443{{- end }}
-      targetPort: endpoint-ws
+      port: 1883
+      targetPort: endpoint
       {{- if has .Values.global.cluster (list "minikube" "kind" ) }}
       nodePort: {{ .Values.endpoints.mqttWs.ingress.port }}
       {{- end }}

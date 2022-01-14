@@ -1,0 +1,19 @@
+{{- $ref := dict "root" . "name" "mqtt-integration-ws-browser" "component" "integrations" -}}
+{{ if eq .Values.global.cluster "openshift"}}
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: mqtt-integration-ws-browser
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+
+spec:
+  host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-integration-ws-browser" "ingress" .Values.integrations.mqttWs.ingress ) }}
+  to:
+    kind: Service
+    name: mqtt-integration-ws-browser
+  port:
+    targetPort: service
+  tls:
+    termination: passthrough
+{{- end }}
