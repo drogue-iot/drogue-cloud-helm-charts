@@ -35,5 +35,5 @@ Generate certificates and create secretes if they don't already exists
   {{- else  }}
 true
 {{- end }}
-{{- else }}false{{- end }}
+{{- else }}{{- end }}
 {{- end }}
