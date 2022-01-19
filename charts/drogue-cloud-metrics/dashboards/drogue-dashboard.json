@@ -140,7 +140,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "continuous-BlYlRd"
+            "mode": "palette-classic"
           },
           "custom": {
             "axisLabel": "",
@@ -214,6 +214,14 @@
         }
       ],
       "title": "MQTT Connections",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "valueLabel": "app_kubernetes_io_name"
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -235,7 +243,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "continuous-BlYlRd"
+            "mode": "palette-classic"
           },
           "custom": {
             "axisLabel": "",
