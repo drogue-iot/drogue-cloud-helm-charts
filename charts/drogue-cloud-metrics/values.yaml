@@ -1,0 +1,33 @@
+prometheus:
+  createInstance: true
+
+  kubeStateMetrics:
+    enabled: true
+
+  server:
+    global:
+      scrape_interval: 10s
+    service:
+      servicePort: 9090
+    ingress:
+      enabled: false
+
+grafana:
+  enabled: true
+  adminPassword: admin123456
+
+  labels:
+    app.kubernetes.io/component: metrics
+  podLabels:
+    app.kubernetes.io/component: metrics
+
+  ingress:
+    enabled: true
+
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+    datasources:
+      enabled: true
+      label: grafana_datasource
