@@ -22,8 +22,8 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: post-install
-          image: {{ include "drogue-cloud-core.image" ( dict "root" . "name" "test-cert-generator") | quote }}
-          imagePullPolicy: {{ include "drogue-cloud-core.image-pull-policy" . }}
+          image: {{ include "drogue-cloud-common.image" ( dict "root" . "name" "test-cert-generator") | quote }}
+          imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
           env:
             - name: CERT_ALTNAMES
               value: "{{- include "drogue-cloud-common.ingress.cert-altnames" . -}}"
