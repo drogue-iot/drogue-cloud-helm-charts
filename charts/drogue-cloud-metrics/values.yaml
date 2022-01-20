@@ -4,9 +4,6 @@ prometheus:
   kubeStateMetrics:
     enabled: true
 
-  url: http://drogue-iot-prometheus-server.drogue-iot:9090
-  # token: <bearer token>
-
   server:
     global:
       scrape_interval: 10s
@@ -26,6 +23,11 @@ grafana:
 
   ingress:
     enabled: true
+
+  datasource:
+    url: http://drogue-iot-prometheus-server.drogue-iot:9090
+    tlsSkipVerify: false
+    # token: <bearer token>
 
   sidecar:
     dashboards:
