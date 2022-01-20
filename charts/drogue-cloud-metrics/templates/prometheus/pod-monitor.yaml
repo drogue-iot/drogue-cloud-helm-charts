@@ -1,0 +1,18 @@
+{{- if .Values.prometheus.podMonitors.enabled }}
+kind: PodMonitor
+apiVersion: monitoring.coreos.com/v1
+metadata:
+  name: drogue-pod-monitor
+  labels:
+    {{- include "drogue-cloud-metrics.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "drogue-cloud-common.selectorLabels" . | nindent 6 }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace | quote }}
+  podMetricsEndpoints:
+      - port: 9090
+        path: /metrics
+{{- end }}

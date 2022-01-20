@@ -4,6 +4,9 @@ prometheus:
   kubeStateMetrics:
     enabled: true
 
+  podMonitors:
+    enabled: false
+
   server:
     global:
       scrape_interval: 10s
