@@ -207,13 +207,13 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "drogue_mqtt_connections{}",
+          "expr": "drogue_connections{}",
           "interval": "",
           "legendFormat": "Connections",
           "refId": "A"
         }
       ],
-      "title": "MQTT Connections",
+      "title": "Connections",
       "transformations": [
         {
           "id": "labelsToFields",
