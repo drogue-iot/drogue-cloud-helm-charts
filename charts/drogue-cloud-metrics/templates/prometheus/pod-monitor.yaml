@@ -9,7 +9,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
+      {{- include "drogue-cloud-common.healthSelector" . | nindent 6 }}
   podMetricsEndpoints:
       - port: health
         path: /metrics
