@@ -10,12 +10,11 @@ spec:
   selector:
     matchLabels:
       {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
-  namespaceSelector:
-    matchNames:
-      - {{ .Release.Namespace | quote }}
   podMetricsEndpoints:
       - port: health
         path: /metrics
         scheme: http
-        interval: {{ .Values.prometheus.podMonitors.interval | quote }}))
+        {{- with .Values.prometheus.server.global.scrape_interval }}
+        interval: {{ . | quote }}
+        {{- end }}
 {{- end }}

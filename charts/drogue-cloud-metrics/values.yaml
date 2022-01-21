@@ -6,7 +6,6 @@ prometheus:
 
   podMonitors:
     enabled: false
-    interval: 10s
 
   server:
     global:
