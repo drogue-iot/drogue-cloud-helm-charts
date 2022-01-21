@@ -1,4 +1,35 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_DROGUE_METRICS",
+      "label": "drogue_metrics",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__elements": [],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "8.3.4"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -27,7 +58,7 @@
   "panels": [
     {
       "collapsed": false,
-      "datasource": "drogue_metrics",
+      "datasource": "${DS_DROGUE_METRICS}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -40,6 +71,10 @@
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_DROGUE_METRICS}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -134,6 +169,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_DROGUE_METRICS}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -223,6 +262,10 @@
     },
     {
       "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_DROGUE_METRICS}"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -235,6 +278,10 @@
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_DROGUE_METRICS}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
