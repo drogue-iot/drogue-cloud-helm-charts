@@ -6,5 +6,6 @@
   "app" .Values.integrations.mqttWsBrowser
   "transport" "websocket"
   "disableClientCertificates" true
+  "metrics" true
 -}}
 {{- include "drogue-cloud-core.deployment.mqtt-integration" $ref -}}

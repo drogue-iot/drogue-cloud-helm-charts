@@ -1,4 +1,4 @@
-{{- $ref := dict "root" . "name" "authentication-service" "component" "device-registry" -}}
+{{- $ref := dict "root" . "name" "authentication-service" "component" "device-registry" "metrics" true  -}}
 kind: Deployment
 apiVersion: apps/v1
 metadata:

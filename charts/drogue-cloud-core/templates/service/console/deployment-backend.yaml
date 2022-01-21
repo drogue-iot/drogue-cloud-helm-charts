@@ -1,4 +1,4 @@
-{{- $ref := dict "root" . "name" "console-backend" "component" "console" -}}
+{{- $ref := dict "root" . "name" "console-backend" "component" "console" "metrics" true  -}}
 kind: Deployment
 apiVersion: apps/v1
 metadata:

@@ -1,4 +1,4 @@
-{{- $ref := dict "root" . "name" "http-endpoint" "component" "endpoints" -}}
+{{- $ref := dict "root" . "name" "http-endpoint" "component" "endpoints" "metrics" true -}}
 kind: Deployment
 apiVersion: apps/v1
 metadata:
