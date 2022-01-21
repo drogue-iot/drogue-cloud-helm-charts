@@ -14,6 +14,8 @@ spec:
     matchNames:
       - {{ .Release.Namespace | quote }}
   podMetricsEndpoints:
-      - port: 9090
+      - port: health
         path: /metrics
+        scheme: http
+        interval: {{ .Values.prometheus.podMonitors.interval | quote }}))
 {{- end }}

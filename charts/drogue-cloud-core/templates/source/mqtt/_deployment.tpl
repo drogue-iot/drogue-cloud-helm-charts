@@ -81,6 +81,7 @@ spec:
             - containerPort: 1883
               name: endpoint
               protocol: TCP
+            {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}
 
           readinessProbe:
             initialDelaySeconds: 2

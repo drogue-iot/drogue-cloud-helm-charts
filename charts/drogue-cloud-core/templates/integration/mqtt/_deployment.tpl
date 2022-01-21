@@ -104,6 +104,7 @@ spec:
             - containerPort: 1883
               name: service
               protocol: TCP
+            {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}
 
           resources:
             limits:
