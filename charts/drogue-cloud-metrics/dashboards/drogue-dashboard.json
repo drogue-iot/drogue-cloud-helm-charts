@@ -18,10 +18,10 @@
       }
     ]
   },
+  "description": "",
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "gnetId": null,
-  "graphTooltip": 0,
+  "graphTooltip": 1,
   "links": [],
   "liveNow": true,
   "panels": [
@@ -40,7 +40,6 @@
       "type": "row"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -102,7 +101,6 @@
       },
       "id": 8,
       "interval": "15s",
-      "maxDataPoints": null,
       "options": {
         "legend": {
           "calcs": [],
@@ -124,7 +122,7 @@
           "refId": "A"
         }
       ],
-      "title": "Http Endpoint Requests",
+      "title": "HTTP Endpoint Requests",
       "transformations": [
         {
           "id": "labelsToFields",
@@ -136,7 +134,6 @@
       "type": "timeseries"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -207,7 +204,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "drogue_connections{}",
+          "expr": "drogue_connections{type=\"endpoint\"}",
           "interval": "",
           "legendFormat": "Connections",
           "refId": "A"
@@ -226,7 +223,6 @@
     },
     {
       "collapsed": false,
-      "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -239,7 +235,6 @@
       "type": "row"
     },
     {
-      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -374,7 +369,7 @@
     }
   ],
   "refresh": "30s",
-  "schemaVersion": 31,
+  "schemaVersion": 34,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -386,7 +381,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Drogue dashboard",
+  "title": "Drogue IoT dashboard",
   "uid": "RdhmR4Anz",
-  "version": 1
+  "version": 2,
+  "weekStart": ""
 }
