@@ -1,35 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_DROGUE_METRICS",
-      "label": "drogue_metrics",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
-  "__elements": [],
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "8.3.4"
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "timeseries",
-      "name": "Time series",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -58,7 +27,7 @@
   "panels": [
     {
       "collapsed": false,
-      "datasource": "${DS_DROGUE_METRICS}",
+      "datasource": "drogue_metrics",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -73,7 +42,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_DROGUE_METRICS}"
+        "uid": "PCF44A6F8518AA255"
       },
       "fieldConfig": {
         "defaults": {
@@ -171,7 +140,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_DROGUE_METRICS}"
+        "uid": "PCF44A6F8518AA255"
       },
       "fieldConfig": {
         "defaults": {
@@ -200,7 +169,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "none"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -242,8 +211,12 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PCF44A6F8518AA255"
+          },
           "exemplar": true,
-          "expr": "drogue_connections{type=\"endpoint\"}",
+          "expr": "sum by (protocol) (drogue_connections{type=\"endpoint\"})",
           "interval": "",
           "legendFormat": "Connections",
           "refId": "A"
@@ -254,7 +227,7 @@
         {
           "id": "labelsToFields",
           "options": {
-            "valueLabel": "app_kubernetes_io_name"
+            "valueLabel": "protocol"
           }
         }
       ],
@@ -264,7 +237,7 @@
       "collapsed": false,
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_DROGUE_METRICS}"
+        "uid": "PCF44A6F8518AA255"
       },
       "gridPos": {
         "h": 1,
@@ -280,7 +253,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_DROGUE_METRICS}"
+        "uid": "PCF44A6F8518AA255"
       },
       "fieldConfig": {
         "defaults": {
@@ -413,9 +386,118 @@
       "title": "Downstream Events",
       "transformations": [],
       "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 16,
+      "panels": [],
+      "title": "Integrations",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PCF44A6F8518AA255"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 19
+      },
+      "id": 17,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PCF44A6F8518AA255"
+          },
+          "exemplar": true,
+          "expr": "sum by (protocol) (drogue_connections{type=\"integration\"})",
+          "interval": "",
+          "legendFormat": "Connections",
+          "refId": "A"
+        }
+      ],
+      "title": "Connections",
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": {
+            "valueLabel": "protocol"
+          }
+        }
+      ],
+      "type": "timeseries"
     }
   ],
-  "refresh": "30s",
+  "refresh": "5s",
   "schemaVersion": 34,
   "style": "dark",
   "tags": [],
@@ -430,6 +512,6 @@
   "timezone": "",
   "title": "Drogue IoT dashboard",
   "uid": "RdhmR4Anz",
-  "version": 2,
+  "version": 1,
   "weekStart": ""
 }
