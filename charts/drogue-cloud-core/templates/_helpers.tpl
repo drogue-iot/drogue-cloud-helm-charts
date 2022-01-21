@@ -12,6 +12,7 @@ Arguments: (dict)
  * root - .
  * name - name of the resource
  * component - component this resource belongs to
+ * metrics - flag to add metrics labels
 */}}
 {{- define "drogue-cloud-core.labels" -}}
 {{ include "drogue-cloud-common.selectorLabels" . }}
@@ -20,6 +21,9 @@ app.kubernetes.io/version: {{ .root.Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .root.Release.Service }}
 app.kubernetes.io/part-of: {{ .root.Values.global.partOf | default "drogue-iot" }}
+{{- if .metrics }}
+drogue.io/metrics: "true"
+{{- end }}
 {{- end }}
 
 {{/*

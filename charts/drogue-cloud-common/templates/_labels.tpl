@@ -8,11 +8,6 @@ Selector labels
 app.kubernetes.io/name: {{ .name }}
 app.kubernetes.io/component: {{ .component }}
 app.kubernetes.io/instance: {{ .root.Values.coreReleaseName | default .root.Release.Name }}
-
-{{- if .metrics }}
-drogue.io/metrics: "true"
-{{- end }}
-
 {{- end }}
 
 {{/*
