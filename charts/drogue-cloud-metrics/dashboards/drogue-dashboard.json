@@ -117,8 +117,12 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PCF44A6F8518AA255"
+          },
           "exemplar": true,
-          "expr": "irate(http_endpoint_http_requests_total{}[$__rate_interval])",
+          "expr": "sum(irate(http_endpoint_http_requests_total{}[$__rate_interval]))",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -497,7 +501,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "5s",
+  "refresh": "30s",
   "schemaVersion": 34,
   "style": "dark",
   "tags": [],
@@ -512,6 +516,6 @@
   "timezone": "",
   "title": "Drogue IoT dashboard",
   "uid": "RdhmR4Anz",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
