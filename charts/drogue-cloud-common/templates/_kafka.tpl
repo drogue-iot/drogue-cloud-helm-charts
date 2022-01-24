@@ -41,7 +41,7 @@ Kafka connection properties
 {{- include "drogue-cloud-common.translate-kafka-properties" ( dict "prefix" .prefix "properties" .root.Values.kafka.external.properties ) -}}
 
 {{- if .root.Values.kafka.external.sasl.enabled }}
-- name: {{ .prefix }}SASL_MECHANISMS
+- name: {{ .prefix }}SASL_MECHANISM
   value: {{ .root.Values.kafka.external.sasl.mechanism }}
 - name: {{ .prefix }}SASL_USERNAME
   value: {{ .root.Values.kafka.external.sasl.username | quote }}
@@ -53,7 +53,7 @@ Kafka connection properties
 
 - name: {{ .prefix }}SECURITY_PROTOCOL
   value: sasl_plaintext
-- name: {{ .prefix }}SASL_MECHANISMS
+- name: {{ .prefix }}SASL_MECHANISM
   value: SCRAM-SHA-512
 - name: {{ .prefix }}SASL_USERNAME
   value: drogue-iot
