@@ -3,6 +3,8 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: {{ .name | quote }}
+  annotations:
+    {{- include "drogue-cloud-core.tracing-annotations" .root | nindent 4 }}
   labels:
     {{- include "drogue-cloud-core.labels" . | nindent 4 }}
 spec:

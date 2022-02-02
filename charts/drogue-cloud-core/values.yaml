@@ -6,6 +6,9 @@ global:
   # instance is the ID of the installation
   instance: drogue
 
+  drogueCloud:
+    jaeger:
+      enabled: true
 
 defaults:
   images:
