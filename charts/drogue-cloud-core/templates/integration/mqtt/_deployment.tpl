@@ -5,6 +5,8 @@ metadata:
   name: {{ .name | quote }}
   labels:
     {{- include "drogue-cloud-core.labels" . | nindent 4 }}
+  annotations:
+    {{- include "drogue-cloud-core.jaeger-annotations" .root | nindent 4 }}
 spec:
   replicas: 1
   selector:

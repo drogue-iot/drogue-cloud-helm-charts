@@ -5,6 +5,7 @@ metadata:
   name: ttn-operator
   annotations:
     app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"device-management-service"}]'
+    {{- include "drogue-cloud-core.jaeger-annotations" . | nindent 4 }}
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:

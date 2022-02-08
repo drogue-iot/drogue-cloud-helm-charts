@@ -5,6 +5,8 @@ metadata:
   name: console-backend
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+  annotations:
+    {{- include "drogue-cloud-core.jaeger-annotations" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
