@@ -6,7 +6,7 @@ Arguments: (dict)
 * volume - the name of the volume to map
 */}}
 {{- define "drogue-cloud-common.init-container.wait-for-client-secret" -}}
-- name: wait-for-client-secret
+- name: wait-for-{{ .volume }}
   image: {{ .root.Values.helper.image }}
   imagePullPolicy: IfNotPresent
   command:
