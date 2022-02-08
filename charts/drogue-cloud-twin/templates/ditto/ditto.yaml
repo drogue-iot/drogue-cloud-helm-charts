@@ -36,6 +36,10 @@ spec:
     password:
      value: {{ .Values.ditto.devops.password }}
 
+  {{ with .Values.ditto.mongoDb }}
+  mongoDb:
+    {{ . | toYaml }}
+  {{ else }}
   mongoDb:
     host: mongodb
     username:
@@ -44,6 +48,7 @@ spec:
       value: {{ index .Values.mongodb.auth.passwords 0 | quote }}
     database:
       value: {{ index .Values.mongodb.auth.databases 0 | quote }}
+  {{ end }}
 
   ingress:
     host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "ditto" "ingress" .Values.ditto.ingress ) }}
