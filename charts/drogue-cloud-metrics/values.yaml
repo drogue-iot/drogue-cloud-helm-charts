@@ -39,3 +39,7 @@ grafana:
     datasources:
       enabled: true
       label: grafana_datasource
+
+# in openshift we use the jaeger operator
+tracing:
+  enabled: false
