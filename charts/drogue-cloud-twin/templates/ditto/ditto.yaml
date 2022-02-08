@@ -13,10 +13,24 @@ spec:
   {{ with .Values.ditto.registry }}registry: {{ . | quote }}{{ end }}
   {{ with .Values.ditto.pullPolicy }}pullPolicy: {{ . | quote }}{{ end }}
 
+  metrics:
+    enabled: {{ .Values.ditto.metrics.enabled }}
+
   services:
+    connectivity:
+      replicas: {{ .Values.ditto.services.connectivity.replicas | default 1 }}
     concierge:
+      replicas: {{ .Values.ditto.services.concierge.replicas | default 1 }}
       additionalProperties:
         "ditto.concierge.enforcement.restrict-creation.grant.0.auth-subjects.0": "keycloak:drogue-admin"
+    gateway:
+      replicas: {{ .Values.ditto.services.gateway.replicas | default 1 }}
+    policies:
+      replicas: {{ .Values.ditto.services.policies.replicas | default 1 }}
+    things:
+      replicas: {{ .Values.ditto.services.things.replicas | default 1 }}
+    thingsSearch:
+      replicas: {{ .Values.ditto.services.thingsSearch.replicas | default 1 }}
 
   devops:
     password:

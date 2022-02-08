@@ -51,8 +51,23 @@ ditto:
   # version: latest
   # registry: docker.io/eclipse
   # pullPolicy: Always
+  metrics:
+    enabled: true
   devops:
     password: devops123456
+  services:
+    connectivity:
+      replicas: 1
+    concierge:
+      replicas: 1
+    gateway:
+      replicas: 1
+    policies:
+      replicas: 1
+    things:
+      replicas: 1
+    thingsSearch:
+      replicas: 1
 
 operator: {}
 
