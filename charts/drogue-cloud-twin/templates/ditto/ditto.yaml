@@ -5,6 +5,8 @@ metadata:
   name: ditto
   labels:
     {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+  annotations:
+    {{- include "drogue-cloud-core.jaeger-annotations" . | nindent 4 }}
 spec:
 
   disableInfraProxy: true
