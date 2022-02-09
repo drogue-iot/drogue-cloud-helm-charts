@@ -10,7 +10,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/part-of: ditto
-      {{- include "drogue-cloud-common.healthSelector" . | nindent 6 }}
+      app.kubernetes.io/managed-by: ditto-operator
   podMetricsEndpoints:
       - port: metrics
         path: /
