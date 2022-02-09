@@ -38,7 +38,7 @@ spec:
 
   {{ with .Values.ditto.mongoDb }}
   mongoDb:
-    {{ . | toYaml }}
+    {{- . | toYaml | nindent 4 }}
   {{ else }}
   mongoDb:
     host: mongodb
