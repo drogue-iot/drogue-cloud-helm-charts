@@ -9,6 +9,8 @@ metadata:
         {"apiVersion":"apps/v1","kind":"Deployment","name":"device-management-service"},
         {"apiVersion":"apps/v1","kind":"Deployment","name":"ditto-gateway"},
       ]
+    {{- include "drogue-cloud-twin.jaeger-annotations" . | nindent 4 }}
+
   labels:
     {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
 spec:
