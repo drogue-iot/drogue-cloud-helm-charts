@@ -53,6 +53,7 @@ ditto:
   # pullPolicy: Always
   metrics:
     enabled: true
+  logLevel: info
   devops:
     password: devops123456
   services:

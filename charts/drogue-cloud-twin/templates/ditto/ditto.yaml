@@ -20,18 +20,24 @@ spec:
   services:
     connectivity:
       replicas: {{ .Values.ditto.services.connectivity.replicas | default 1 }}
+      logLevel: {{ .Values.ditto.services.connectivity.logLevel | default .Values.ditto.logLevel | default "info" | quote }}
     concierge:
       replicas: {{ .Values.ditto.services.concierge.replicas | default 1 }}
+      logLevel: {{ .Values.ditto.services.concierge.logLevel | default .Values.ditto.logLevel | default "info" | quote }}
       additionalProperties:
         "ditto.concierge.enforcement.restrict-creation.grant.0.auth-subjects.0": "keycloak:drogue-admin"
     gateway:
       replicas: {{ .Values.ditto.services.gateway.replicas | default 1 }}
+      logLevel: {{ .Values.ditto.services.gateway.logLevel | default .Values.ditto.logLevel | default "info" | quote }}
     policies:
       replicas: {{ .Values.ditto.services.policies.replicas | default 1 }}
+      logLevel: {{ .Values.ditto.services.policies.logLevel | default .Values.ditto.logLevel | default "info" | quote }}
     things:
       replicas: {{ .Values.ditto.services.things.replicas | default 1 }}
+      logLevel: {{ .Values.ditto.services.things.logLevel | default .Values.ditto.logLevel | default "info" | quote }}
     thingsSearch:
       replicas: {{ .Values.ditto.services.thingsSearch.replicas | default 1 }}
+      logLevel: {{ .Values.ditto.services.thingsSearch.logLevel | default .Values.ditto.logLevel | default "info" | quote }}
 
   devops:
     password:
