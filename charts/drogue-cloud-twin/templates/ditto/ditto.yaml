@@ -43,6 +43,11 @@ spec:
     password:
      value: {{ .Values.ditto.devops.password }}
 
+  {{ with .Values.ditto.kafka }}
+  kafka:
+    {{- . | toYaml | nindent 4 }}
+  {{ end }}
+
   {{ with .Values.ditto.mongoDb }}
   mongoDb:
     {{- . | toYaml | nindent 4 }}
