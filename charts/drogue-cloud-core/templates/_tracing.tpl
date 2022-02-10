@@ -20,6 +20,8 @@ Arguments: (dict)
 {{- if eq (include "drogue-cloud-core.jaeger-enabled" .root ) "true" }}
 - name: ENABLE_TRACING
   value: "true"
+- name: OTEL_BSP_MAX_EXPORT_BATCH_SIZE
+  value: {{ .root.Values.global.drogueCloud.jaeger.exportBatchSize | default 32 | quote }}
 {{- end }}
 {{- end }}
 
