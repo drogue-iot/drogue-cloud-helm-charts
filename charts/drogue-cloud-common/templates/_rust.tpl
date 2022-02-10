@@ -6,8 +6,8 @@ Arguments: (dict)
 * app - the application
 */}}
 {{- define "drogue-cloud-common.rust.logging" -}}
-{{ include "drogue-cloud-common._rust.backtrace" . }}
-{{ include "drogue-cloud-common._rust.log" . }}
+{{- include "drogue-cloud-common._rust.backtrace" . }}
+{{- include "drogue-cloud-common._rust.log" . }}
 {{- end }}{{/* define */}}
 
 

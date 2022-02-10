@@ -26,6 +26,7 @@ spec:
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
           env:
             {{ include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.services.console)  | nindent 12 }}
+            {{- include "drogue-cloud-core.jaeger-env" ( dict "root" . "app" .Values.services.console ) | nindent 12 }}
             - name: BIND_ADDR
               value: "0.0.0.0:8080"
             - name: HEALTH__BIND_ADDR

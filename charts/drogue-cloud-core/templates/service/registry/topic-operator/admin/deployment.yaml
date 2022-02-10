@@ -27,6 +27,7 @@ spec:
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
           env:
             {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.services.topicOperator ) | nindent 12 }}
+            {{- include "drogue-cloud-core.jaeger-env" ( dict "root" . "app" .Values.services.topicOperator ) | nindent 12 }}
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
             - name: NAMESPACE

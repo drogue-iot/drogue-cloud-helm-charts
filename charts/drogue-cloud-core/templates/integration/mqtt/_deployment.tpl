@@ -25,6 +25,7 @@ spec:
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" .root }}
           env:
             {{- include "drogue-cloud-common.rust.logging" ( dict "root" .root "app" .app ) | nindent 12 }}
+            {{- include "drogue-cloud-core.jaeger-env" ( dict "root" .root "app" .app ) | nindent 12 }}
             - name: MQTT__BIND_ADDR
               value: "0.0.0.0:1883"
             - name: MQTT__TRANSPORT
