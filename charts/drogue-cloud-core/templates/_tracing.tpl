@@ -22,6 +22,10 @@ Arguments: (dict)
   value: "true"
 - name: OTEL_BSP_MAX_EXPORT_BATCH_SIZE
   value: {{ .root.Values.global.drogueCloud.jaeger.exportBatchSize | default 32 | quote }}
+- name: OTEL_TRACES_SAMPLER
+  value: {{ .root.Values.global.drogueCloud.jaeger.sampler | default "parentbased_traceidratio" | quote }}
+- name: OTEL_TRACES_SAMPLER_ARG
+  value: {{ .root.Values.global.drogueCloud.jaeger.samplerArgument | default "0.1" | quote }}
 {{- end }}
 {{- end }}
 
