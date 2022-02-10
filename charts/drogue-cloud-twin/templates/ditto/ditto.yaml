@@ -19,25 +19,19 @@ spec:
 
   services:
     connectivity:
-      replicas: {{ .Values.ditto.services.connectivity.replicas | default 1 }}
-      logLevel: {{ .Values.ditto.services.connectivity.logLevel | default .Values.ditto.logLevel | default "info" | quote }}
+      {{- include "drogue-cloud-twin._ditto-service-spec" ( dict "root" . "service" .Values.ditto.services.connectivity ) | nindent 6 }}
     concierge:
-      replicas: {{ .Values.ditto.services.concierge.replicas | default 1 }}
-      logLevel: {{ .Values.ditto.services.concierge.logLevel | default .Values.ditto.logLevel | default "info" | quote }}
+      {{- include "drogue-cloud-twin._ditto-service-spec" ( dict "root" . "service" .Values.ditto.services.concierge ) | nindent 6 }}
       additionalProperties:
         "ditto.concierge.enforcement.restrict-creation.grant.0.auth-subjects.0": "keycloak:drogue-admin"
     gateway:
-      replicas: {{ .Values.ditto.services.gateway.replicas | default 1 }}
-      logLevel: {{ .Values.ditto.services.gateway.logLevel | default .Values.ditto.logLevel | default "info" | quote }}
+      {{- include "drogue-cloud-twin._ditto-service-spec" ( dict "root" . "service" .Values.ditto.services.gateway ) | nindent 6 }}
     policies:
-      replicas: {{ .Values.ditto.services.policies.replicas | default 1 }}
-      logLevel: {{ .Values.ditto.services.policies.logLevel | default .Values.ditto.logLevel | default "info" | quote }}
+      {{- include "drogue-cloud-twin._ditto-service-spec" ( dict "root" . "service" .Values.ditto.services.policies ) | nindent 6 }}
     things:
-      replicas: {{ .Values.ditto.services.things.replicas | default 1 }}
-      logLevel: {{ .Values.ditto.services.things.logLevel | default .Values.ditto.logLevel | default "info" | quote }}
+      {{- include "drogue-cloud-twin._ditto-service-spec" ( dict "root" . "service" .Values.ditto.services.things ) | nindent 6 }}
     thingsSearch:
-      replicas: {{ .Values.ditto.services.thingsSearch.replicas | default 1 }}
-      logLevel: {{ .Values.ditto.services.thingsSearch.logLevel | default .Values.ditto.logLevel | default "info" | quote }}
+      {{- include "drogue-cloud-twin._ditto-service-spec" ( dict "root" . "service" .Values.ditto.services.thingsSearch ) | nindent 6 }}
 
   devops:
     password:

@@ -52,7 +52,7 @@ ditto:
   # registry: docker.io/eclipse
   # pullPolicy: Always
   metrics:
-    enabled: true
+    enabled: false
   logLevel: info
   devops:
     password: devops123456
