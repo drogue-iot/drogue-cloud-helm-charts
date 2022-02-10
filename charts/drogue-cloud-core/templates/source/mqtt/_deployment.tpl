@@ -101,9 +101,8 @@ spec:
             httpGet:
               port: 9090
               path: /liveness
-          resources:
-            limits:
-              memory: 64Mi
+
+          {{- include "drogue-cloud-core.container-resources" ( dict "root" .root "app" .app ) | nindent 10 }}
 
           {{- if not .insecure }}
           volumeMounts:

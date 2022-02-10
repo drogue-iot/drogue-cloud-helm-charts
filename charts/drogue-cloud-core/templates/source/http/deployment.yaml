@@ -96,6 +96,8 @@ spec:
               port: 9090
               path: /liveness
 
+          {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.endpoints.http ) | nindent 10 }}
+
           {{ if not .Values.endpoints.http.insecure }}
           volumeMounts:
             - mountPath: /etc/endpoint

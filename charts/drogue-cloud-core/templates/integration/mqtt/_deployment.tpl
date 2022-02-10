@@ -108,9 +108,7 @@ spec:
               protocol: TCP
             {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}
 
-          resources:
-            limits:
-              memory: 64Mi
+          {{- include "drogue-cloud-core.container-resources" ( dict "root" .root "app" .app ) | nindent 10 }}
 
           readinessProbe:
             initialDelaySeconds: 2

@@ -112,10 +112,10 @@ services:
     ingress: {}
   sso:
     ingress: {}
-  registry:
-    topicOperator: {}
-    outbox: {}
-    ttnOperator: {}
+  registry: {}
+  topicOperator: {}
+  outbox: {}
+  ttnOperator: {}
   auth: {}
   userAuth: {}
   command: {}

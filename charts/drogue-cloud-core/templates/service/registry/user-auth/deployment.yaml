@@ -108,9 +108,9 @@ spec:
               name: api
               protocol: TCP
             {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}
-          resources:
-            limits:
-              memory: 128Mi
+
+          {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.services.userAuth) | nindent 10 }}
+
       volumes:
         - name: client-secret-services
           secret:

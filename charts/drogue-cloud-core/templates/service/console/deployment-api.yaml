@@ -38,9 +38,9 @@ spec:
             - containerPort: 8080
               name: endpoint
               protocol: TCP
-          resources:
-            limits:
-              memory: 64Mi
+
+          {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.services.api ) | nindent 10 }}
+
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1

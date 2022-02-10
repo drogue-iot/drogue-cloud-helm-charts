@@ -110,6 +110,9 @@ spec:
             httpGet:
               port: 9090
               path: /liveness
+
+          {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.integrations.websocket ) | nindent 10 }}
+
       volumes:
         - name: client-secret-services
           secret:
