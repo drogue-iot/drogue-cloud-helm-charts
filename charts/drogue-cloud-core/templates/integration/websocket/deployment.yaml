@@ -5,6 +5,8 @@ metadata:
   name: websocket-integration
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+  annotations:
+    {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -23,6 +25,7 @@ spec:
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
           env:
             {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.integrations.websocket ) | nindent 12 }}
+            {{- include "drogue-cloud-common.jaeger-env" ( dict "root" . "app" .Values.integrations.websocket ) | nindent 12 }}
             - name: BIND_ADDR
               value: "0.0.0.0:8080"
             - name: HEALTH__BIND_ADDR
@@ -108,6 +111,9 @@ spec:
             httpGet:
               port: 9090
               path: /liveness
+
+          {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.integrations.websocket ) | nindent 10 }}
+
       volumes:
         - name: client-secret-services
           secret:

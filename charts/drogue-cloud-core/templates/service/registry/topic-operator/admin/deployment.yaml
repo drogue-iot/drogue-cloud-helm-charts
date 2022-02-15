@@ -6,6 +6,7 @@ metadata:
   name: topic-operator
   annotations:
     app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"device-management-service"}]'
+    {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
@@ -25,7 +26,8 @@ spec:
           image: {{ include "drogue-cloud-common.image" (dict "root" . "name" "topic-admin-operator" ) | quote }}
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
           env:
-            {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.services.registry.topicOperator ) | nindent 12 }}
+            {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.services.topicOperator ) | nindent 12 }}
+            {{- include "drogue-cloud-common.jaeger-env" ( dict "root" . "app" .Values.services.topicOperator ) | nindent 12 }}
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
             - name: NAMESPACE
@@ -33,10 +35,10 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: CONTROLLER__NUM_PARTITIONS
-              value: {{ .Values.services.registry.topicOperator.numberOfPartitions | default 1 | quote }}
+              value: {{ .Values.services.topicOperator.numberOfPartitions | default 1 | quote }}
             - name: CONTROLLER__NUM_REPLICAS
-              value: {{ .Values.services.registry.topicOperator.numberOfReplicas | default 1 | quote }}
-            {{- include "drogue-cloud-common.translate-kafka-properties" (dict "properties" .Values.services.registry.topicOperator.properties "prefix" "CONTROLLER__PROPERTIES__" ) | nindent 12 }}
+              value: {{ .Values.services.topicOperator.numberOfReplicas | default 1 | quote }}
+            {{- include "drogue-cloud-common.translate-kafka-properties" (dict "properties" .Values.services.topicOperator.properties "prefix" "CONTROLLER__PROPERTIES__" ) | nindent 12 }}
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -96,9 +98,9 @@ spec:
             httpGet:
               port: 9090
               path: /liveness
-          resources:
-            limits:
-              memory: 128Mi
+
+          {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.services.topicOperator) | nindent 10 }}
+
       volumes:
         - name: client-secret-services
           secret:

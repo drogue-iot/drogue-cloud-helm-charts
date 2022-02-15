@@ -5,6 +5,7 @@ metadata:
   name: user-auth-service
   annotations:
     app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"postgres"}]'
+    {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 
@@ -33,6 +34,7 @@ spec:
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
           env:
             {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.services.userAuth ) | nindent 12 }}
+            {{- include "drogue-cloud-common.jaeger-env" ( dict "root" . "app" .Values.services.userAuth ) | nindent 12 }}
             - name: BIND_ADDR
               value: 0.0.0.0:8080
             - name: HEALTH__BIND_ADDR
@@ -107,9 +109,9 @@ spec:
               name: api
               protocol: TCP
             {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}
-          resources:
-            limits:
-              memory: 128Mi
+
+          {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.services.userAuth) | nindent 10 }}
+
       volumes:
         - name: client-secret-services
           secret:

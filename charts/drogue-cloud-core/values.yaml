@@ -6,6 +6,9 @@ global:
   # instance is the ID of the installation
   instance: drogue
 
+  drogueCloud:
+    jaeger:
+      enabled: true
 
 defaults:
   images:
@@ -109,10 +112,10 @@ services:
     ingress: {}
   sso:
     ingress: {}
-  registry:
-    topicOperator: {}
-    outbox: {}
-    ttnOperator: {}
+  registry: {}
+  topicOperator: {}
+  outbox: {}
+  ttnOperator: {}
   auth: {}
   userAuth: {}
   command: {}

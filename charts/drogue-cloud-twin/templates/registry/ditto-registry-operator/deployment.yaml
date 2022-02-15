@@ -9,6 +9,8 @@ metadata:
         {"apiVersion":"apps/v1","kind":"Deployment","name":"device-management-service"},
         {"apiVersion":"apps/v1","kind":"Deployment","name":"ditto-gateway"},
       ]
+    {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
+
   labels:
     {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
 spec:
@@ -30,6 +32,7 @@ spec:
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
           env:
             {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.operator ) | nindent 12 }}
+            {{- include "drogue-cloud-common.jaeger-env" ( dict "root" . "app" .Values.operator ) | nindent 12 }}
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
             - name: NAMESPACE

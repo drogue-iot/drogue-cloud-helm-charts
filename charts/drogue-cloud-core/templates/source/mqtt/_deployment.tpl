@@ -3,6 +3,8 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: {{ .name | quote }}
+  annotations:
+    {{- include "drogue-cloud-common.jaeger-annotations" .root | nindent 4 }}
   labels:
     {{- include "drogue-cloud-core.labels" . | nindent 4 }}
 spec:
@@ -27,6 +29,7 @@ spec:
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" .root }}
           env:
             {{- include "drogue-cloud-common.rust.logging" ( dict "root" .root "app" .app ) | nindent 12 }}
+            {{- include "drogue-cloud-common.jaeger-env" ( dict "root" .root "app" .app ) | nindent 12 }}
             - name: MQTT__BIND_ADDR
               value: "0.0.0.0:1883"
             - name: MQTT__TRANSPORT
@@ -99,9 +102,8 @@ spec:
             httpGet:
               port: 9090
               path: /liveness
-          resources:
-            limits:
-              memory: 64Mi
+
+          {{- include "drogue-cloud-core.container-resources" ( dict "root" .root "app" .app ) | nindent 10 }}
 
           {{- if not .insecure }}
           volumeMounts:

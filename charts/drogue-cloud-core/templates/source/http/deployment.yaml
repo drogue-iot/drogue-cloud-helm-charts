@@ -5,6 +5,8 @@ metadata:
   name: http-endpoint
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+  annotations:
+    {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -27,6 +29,7 @@ spec:
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
           env:
             {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.endpoints.http ) | nindent 12 }}
+            {{- include "drogue-cloud-common.jaeger-env" ( dict "root" . "app" .Values.endpoints.http ) | nindent 12 }}
             - name: BIND_ADDR
               value: "0.0.0.0:{{ if .Values.endpoints.http.insecure }}8080{{ else }}8443{{ end }}"
             - name: HEALTH__BIND_ADDR
@@ -93,6 +96,8 @@ spec:
             httpGet:
               port: 9090
               path: /liveness
+
+          {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.endpoints.http ) | nindent 10 }}
 
           {{ if not .Values.endpoints.http.insecure }}
           volumeMounts:

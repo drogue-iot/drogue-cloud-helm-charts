@@ -5,6 +5,7 @@ metadata:
   name: ttn-operator
   annotations:
     app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"device-management-service"}]'
+    {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
@@ -25,7 +26,8 @@ spec:
           image: {{ include "drogue-cloud-common.image" $ref | quote }}
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
           env:
-            {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.services.registry.ttnOperator ) | nindent 12 }}
+            {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.services.ttnOperator ) | nindent 12 }}
+            {{- include "drogue-cloud-common.jaeger-env" ( dict "root" . "app" .Values.services.ttnOperator ) | nindent 12 }}
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
             - name: NAMESPACE
@@ -90,9 +92,9 @@ spec:
             httpGet:
               port: 9090
               path: /liveness
-          resources:
-            limits:
-              memory: 128Mi
+
+          {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.services.ttnOperator) | nindent 10 }}
+
       volumes:
         - name: client-secret-services
           secret:

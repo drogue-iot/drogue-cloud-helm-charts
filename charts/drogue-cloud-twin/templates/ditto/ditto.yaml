@@ -5,6 +5,7 @@ metadata:
   name: ditto
   labels:
     {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+
 spec:
 
   disableInfraProxy: true
@@ -13,15 +14,38 @@ spec:
   {{ with .Values.ditto.registry }}registry: {{ . | quote }}{{ end }}
   {{ with .Values.ditto.pullPolicy }}pullPolicy: {{ . | quote }}{{ end }}
 
+  metrics:
+    enabled: {{ .Values.ditto.metrics.enabled }}
+
   services:
+    connectivity:
+      {{- include "drogue-cloud-twin._ditto-service-spec" ( dict "root" . "service" .Values.ditto.services.connectivity ) | nindent 6 }}
     concierge:
+      {{- include "drogue-cloud-twin._ditto-service-spec" ( dict "root" . "service" .Values.ditto.services.concierge ) | nindent 6 }}
       additionalProperties:
         "ditto.concierge.enforcement.restrict-creation.grant.0.auth-subjects.0": "keycloak:drogue-admin"
+    gateway:
+      {{- include "drogue-cloud-twin._ditto-service-spec" ( dict "root" . "service" .Values.ditto.services.gateway ) | nindent 6 }}
+    policies:
+      {{- include "drogue-cloud-twin._ditto-service-spec" ( dict "root" . "service" .Values.ditto.services.policies ) | nindent 6 }}
+    things:
+      {{- include "drogue-cloud-twin._ditto-service-spec" ( dict "root" . "service" .Values.ditto.services.things ) | nindent 6 }}
+    thingsSearch:
+      {{- include "drogue-cloud-twin._ditto-service-spec" ( dict "root" . "service" .Values.ditto.services.thingsSearch ) | nindent 6 }}
 
   devops:
     password:
      value: {{ .Values.ditto.devops.password }}
 
+  {{ with .Values.ditto.kafka }}
+  kafka:
+    {{- . | toYaml | nindent 4 }}
+  {{ end }}
+
+  {{ with .Values.ditto.mongoDb }}
+  mongoDb:
+    {{- . | toYaml | nindent 4 }}
+  {{ else }}
   mongoDb:
     host: mongodb
     username:
@@ -30,6 +54,7 @@ spec:
       value: {{ index .Values.mongodb.auth.passwords 0 | quote }}
     database:
       value: {{ index .Values.mongodb.auth.databases 0 | quote }}
+  {{ end }}
 
   ingress:
     host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "ditto" "ingress" .Values.ditto.ingress ) }}
