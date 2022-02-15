@@ -3,8 +3,8 @@ Jaeger tracing annotations.
 
 Arguments: (root)
 */}}
-{{- define "drogue-cloud-core.jaeger-annotations" -}}
-{{- if eq (include "drogue-cloud-core.jaeger-enabled" . ) "true" }}
+{{- define "drogue-cloud-common.jaeger-annotations" -}}
+{{- if eq (include "drogue-cloud-common.jaeger-enabled" . ) "true" }}
 "sidecar.jaegertracing.io/inject": "true"
 {{- end }}
 {{- end }}
@@ -16,8 +16,8 @@ Arguments: (dict)
   root - the root (.)
   app - the application level configuration
 */}}
-{{- define "drogue-cloud-core.jaeger-env" -}}
-{{- if eq (include "drogue-cloud-core.jaeger-enabled" .root ) "true" }}
+{{- define "drogue-cloud-common.jaeger-env" -}}
+{{- if eq (include "drogue-cloud-common.jaeger-enabled" .root ) "true" }}
 - name: ENABLE_TRACING
   value: "true"
 - name: OTEL_BSP_MAX_EXPORT_BATCH_SIZE
@@ -34,6 +34,6 @@ Check if jaeger tracing is enabled
 
 Arguments: (root)
 */}}
-{{- define "drogue-cloud-core.jaeger-enabled" -}}
+{{- define "drogue-cloud-common.jaeger-enabled" -}}
 {{ .Values.global.drogueCloud.jaeger.enabled }}
 {{- end }}

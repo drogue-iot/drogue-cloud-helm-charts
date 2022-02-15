@@ -3,3 +3,6 @@ global:
   domain: .my-cluster.dns
   # cluster defines the cluster type
   cluster: kubernetes
+
+  drogueCloud:
+    jaeger: {}

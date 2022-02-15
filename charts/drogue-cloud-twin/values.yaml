@@ -2,6 +2,9 @@ global:
   cluster: kubernetes
   domain: .my-cluster.dns
 
+  drogueCloud:
+    jaeger: {}
+
 defaults:
   images:
     repository: ghcr.io/drogue-iot
