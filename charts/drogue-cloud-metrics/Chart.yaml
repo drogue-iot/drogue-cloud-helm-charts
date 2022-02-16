@@ -33,4 +33,4 @@ dependencies:
   - name: jaeger-operator
     version: ~2.27
     repository: "https://jaegertracing.github.io/helm-charts"
-    condition: tracing.enabled
+    condition: .global.drogueCloud.jaeger.deployOperator

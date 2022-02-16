@@ -1,11 +1,10 @@
 apiVersion: jaegertracing.io/v1
 kind: Jaeger
 metadata:
-  name: drogue-tracing
+  name: jaeger
 spec:
-  strategy: allInOne
-  sampling:
-    options:
-      default_strategy:
-        type: probabilistic
-        param: 0.5
+  {{- if has .Values.global.cluster (list "minikube" "kind" ) }}
+  ingress:
+    hosts:
+      - {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "jaeger" "ingress" .root.Values.global.drogueCloud.jaeger.ingress ) }}
+  {{- end}}
