@@ -8,7 +8,7 @@ global:
 
   drogueCloud:
     jaeger:
-      enabled: true
+      enabled: false
 
 defaults:
   images:
