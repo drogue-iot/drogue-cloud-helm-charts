@@ -19,7 +19,7 @@ spec:
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: keycloak
+  name: sso
   annotations:
     {{- include "drogue-cloud-core.ingress.annotations" (dict "root" . "ingress" .Values.services.sso.ingress ) | nindent 4 }}
   labels:

@@ -51,8 +51,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            - name: AUTH__SSO_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" .root "prefix" "sso" "ingress" .root.Values.services.sso.ingress ) }}
+            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" .root "prefix" "AUTH__" ) | nindent 12 }}
             - name: COMMAND_SOURCE_KAFKA__TOPIC
               value: iot-commands
             - name: COMMAND_SOURCE_KAFKA__CONSUMER_GROUP
@@ -105,11 +104,12 @@ spec:
 
           {{- include "drogue-cloud-core.container-resources" ( dict "root" .root "app" .app ) | nindent 10 }}
 
-          {{- if not .insecure }}
           volumeMounts:
+          {{- if not .insecure }}
             - mountPath: /etc/endpoint
               name: endpoint-tls
           {{- end }}
+          {{- include "drogue-cloud-core.keycloak-volume-mounts" .root | nindent 12 }}
 
       volumes:
 
@@ -122,5 +122,7 @@ spec:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
+
+        {{- include "drogue-cloud-core.keycloak-volumes" .root | nindent 8 }}
 
 {{- end -}}

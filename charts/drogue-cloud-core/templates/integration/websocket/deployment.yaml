@@ -35,10 +35,7 @@ spec:
                 configMapKeyRef:
                   name: configuration
                   key: instance
-            - name: SSO_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
-            - name: OAUTH__SSO_URL
-              value: $(SSO_URL)
+            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "OAUTH__" ) | nindent 12 }}
             - name: OAUTH__CLIENTS__DROGUE__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -64,8 +61,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            - name: USER_AUTH__SSO_URL
-              value: $(SSO_URL)
+            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "USER_AUTH__" ) | nindent 12 }}
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -76,8 +72,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            - name: REGISTRY__SSO_URL
-              value: $(SSO_URL)
+            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
 
             - name: KAFKA__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . -}}
@@ -114,7 +109,12 @@ spec:
 
           {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.integrations.websocket ) | nindent 10 }}
 
+          volumeMounts:
+            {{- include "drogue-cloud-core.keycloak-volume-mounts" . | nindent 12 }}
+
       volumes:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
+
+        {{- include "drogue-cloud-core.keycloak-volumes" . | nindent 8 }}
