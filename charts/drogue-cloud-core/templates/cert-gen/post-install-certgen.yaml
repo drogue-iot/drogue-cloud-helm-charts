@@ -28,4 +28,10 @@ spec:
             - name: CERT_ALTNAMES
               value: "{{- include "drogue-cloud-common.ingress.cert-altnames" . -}}"
           command: ["make", "deploy"]
+          volumeMounts:
+            - mountPath: /etc/drogue-certs
+              name: certs
+      volumes:
+        - name: certs
+          emptyDir: {}
 {{- end }}
