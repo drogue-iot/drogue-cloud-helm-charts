@@ -33,7 +33,7 @@ Arguments: (dict)
   value: /etc/certs/keycloak/service-ca.crt
 - name: {{ .prefix }}TLS_INSECURE
   {{/* being forced to use the external URL, we need to fall back to "insecure" */}}
-  {{/* and we can't just use `.external` as doesn't have a value when left empty */}}}}
+  {{/* and we can't just use `.external` as doesn't have a value when left empty */}}
   value: {{ if .external }}"true"{{ else }}"false"{{ end }}
 
 {{- else }}{{/* if useServiceCA */}}
