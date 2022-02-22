@@ -50,17 +50,7 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: admin.password
-            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "OAUTH__" ) | nindent 12 }}
-            - name: OAUTH__CLIENTS__SERVICES__CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: keycloak-client-secret-services
-                  key: CLIENT_ID
-            - name: OAUTH__CLIENTS__SERVICES__CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: keycloak-client-secret-services
-                  key: CLIENT_SECRET
+            {{- include "drogue-cloud-core.oauth2-authenticator.env-vars" (dict "root" . "clients" (list "services" )) | nindent 12 }}
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1

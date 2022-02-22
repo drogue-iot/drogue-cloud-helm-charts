@@ -140,6 +140,8 @@ keycloak:
   identityProviders: []
   # Use the OpenShift service CA for the internal service endpoint
   useServiceCA: false
+  # When using the service CA, if the external SSO endpoint is a trusted TLS certificate, or not
+  insecureExternal: false
   postgres:
     # mode is the way postgres gets configured. This can be:
     #  - drogue: Re-use the Drogue Cloud postgres instance

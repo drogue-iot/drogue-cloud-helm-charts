@@ -35,18 +35,7 @@ spec:
                 configMapKeyRef:
                   name: configuration
                   key: instance
-            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "OAUTH__" ) | nindent 12 }}
-            - name: OAUTH__CLIENTS__DROGUE__CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: keycloak-client-secret-drogue
-                  key: CLIENT_ID
-            - name: OAUTH__CLIENTS__DROGUE__CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: keycloak-client-secret-drogue
-                  key: CLIENT_SECRET
-                  optional: true
+            {{- include "drogue-cloud-core.oauth2-authenticator.env-vars" (dict "root" . "clients" (list "drogue" )) | nindent 12 }}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:

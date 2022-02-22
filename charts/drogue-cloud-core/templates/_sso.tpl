@@ -69,3 +69,40 @@ Arguments: .
   name: keycloak-tls
 {{- end }}
 {{- end }}
+
+
+{{/*
+Apply OAuth2 authenticator (validating) env-vars.
+
+Arguments: (dict)
+  * root - .
+  * clients - (list<String>) clients
+*/}}
+{{- define "drogue-cloud-core.oauth2-authenticator.env-vars" }}
+
+{{/* global SSO variables for authenticator */}}
+{{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" .root "prefix" "OAUTH__" ) }}
+
+{{- range .clients }}
+- name: OAUTH__CLIENTS__{{ . | upper }}__CLIENT_ID
+  valueFrom:
+    secretKeyRef:
+      name: keycloak-client-secret-{{ . }}
+      key: CLIENT_ID
+- name: OAUTH__CLIENTS__{{ . | upper }}__CLIENT_SECRET
+  valueFrom:
+    secretKeyRef:
+      name: keycloak-client-secret-{{ . }}
+      key: CLIENT_SECRET
+
+{{- if and (eq . "drogue") (and $.root.Values.keycloak.useServiceCA $.root.Values.keycloak.insecureExternal) }}
+{{/* the console uses the issuer from an external endpoint, which is insecure */}}
+- name: OAUTH__CLIENTS__{{ . | upper }}__ISSUER_URL
+  value: {{ include "drogue-cloud-common.ingress.url" (dict "root" $.root "prefix" "sso" "ingress" $.root.Values.services.sso.ingress ) }}/auth/realms/drogue
+- name: OAUTH__CLIENTS__{{ . | upper }}__TLS_INSECURE
+  value: "true"
+{{- end }}
+
+{{- end }}
+
+{{- end }}
