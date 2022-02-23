@@ -127,9 +127,21 @@ certificates:
 helper:
   image: registry.access.redhat.com/ubi8-minimal:latest
 
+
+oauth2:
+  # The issuer URL. By default, this is the locally deployed keycloak instance
+  # issuerUrl: http://service/some/realm
+  tls:
+    insecure: false
+
+
 keycloak:
   adminPassword: admin123456
   identityProviders: []
+  # Use the OpenShift service CA for the internal service endpoint
+  useServiceCA: false
+  # When using the service CA, if the external SSO endpoint is a trusted TLS certificate, or not
+  insecureExternal: false
   postgres:
     # mode is the way postgres gets configured. This can be:
     #  - drogue: Re-use the Drogue Cloud postgres instance
@@ -151,7 +163,7 @@ keycloak:
     # enabled can be used to disable the job, in case you don't need it or are upgrading from
     # a Keycloak 12 instance, in which case you need to manually configure the roles.
     enabled: true
-    image: quay.io/keycloak/keycloak:15.0.1
+    image: quay.io/keycloak/keycloak:17.0.0
 
 postgres:
   databaseName: registry

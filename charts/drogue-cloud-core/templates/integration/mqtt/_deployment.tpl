@@ -37,21 +37,7 @@ spec:
                 configMapKeyRef:
                   name: configuration
                   key: instance
-            - name: SSO_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" .root "prefix" "sso" "ingress" .root.Values.services.sso.ingress ) }}
-            - name: OAUTH__SSO_URL
-              value: $(SSO_URL)
-            - name: OAUTH__CLIENTS__DROGUE__CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: keycloak-client-secret-drogue
-                  key: CLIENT_ID
-            - name: OAUTH__CLIENTS__DROGUE__CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: keycloak-client-secret-drogue
-                  key: CLIENT_SECRET
-                  optional: true
+            {{- include "drogue-cloud-core.oauth2-authenticator.env-vars" (dict "root" .root "clients" (list "drogue" )) | nindent 12 }}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
@@ -66,8 +52,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            - name: USER_AUTH__SSO_URL
-              value: $(SSO_URL)
+            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" .root "prefix" "USER_AUTH__" ) | nindent 12 }}
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -78,8 +63,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            - name: REGISTRY__SSO_URL
-              value: $(SSO_URL)
+            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" .root "prefix" "REGISTRY__" ) | nindent 12 }}
             - name: SERVICE__KAFKA__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" .root -}}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" .root "prefix" "SERVICE__KAFKA__PROPERTIES__" ) | nindent 12 }}
@@ -128,11 +112,12 @@ spec:
               port: 9090
               path: /liveness
 
-          {{- if not .insecure }}
           volumeMounts:
+          {{- if not .insecure }}
             - mountPath: /etc/endpoint
               name: endpoint-tls
           {{- end }}
+          {{- include "drogue-cloud-core.keycloak-volume-mounts" .root | nindent 12 }}
 
       volumes:
 
@@ -145,5 +130,7 @@ spec:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
+
+        {{- include "drogue-cloud-core.keycloak-volumes" .root | nindent 8 }}
 
 {{- end -}}

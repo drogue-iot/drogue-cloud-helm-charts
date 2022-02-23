@@ -19,6 +19,14 @@ spec:
   template:
     spec:
       restartPolicy: OnFailure
+
+      {{- if .Values.keycloak.useServiceCA }}
+      volumes:
+        - name: service-ca
+          configMap:
+            name: keycloak-service-ca
+      {{- end }}
+
       containers:
         - name: post-install
           image: {{ .Values.keycloak.postInstall.image }}
@@ -35,37 +43,63 @@ spec:
                 secretKeyRef:
                   name: credential-sso
                   key: ADMIN_PASSWORD
+
+            {{- if .Values.keycloak.useServiceCA }}
+            - name: KEYCLOAK_URL
+              value: https://keycloak.{{ .Release.Namespace }}.svc:8443
+            {{- else }}
             - name: KEYCLOAK_URL
               value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+            {{- end }}
+
+            - name: KCADM_PATH
+              value: "/opt/keycloak/bin/kcadm.sh"
+
+            {{- if .Values.keycloak.useServiceCA }}
+            - name: CUSTOM_TRUSTSTORE
+              value: "/etc/certs/keycloak/service-ca.crt"
+            {{- end }}
+
+          {{- if .Values.keycloak.useServiceCA }}
+          volumeMounts:
+            - mountPath: /etc/certs/keycloak
+              name: service-ca
+          {{- end }}
 
           command:
             - bash
             - -exc
             - |
+              # set up trust store
+              if [ -n "${CUSTOM_TRUSTSTORE}" ]; then
+                keytool -importcert -noprompt -trustcacerts -file "${CUSTOM_TRUSTSTORE}" -keystore /tmp/truststore.jks -storepass temp1234 -storetype JKS
+                $KCADM_PATH config truststore --config /tmp/kcadm.config /tmp/truststore.jks --trustpass temp1234
+              fi
+
               # log in to keycloak
-              /opt/jboss/keycloak/bin/kcadm.sh config credentials config --config /tmp/kcadm.config --server "$KEYCLOAK_URL/auth" --realm master --user "$ADMIN_USERNAME" --password "$ADMIN_PASSWORD"
+              $KCADM_PATH config credentials config --config /tmp/kcadm.config --server "$KEYCLOAK_URL/auth" --realm master --user "$ADMIN_USERNAME" --password "$ADMIN_PASSWORD"
 
               # add drogue-user to default roles
 
               # get realm
-              /opt/jboss/keycloak/bin/kcadm.sh get --config /tmp/kcadm.config realms/drogue
+              $KCADM_PATH get --config /tmp/kcadm.config realms/drogue
               # get composite default role
-              /opt/jboss/keycloak/bin/kcadm.sh get --config /tmp/kcadm.config -r drogue roles/default-roles-drogue
+              $KCADM_PATH get --config /tmp/kcadm.config -r drogue roles/default-roles-drogue
               # list default roles
-              /opt/jboss/keycloak/bin/kcadm.sh get-roles --config /tmp/kcadm.config -r drogue --rname default-roles-drogue
+              $KCADM_PATH get-roles --config /tmp/kcadm.config -r drogue --rname default-roles-drogue
               # add drogue-user to default roles
-              /opt/jboss/keycloak/bin/kcadm.sh add-roles --config /tmp/kcadm.config -r drogue --rname default-roles-drogue --rolename drogue-user
+              $KCADM_PATH add-roles --config /tmp/kcadm.config -r drogue --rname default-roles-drogue --rolename drogue-user
               # list again
-              /opt/jboss/keycloak/bin/kcadm.sh get-roles --config /tmp/kcadm.config -r drogue --rname default-roles-drogue
+              $KCADM_PATH get-roles --config /tmp/kcadm.config -r drogue --rname default-roles-drogue
 
               # add drogue-admin to service account roles
 
               # get all client (we don't know the ID)
-              /opt/jboss/keycloak/bin/kcadm.sh get --config /tmp/kcadm.config -r drogue clients
+              $KCADM_PATH get --config /tmp/kcadm.config -r drogue clients
               # get client roles
-              /opt/jboss/keycloak/bin/kcadm.sh get-roles --config /tmp/kcadm.config -r drogue --uusername service-account-services
+              $KCADM_PATH get-roles --config /tmp/kcadm.config -r drogue --uusername service-account-services
               # add drogue-admin to service account roles
-              /opt/jboss/keycloak/bin/kcadm.sh add-roles --config /tmp/kcadm.config -r drogue --uusername service-account-services --rolename drogue-admin
+              $KCADM_PATH add-roles --config /tmp/kcadm.config -r drogue --uusername service-account-services --rolename drogue-admin
               # list again
-              /opt/jboss/keycloak/bin/kcadm.sh get-roles --config /tmp/kcadm.config -r drogue --uusername service-account-services
+              $KCADM_PATH get-roles --config /tmp/kcadm.config -r drogue --uusername service-account-services
 {{- end -}}

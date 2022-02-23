@@ -49,8 +49,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            - name: REGISTRY__SSO_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
             - name: WORK_QUEUE__INSTANCE
               value: topic-operator
             - name: WORK_QUEUE__PG__HOST
@@ -101,8 +100,14 @@ spec:
 
           {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.services.topicOperator) | nindent 10 }}
 
+          volumeMounts:
+            {{- include "drogue-cloud-core.keycloak-volume-mounts" . | nindent 12 }}
+
       volumes:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
+
+        {{- include "drogue-cloud-core.keycloak-volumes" . | nindent 8 }}
+
 {{- end }}{{/* if type == "admin" */}}
