@@ -1,9 +1,9 @@
-{{- if has (include "drogue-cloud-core.topic-operator.type" . ) ( list "admin" "rhoas" ) }}
-{{- $ref := dict "root" . "name" "topic-operator" "component" "device-registry" "metrics" true  -}}
+{{- if eq (include "drogue-cloud-core.topic-operator.type" .) "rhoas" }}
+{{- $ref := dict "root" . "name" "rhoas-operator" "component" "device-registry" "metrics" true  -}}
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: topic-operator
+  name: rhoas-operator
   annotations:
     app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"device-management-service"}]'
     {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
@@ -23,22 +23,52 @@ spec:
         {{- include "drogue-cloud-common.init-container.wait-for-client-secret" ( dict "root" . "volume" "client-secret-services")  | nindent 8 }}
       containers:
         - name: service
-          image: {{ include "drogue-cloud-common.image" (dict "root" . "name" "topic-admin-operator" ) | quote }}
+          image: {{ include "drogue-cloud-common.image" (dict "root" . "name" "rhoas-operator" ) | quote }}
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
           env:
-            {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.services.topicOperator ) | nindent 12 }}
-            {{- include "drogue-cloud-common.jaeger-env" ( dict "root" . "app" .Values.services.topicOperator ) | nindent 12 }}
+            {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.services.rhoasOperator ) | nindent 12 }}
+            {{- include "drogue-cloud-common.jaeger-env" ( dict "root" . "app" .Values.services.rhoasOperator ) | nindent 12 }}
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            - name: CONTROLLER__NUM_PARTITIONS
-              value: {{ .Values.services.topicOperator.numberOfPartitions | default 1 | quote }}
-            - name: CONTROLLER__NUM_REPLICAS
-              value: {{ .Values.services.topicOperator.numberOfReplicas | default 1 | quote }}
-            {{- include "drogue-cloud-common.translate-kafka-properties" (dict "properties" .Values.services.topicOperator.properties "prefix" "CONTROLLER__PROPERTIES__" ) | nindent 12 }}
+
+            {{- with .Values.services.rhoasOperator.saslMechanism }}
+            - name: CONTROLLER__SASL_MECHANISM
+              value: {{ . | quote }}
+            {{- end }}
+
+            - name: CONTROLLER__API__BASE_PATH
+              value: {{ .Values.kafka.external.rhoas.api.base | quote }}
+            {{- with .Values.kafka.external.rhoas.api.managementBase }}
+            - name: CONTROLLER__API__MGMT_BASE_PATH
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.kafka.external.rhoas.api.instanceBase }}
+            - name: CONTROLLER__API__INSTANCE_BASE_PATH
+              value: {{ . | quote }}
+            {{- end }}
+
+            - name: CONTROLLER__API__OAUTH2__CLIENT_ID
+              value: {{ required "RHOAS client ID is required" .Values.kafka.external.rhoas.api.oauth2.clientId | quote }}
+            - name: CONTROLLER__API__OAUTH2__CLIENT_SECRET
+              value: {{ required "RHOAS client secret is required" .Values.kafka.external.rhoas.api.oauth2.clientSecret | quote }}
+            - name: CONTROLLER__API__OAUTH2__ISSUER_URL
+              value: {{ required "RHOAS issuer URL is required" .Values.kafka.external.rhoas.api.oauth2.issuerUrl | quote }}
+            - name: CONTROLLER__API__OAUTH2__TLS_INSECURE
+              value: {{ .Values.kafka.external.rhoas.api.oauth2.tlsInsecure | default false | quote }}
+            {{- with .Values.kafka.external.rhoas.api.oauth2.caCertificates }}
+            - name: CONTROLLER__API__OAUTH2__TLS_CA_CERTIFICATES
+              value: {{ . | quote }}
+            {{- end }}
+
+            {{- with .Values.kafka.external.rhoas.api.oauth2.refreshBefore }}
+            - name: CONTROLLER__API__OAUTH2__REFRESH_BEFORE
+              value: {{ . | quote }}
+            {{- end }}
+
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -51,7 +81,7 @@ spec:
                   key: CLIENT_SECRET
             {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
             - name: WORK_QUEUE__INSTANCE
-              value: topic-operator
+              value: rhoas-operator
             - name: WORK_QUEUE__PG__HOST
               value: postgres
             - name: WORK_QUEUE__PG__DBNAME
@@ -72,13 +102,10 @@ spec:
             - name: KAFKA_SOURCE__TOPIC
               value: registry
             - name: KAFKA_SOURCE__CONSUMER_GROUP
-              value: topic-operator
+              value: rhoas-operator
             - name: KAFKA_SOURCE__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SOURCE__PROPERTIES__" ) | nindent 12 }}
-            - name: KAFKA_ADMIN__BOOTSTRAP_SERVERS
-              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
-            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_ADMIN__PROPERTIES__" ) | nindent 12 }}
           ports:
             {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}
           readinessProbe:
@@ -110,4 +137,4 @@ spec:
 
         {{- include "drogue-cloud-core.keycloak-volumes" . | nindent 8 }}
 
-{{- end }}{{/* if type == "admin" */}}
+{{- end }}{{/* if type == "admin" or "rhoas */}}

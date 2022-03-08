@@ -114,6 +114,11 @@ services:
     ingress: {}
   registry: {}
   topicOperator: {}
+    # Override topic operator type. Defaults to "admin" for external Kafka and "strimzi" otherwise
+    # type: <strimzi|admin|rhoas>
+  rhoasOperator: {}
+    # The SASL mechanism required to connect to the Kafka instance (injected into the KafkaAppStatus)
+    # saslMechanism: SCRAM-SHA-512
   outbox: {}
   ttnOperator: {}
   auth: {}
@@ -202,8 +207,24 @@ kafka:
       # username: my-user
       # password: my-password
 
-    # properties allow you to provide arbitrary additional properties
+    rhoas:
+      # enable RHOAS controller
+      enabled: false
+      api:
+        base: https://api.openshift.com
+        # managementBase: <override base>
+        # instanceBase: <override base>
+        oauth2:
+          # clientId:
+          # clientSecret:
+          issuerUrl: https://identity.api.openshift.com/auth/realms/rhoas/protocol/openid-connect
+          # Refresh token when if validity is less than the provided value
+          # refreshBefore: 1m
+
+    # properties allow you to provide arbitrary additional connection properties
     properties: {}
+
+  # the following sections are Strimzi related configuration options
 
   kafka:
     replicas: 1
