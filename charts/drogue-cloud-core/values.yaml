@@ -121,7 +121,8 @@ services:
   command: {}
   knativeOperator:
     enabled: true
-    image: ghcr.io/drogue-cloud/drogue-event-source:0.2.0
+    eventSource:
+      image: ghcr.io/drogue-cloud/drogue-event-source:0.2.0
 
 certificates:
   generator:

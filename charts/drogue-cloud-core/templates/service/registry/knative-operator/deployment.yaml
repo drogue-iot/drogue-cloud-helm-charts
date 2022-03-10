@@ -53,7 +53,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: CONTROLLER__TEMPLATE__IMAGE
-              value: {{ .Values.services.knativeOperator.image }}
+              value: {{ .Values.services.knativeOperator.eventSource.image }}
             - name: CONTROLLER__KAFKA__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "CONTROLLER__KAFKA__PROPERTIES__" ) | nindent 12 }}
