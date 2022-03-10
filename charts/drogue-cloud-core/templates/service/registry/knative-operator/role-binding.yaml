@@ -1,0 +1,16 @@
+{{- if .Values.services.knativeOperator.enabled }}
+{{- $ref := dict "root" . "name" "topic-operator" "component" "device-registry" -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: knative-operator
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: knative-operator
+roleRef:
+  kind: Role
+  name: knative-operator
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}

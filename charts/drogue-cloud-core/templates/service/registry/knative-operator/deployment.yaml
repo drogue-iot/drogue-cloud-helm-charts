@@ -1,0 +1,119 @@
+{{- if .Values.services.knativeOperator.enabled }}
+{{- $ref := dict "root" . "name" "knative-operator" "component" "device-registry" "metrics" true  -}}
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: knative-operator
+  annotations:
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"device-management-service"}]'
+    {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
+    spec:
+      serviceAccountName: knative-operator
+      initContainers:
+        {{- include "drogue-cloud-common.init-container.wait-for-client-secret" ( dict "root" . "volume" "client-secret-services")  | nindent 8 }}
+      containers:
+        - name: service
+          image: {{ include "drogue-cloud-common.image" $ref | quote }}
+          imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
+          env:
+            {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.services.knativeOperator ) | nindent 12 }}
+            {{- include "drogue-cloud-common.jaeger-env" ( dict "root" . "app" .Values.services.knativeOperator ) | nindent 12 }}
+            - name: HEALTH__BIND_ADDR
+              value: "0.0.0.0:9090"
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+
+            - name: REGISTRY__CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_ID
+            - name: REGISTRY__CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_SECRET
+            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
+
+            - name: CONTROLLER__TARGET_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: CONTROLLER__TEMPLATE__IMAGE
+              value: {{ .Values.services.knativeOperator.image }}
+            - name: CONTROLLER__KAFKA__BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "CONTROLLER__KAFKA__PROPERTIES__" ) | nindent 12 }}
+
+            - name: WORK_QUEUE__INSTANCE
+              value: knative-operator
+            - name: WORK_QUEUE__PG__HOST
+              value: postgres
+            - name: WORK_QUEUE__PG__DBNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: databaseName
+            - name: WORK_QUEUE__PG__USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: admin.username
+            - name: WORK_QUEUE__PG__PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: admin.password
+
+            - name: KAFKA_SOURCE__TOPIC
+              value: registry
+            - name: KAFKA_SOURCE__CONSUMER_GROUP
+              value: knative-operator
+            - name: KAFKA_SOURCE__BOOTSTRAP_SERVERS
+              value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SOURCE__PROPERTIES__" ) | nindent 12 }}
+          ports:
+            {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}
+          readinessProbe:
+            initialDelaySeconds: 2
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 3
+            httpGet:
+              port: 9090
+              path: /readiness
+          livenessProbe:
+            initialDelaySeconds: 2
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 3
+            httpGet:
+              port: 9090
+              path: /liveness
+
+          {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.services.topicOperator) | nindent 10 }}
+
+          volumeMounts:
+            {{- include "drogue-cloud-core.keycloak-volume-mounts" . | nindent 12 }}
+
+      volumes:
+        - name: client-secret-services
+          secret:
+            secretName: keycloak-client-secret-services
+
+        {{- include "drogue-cloud-core.keycloak-volumes" . | nindent 8 }}
+
+{{- end }}
