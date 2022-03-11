@@ -12,7 +12,7 @@ subjects:
   - kind: ServiceAccount
     name: knative-operator
     {{/* The service account is always in the release namespace */}}
-    namespace: {{ .Release }}
+    namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
   name: knative-operator
