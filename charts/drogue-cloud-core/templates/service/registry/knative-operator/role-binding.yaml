@@ -4,11 +4,15 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: knative-operator
+  {{/* The role binding might be outside the release namespace */}}
+  namespace: {{ .Values.services.knativeOperator.targetNamespace | .Release.Namespace }}
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 subjects:
   - kind: ServiceAccount
     name: knative-operator
+    {{/* The service account is always in the release namespace */}}
+    namespace: {{ .Release }}
 roleRef:
   kind: Role
   name: knative-operator

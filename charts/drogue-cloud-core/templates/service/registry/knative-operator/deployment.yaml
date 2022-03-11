@@ -49,9 +49,13 @@ spec:
             {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
 
             - name: CONTROLLER__TARGET_NAMESPACE
+              {{- with .Values.services.knativeOperator.targetNamespace }}
+              value: {{ . | quote }}
+              {{- else }}
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+              {{- end }}
             - name: CONTROLLER__TEMPLATE__IMAGE
               value: {{ .Values.services.knativeOperator.eventSource.image }}
             - name: CONTROLLER__KAFKA__BOOTSTRAP_SERVERS
