@@ -5,7 +5,7 @@ kind: RoleBinding
 metadata:
   name: knative-operator
   {{/* The role binding might be outside the release namespace */}}
-  namespace: {{ .Values.services.knativeOperator.targetNamespace | .Release.Namespace }}
+  namespace: {{ .Values.services.knativeOperator.targetNamespace | default .Release.Namespace }}
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 subjects:
