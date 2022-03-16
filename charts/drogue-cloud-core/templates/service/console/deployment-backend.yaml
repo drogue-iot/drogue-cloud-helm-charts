@@ -119,6 +119,12 @@ spec:
               value: {{ .Values.console.overrides.mqttEndpointWs.port | default .Values.endpoints.mqttWs.ingress.port | quote }}
             - name: ENDPOINTS__MQTT_ENDPOINT_WS_URL
               value: {{ .Values.console.overrides.mqttEndpointWs.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "mqtt-endpoint-ws" "ingress" .Values.endpoints.mqttWs.ingress "insecure" .Values.endpoints.http.insecure ) ) }}
+            - name: ENDPOINTS__MQTT_ENDPOINT_WS_BROWSER_HOST
+              value: {{ .Values.console.overrides.mqttEndpointWsBrowser.host | default ( include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-endpoint-ws-browser" "ingress" .Values.endpoints.mqttWsBrowser.ingress ) ) }}
+            - name: ENDPOINTS__MQTT_ENDPOINT_WS_BROWSER_PORT
+              value: {{ .Values.console.overrides.mqttEndpointWsBrowser.port | default .Values.endpoints.mqttWsBrowser.ingress.port | quote }}
+            - name: ENDPOINTS__MQTT_ENDPOINT_WS_BROWSER_URL
+              value: {{ .Values.console.overrides.mqttEndpointWsBrowser.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "mqtt-endpoint-ws-browser" "ingress" .Values.endpoints.mqttWsBrowser.ingress "insecure" .Values.endpoints.http.insecure ) ) }}
             - name: ENDPOINTS__MQTT_INTEGRATION_HOST
               value: {{ .Values.console.overrides.mqttIntegration.host | default ( include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-integration" "ingress" .Values.integrations.mqtt.ingress ) ) }}
             - name: ENDPOINTS__MQTT_INTEGRATION_PORT
@@ -129,6 +135,12 @@ spec:
               value: {{ .Values.console.overrides.mqttIntegrationWs.port | default .Values.integrations.mqttWs.ingress.port | quote }}
             - name: ENDPOINTS__MQTT_INTEGRATION_WS_URL
               value: {{ .Values.console.overrides.mqttIntegrationWs.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "mqtt-integration-ws" "ingress" .Values.integrations.mqttWs.ingress "insecure" .Values.endpoints.http.insecure ) ) }}
+            - name: ENDPOINTS__MQTT_INTEGRATION_WS_BROWSER_HOST
+              value: {{ .Values.console.overrides.mqttIntegrationWsBrowser.host | default ( include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-integration-ws-browser" "ingress" .Values.integrations.mqttWsBrowser.ingress ) ) }}
+            - name: ENDPOINTS__MQTT_INTEGRATION_WS_BROWSER_PORT
+              value: {{ .Values.console.overrides.mqttIntegrationWsBrowser.port | default .Values.integrations.mqttWsBrowser.ingress.port | quote }}
+            - name: ENDPOINTS__MQTT_INTEGRATION_WS_BROWSER_URL
+              value: {{ .Values.console.overrides.mqttIntegrationWsBrowser.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "mqtt-integration-ws-browser" "ingress" .Values.integrations.mqttWsBrowser.ingress "insecure" .Values.endpoints.http.insecure ) ) }}
             - name: ENDPOINTS__WEBSOCKET_INTEGRATION_URL
               value: {{ .Values.console.overrides.wsIntegration.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "websocket-integration" "ingress" .Values.integrations.websocket.ingress "insecure" .Values.integrations.websocket.insecure ) ) }}
             - name: ENDPOINTS__KAFKA_BOOTSTRAP_SERVERS

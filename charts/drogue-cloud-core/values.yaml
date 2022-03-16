@@ -44,8 +44,12 @@ console:
       # port: 8883
     mqttEndpointWs: {}
       # url: wss://mqtt-ws
+    mqttEndpointWsBrowser: {}
+    # url: wss://mqtt-ws
     mqttIntegration: {}
       # port: 8883
+    mqttIntegrationWsBrowser: {}
+    # url: wss://mqtt-ws
     mqttIntegrationWs: {}
     # url: wss://mqtt-ws
     wsIntegration: {}
