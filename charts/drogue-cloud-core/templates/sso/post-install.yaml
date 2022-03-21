@@ -53,7 +53,7 @@ spec:
             {{- end }}
 
             - name: KCADM_PATH
-              value: "/opt/keycloak/bin/kcadm.sh"
+              value: {{ .Values.keycloak.postInstall.kcAdmPath | default "/opt/jboss/keycloak/bin/kcadm.sh" }}
 
             {{- if .Values.keycloak.useServiceCA }}
             - name: CUSTOM_TRUSTSTORE
