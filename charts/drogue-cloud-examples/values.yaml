@@ -55,14 +55,14 @@ grafana:
 
 timescale:
   database:
-    image: docker.io/timescale/timescaledb-ha:pg13-ts2.5-latest
+    image: docker.io/timescale/timescaledb-ha:pg14-ts2.6-latest
     adminUser: admin
     adminPassword: admin123456
     readUser: reader
     readPassword: reader1234
     name: example
   postInstall:
-    image: docker.io/library/postgres:14
+    image: docker.io/bitnami/postgresql:14
 
 pusher:
   enabled: true

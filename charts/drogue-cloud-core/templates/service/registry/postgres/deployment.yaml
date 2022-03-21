@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: docker.io/bitnami/postgresql:13
+          image: {{ .Values.postgres.image }}
           imagePullPolicy: IfNotPresent
           env:
             - name: POSTGRES_DB
