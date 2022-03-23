@@ -19,6 +19,10 @@ grafana:
   enabled: true
   adminPassword: admin123456
 
+  grafana.ini:
+    dashboards:
+      default_home_dashboard_path: "/tmp/dashboards/drogue-dashboard.json"
+
   labels:
     app.kubernetes.io/component: metrics
   podLabels:
