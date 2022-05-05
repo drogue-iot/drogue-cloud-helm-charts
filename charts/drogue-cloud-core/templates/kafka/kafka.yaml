@@ -13,11 +13,9 @@ spec:
       superUsers:
         - drogue-iot
     config:
-      log.message.format.version: {{ .Values.kafka.logVersion | quote }}
-      offsets.topic.replication.factor: 1
-      transaction.state.log.min.isr: 1
-      transaction.state.log.replication.factor: 1
+      inter.broker.protocol.version: {{ .Values.kafka.interBrokerVersion .Values.kafka.logVersion | default | quote }}
       auto.create.topics.enable: false
+      {{ .Values.kafka.configProperties | nindent 6 }}
     listeners:
       - name: plain
         tls: false

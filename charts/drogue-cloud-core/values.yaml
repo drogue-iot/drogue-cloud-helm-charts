@@ -183,8 +183,17 @@ postgres:
 
 kafka:
 
-  version: "3.0.0"
-  logVersion: "3.0"
+  version: "3.1.0"
+  interBrokerVersion: "3.1"
+  # DEPRECATED: use interBrokerVersion instead
+  # logVersion: "3.0"
+
+  kafkaProperties:
+    offsets.topic.replication.factor: 1
+    transaction.state.log.min.isr: 1
+    transaction.state.log.replication.factor: 1
+    default.replication.factor: 1
+    min.insync.replicas: 1
 
   podSecurityContext:
     enabled: false
