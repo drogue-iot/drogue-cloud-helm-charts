@@ -184,8 +184,7 @@ postgres:
 kafka:
 
   version: "3.1.0"
-  interBrokerVersion: "3.1"
-  # DEPRECATED: use interBrokerVersion instead
+  # DEPRECATED: use "inter.broker.protocol.version" in the "kafkaConfigProperties" section below
   # logVersion: "3.0"
 
   kafkaConfigProperties:
