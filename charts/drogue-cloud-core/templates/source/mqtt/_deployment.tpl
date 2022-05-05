@@ -41,6 +41,10 @@ spec:
                 configMapKeyRef:
                   name: configuration
                   key: instance
+            - name: STATE__ENDPOINT
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: AUTH__CLIENT_ID
               valueFrom:
                 secretKeyRef:
