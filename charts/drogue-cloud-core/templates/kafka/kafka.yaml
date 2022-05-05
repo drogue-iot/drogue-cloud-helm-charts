@@ -13,9 +13,9 @@ spec:
       superUsers:
         - drogue-iot
     config:
-      inter.broker.protocol.version: {{ .Values.kafka.interBrokerVersion .Values.kafka.logVersion | default | quote }}
+      inter.broker.protocol.version: {{ .Values.kafka.interBrokerVersion | default .Values.kafka.logVersion | quote }}
       auto.create.topics.enable: false
-      {{ .Values.kafka.configProperties | nindent 6 }}
+      {{ .Values.kafka.kafkaConfigProperties | toYaml | nindent 6 }}
     listeners:
       - name: plain
         tls: false
