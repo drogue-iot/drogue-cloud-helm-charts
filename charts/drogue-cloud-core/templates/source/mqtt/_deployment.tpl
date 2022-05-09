@@ -45,6 +45,17 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: STATE__CLIENT__CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_ID
+            - name: STATE__CLIENT__CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-client-secret-services
+                  key: CLIENT_SECRET
+            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" .root "prefix" "STATE__CLIENT__" ) | nindent 12 }}
             - name: AUTH__CLIENT_ID
               valueFrom:
                 secretKeyRef:
