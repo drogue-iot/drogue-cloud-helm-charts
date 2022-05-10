@@ -148,14 +148,15 @@ oauth2:
 keycloak:
   adminPassword: admin123456
   identityProviders: []
-  # Use the OpenShift service CA for the internal service endpoint
-  useServiceCA: false
-  # When using the service CA, if the external SSO endpoint is a trusted TLS certificate, or not
-  insecureExternal: false
+  tls:
+    enabled: true
+    # Use the OpenShift service CA for the internal service endpoint. Will override the "secret" field.
+    useServiceCA: false
+    # an explicit secret holding the TLS key/cert
+    secret: sso-tls
   postgres:
     # mode is the way postgres gets configured. This can be:
     #  - drogue: Re-use the Drogue Cloud postgres instance
-    #  - operator: Let the keycloak operate manage one
     #  - external: Use an external instance
     mode: drogue  # reuse drogue instance
     # username: foo
@@ -173,7 +174,7 @@ keycloak:
     # enabled can be used to disable the job, in case you don't need it or are upgrading from
     # a Keycloak 12 instance, in which case you need to manually configure the roles.
     enabled: true
-    image: quay.io/keycloak/keycloak:17.0.0-legacy
+    image: quay.io/keycloak/keycloak:18.0.0
 
 postgres:
   databaseName: registry

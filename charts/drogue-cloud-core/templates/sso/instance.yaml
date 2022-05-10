@@ -1,4 +1,5 @@
-apiVersion: keycloak.org/v1alpha1
+---
+apiVersion: k8s.keycloak.org/v2alpha1
 kind: Keycloak
 metadata:
   name: sso
@@ -7,26 +8,59 @@ metadata:
 spec:
   instances: 1
 
-  externalAccess:
-    # External Access must be disabled. It is broken for OpenShift for KeyCloak 12+ and also causes issues
-    # with the nginx ingress controller. The controller sets the ingressClass to "nginx" and the keycloak
-    # operator removes this again. Resulting in constant updates and failures of the Ingress resource.
-    enabled: false
+  hostname: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
 
-{{- if ne .Values.keycloak.postgres.mode "operator" }}
-  externalDatabase:
-    enabled: true
-{{- end }}
+  serverConfiguration:
+    - name: db
+      value: postgres
+    - name: db-url-database
+      secret:
+        name: keycloak-db-secret
+        key: database
+    - name: db-url-host
+      secret:
+        name: keycloak-db-secret
+        key: host
+    - name: db-url-port
+      secret:
+        name: keycloak-db-secret
+        key: port
+    - name: db-username
+      secret:
+        name: keycloak-db-secret
+        key: username
+    - name: db-password
+      secret:
+        name: keycloak-db-secret
+        key: password
 
-  keycloakDeploymentSpec:
-    {{- if .Values.experimental.dualStack }}
-    experimental:
-      args:
-        - -b
-        - 0.0.0.0
-        - -Djboss.bind.address.private=0.0.0.0
-    {{- end }}
-    {{- with .Values.keycloak.resources }}
-    resources:
-      {{ . | toYaml | nindent 8 }}
-    {{- end }}
+    - name: hostname-strict
+      value: "false"
+    - name: hostname
+      value: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+
+  {{- if .Values.keycloak.tls.enabled }}
+    - name: proxy
+      value: passthrough
+  {{- else }}
+    - name: http-enabled
+      value: "true"
+    - name: hostname-strict-https
+      value: "false"
+    - name: hostname-port
+      value: "80"
+    - name: proxy
+      value: edge
+  {{- end }}
+
+  {{- if .Values.keycloak.tls.enabled }}
+
+  {{- if .Values.keycloak.tls.useServiceCA }}
+  tlsSecret: # FIXME: check: need to create one, or maybe not
+  {{- else }}
+  tlsSecret: {{ .Values.keycloak.tls.secret }}
+  {{- end }}
+
+  {{- else }}
+  tlsSecret: INSECURE-DISABLE
+  {{- end }}

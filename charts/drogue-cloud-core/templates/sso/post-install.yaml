@@ -1,3 +1,5 @@
+{{- if false }}
+
 {{- $ref := dict "root" . "name" "post-install-keycloak" "component" "sso" -}}
 {{- if .Values.keycloak.postInstall.enabled -}}
 kind: Job
@@ -77,7 +79,7 @@ spec:
               fi
 
               # log in to keycloak
-              $KCADM_PATH config credentials config --config /tmp/kcadm.config --server "$KEYCLOAK_URL/auth" --realm master --user "$ADMIN_USERNAME" --password "$ADMIN_PASSWORD"
+              $KCADM_PATH config credentials config --config /tmp/kcadm.config --server "$KEYCLOAK_URL" --realm master --user "$ADMIN_USERNAME" --password "$ADMIN_PASSWORD"
 
               # add drogue-user to default roles
 
@@ -103,3 +105,5 @@ spec:
               # list again
               $KCADM_PATH get-roles --config /tmp/kcadm.config -r drogue --uusername service-account-services
 {{- end -}}
+
+{{- end }}

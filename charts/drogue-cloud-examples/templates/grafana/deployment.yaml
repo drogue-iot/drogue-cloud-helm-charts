@@ -112,11 +112,11 @@ spec:
             - name: SSO_URL
               value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.grafana.keycloak.ingress ) }}
             - name: GF_AUTH_GENERIC_OAUTH_AUTH_URL
-              value: $(SSO_URL)/auth/realms/{{ .Values.grafana.keycloak.realm }}/protocol/openid-connect/auth
+              value: $(SSO_URL)/realms/{{ .Values.grafana.keycloak.realm }}/protocol/openid-connect/auth
             - name: GF_AUTH_GENERIC_OAUTH_TOKEN_URL
-              value: $(SSO_URL)/auth/realms/{{ .Values.grafana.keycloak.realm }}/protocol/openid-connect/token
+              value: $(SSO_URL)/realms/{{ .Values.grafana.keycloak.realm }}/protocol/openid-connect/token
             - name: GF_AUTH_GENERIC_OAUTH_API_URL
-              value: $(SSO_URL)/auth/realms/{{ .Values.grafana.keycloak.realm }}/protocol/openid-connect/userinfo
+              value: $(SSO_URL)/realms/{{ .Values.grafana.keycloak.realm }}/protocol/openid-connect/userinfo
             - name: GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH
               value: "contains(roles[*], 'grafana-admin') && 'Admin' || contains(roles[*], 'grafana-editor') && 'Editor' || 'Viewer'"
             {{- end }}

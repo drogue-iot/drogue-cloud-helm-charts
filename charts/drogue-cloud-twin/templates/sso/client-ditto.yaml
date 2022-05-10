@@ -1,3 +1,4 @@
+{{- if false }}
 {{- $ref := dict "root" . "name" "client-ditto" "component" "digital-twin" -}}
 apiVersion: keycloak.org/v1alpha1
 kind: KeycloakClient
@@ -32,3 +33,4 @@ spec:
       - "microprofile-jwt"
       - "offline_access"
       - "phone"
+{{- end }}

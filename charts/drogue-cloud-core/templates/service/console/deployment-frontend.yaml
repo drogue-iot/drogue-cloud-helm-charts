@@ -23,7 +23,7 @@ spec:
             - name: API_URL
               value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) }}
             - name: ISSUER_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}/auth/realms/drogue
+              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}/realms/drogue
           ports:
             - containerPort: 8080
               name: endpoint
