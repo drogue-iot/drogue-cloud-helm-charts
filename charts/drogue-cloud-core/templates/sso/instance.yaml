@@ -8,8 +8,6 @@ metadata:
 spec:
   instances: 1
 
-  hostname: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
-
   serverConfiguration:
     - name: db
       value: postgres
@@ -34,24 +32,17 @@ spec:
         name: keycloak-db-secret
         key: password
 
-    - name: hostname-strict
-      value: "false"
-    - name: hostname
-      value: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
-
   {{- if .Values.keycloak.tls.enabled }}
     - name: proxy
       value: passthrough
   {{- else }}
-    - name: http-enabled
-      value: "true"
     - name: hostname-strict-https
       value: "false"
-    - name: hostname-port
-      value: "80"
     - name: proxy
       value: edge
   {{- end }}
+
+  hostname: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
 
   {{- if .Values.keycloak.tls.enabled }}
 
