@@ -47,7 +47,7 @@ sso:
     # enabled can be used to disable the job, in case you don't need it or are upgrading from
     # a Keycloak 12 instance, in which case you need to manually configure the roles.
     enabled: true
-    image: quay.io/keycloak/keycloak:15.0.1
+    image: quay.io/keycloak/keycloak:18.0.0
 
 ditto:
   ingress: {}
