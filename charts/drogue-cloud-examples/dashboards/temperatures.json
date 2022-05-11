@@ -112,7 +112,7 @@
           "metricColumn": "device_id",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT $__timeGroupAlias(\"time\",$__interval), device_id as metric, avg(avg(temperature)) OVER w as temp\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id = ANY (ARRAY[$device_id]::varchar[])\nGROUP BY time, device_id\nWINDOW w as (PARTITION BY device_id ORDER BY time RANGE '5 minute'::INTERVAL PRECEDING)\nORDER BY time, device_id",
+          "rawSql": "SELECT $__timeGroupAlias(\"time\",$__interval), device_id as metric, avg(avg(temperature)) OVER w as temp\nFROM temperatures\nWHERE\n  $__timeFilter(\"time\") AND\n  device_id = ANY (ARRAY[$device_id]::varchar[])\nGROUP BY 1, device_id\nWINDOW w as (PARTITION BY device_id ORDER BY $__timeGroup(\"time\",$__interval) RANGE '5 minute'::INTERVAL PRECEDING)\nORDER BY 1, device_id",
           "refId": "A",
           "select": [
             [
