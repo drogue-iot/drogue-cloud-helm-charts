@@ -117,6 +117,8 @@ services:
   sso:
     ingress: {}
   registry: {}
+  deviceManagementController: {}
+  deviceState: {}
   topicOperator: {}
   outbox: {}
   ttnOperator: {}
