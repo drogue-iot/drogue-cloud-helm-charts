@@ -21,15 +21,16 @@ Arguments: (dict)
 {{- define "drogue-cloud-common.init-container.wait-for-client-secret" -}}
 - name: wait-for-{{ .volume }}
   image: {{ .root.Values.helper.image }}
-  imagePullPolicy: IfNotPresent
+  imagePullPolicy: {{ .root.Values.helper.imagePullPolicy | default "IfNotPresent" }}
   command:
     - bash
     - -c
     - |
-      echo "Waiting for client secret to be populated (/etc/client-secret/CLIENT_SECRET)..."
+      echo "$(date): Waiting for client secret to be populated (/etc/client-secret/CLIENT_SECRET)..."
       while test -z "$(cat /etc/client-secret/CLIENT_SECRET)"; do
         sleep 1
       done
+      echo "$(date): Found client secret"
   volumeMounts:
     - mountPath: /etc/client-secret
       name: {{ .volume }}
