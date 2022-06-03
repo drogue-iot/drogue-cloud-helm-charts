@@ -1,4 +1,17 @@
 {{/*
+Keycloak API URL
+
+This requires the global "drogueCloud" section.
+*/}}
+{{- define "drogue-cloud-common.keycloak.url" -}}
+{{- if .Values.global.drogueCloud.keycloak.tls.useServiceCA -}}
+https://sso-service.{{ .Release.Namespace }}.svc:8443
+{{- else -}}
+http://sso-service.{{ .Release.Namespace }}.svc:8080
+{{- end }}
+{{- end }}
+
+{{/*
 An init container to wait for the client secret to be populated.
 
 Arguments: (dict)

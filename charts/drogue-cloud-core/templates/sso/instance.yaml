@@ -32,7 +32,7 @@ spec:
         name: keycloak-db-secret
         key: password
 
-  {{- if .Values.keycloak.tls.enabled }}
+  {{- if .Values.global.drogueCloud.keycloak.tls.enabled }}
     - name: proxy
       value: passthrough
   {{- else }}
@@ -44,12 +44,12 @@ spec:
 
   hostname: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
 
-  {{- if .Values.keycloak.tls.enabled }}
+  {{- if .Values.global.drogueCloud.keycloak.tls.enabled }}
 
-  {{- if .Values.keycloak.tls.useServiceCA }}
+  {{- if .Values.global.drogueCloud.keycloak.tls.useServiceCA }}
   tlsSecret: # FIXME: check: need to create one, or maybe not
   {{- else }}
-  tlsSecret: {{ .Values.keycloak.tls.secret }}
+  tlsSecret: {{ .Values.global.drogueCloud.keycloak.tls.secret }}
   {{- end }}
 
   {{- else }}

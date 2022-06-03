@@ -46,12 +46,12 @@ grafana:
     client:
       # create can be used to deploy a keycloak client, works only when deployed alongside keycloak
       create: false
-      # id contains the OAuth2 client ID
+      # id contains the OAuth2 client ID, defaults to "grafana"
       # id: <id>
       # secret contains the optional OAuth2 client secret
       # secret: <secret>
       # kubernetesSecret allows to configure a secret that will contain the client secrets
-      kubernetesSecret: keycloak-client-secret-grafana  # kubernetes secret
+      # kubernetesSecret: keycloak-client-secret-grafana  # kubernetes secret
 
 timescale:
   database:

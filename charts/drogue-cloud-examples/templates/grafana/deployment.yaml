@@ -25,25 +25,8 @@ spec:
     spec:
       serviceAccountName: grafana
       initContainers:
-        {{- if .Values.grafana.keycloak.enabled }}{{- if eq ( .Values.grafana.keycloak.client.id | default "" ) "" }}
-        - name: wait-for-client-secret
-          image: registry.access.redhat.com/ubi8-minimal
-          imagePullPolicy: IfNotPresent
-          command:
-            - bash
-            - -c
-            - |
-              echo "Waiting for client secret to be populated (/etc/client-secret/CLIENT_SECRET)..."
-              while test -z "$(cat /etc/client-secret/CLIENT_SECRET)"; do
-                sleep 1
-              done
-          volumeMounts:
-            - mountPath: /etc/client-secret
-              name: client-secret
-              readOnly: true
-        {{- end }}{{- end}}
         - name: collect-dashboards
-          image: ghcr.io/ctron/kubectl:1.19
+          image: ghcr.io/ctron/kubectl:1.21
           imagePullPolicy: IfNotPresent
           command:
             - bash
@@ -82,28 +65,11 @@ spec:
             - name: GF_AUTH_GENERIC_OAUTH_ALLOWED_ORGANIZATIONS
               value: ""
 
-            {{- if .Values.grafana.keycloak.client.id }}
-
             - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
-              value: {{ .Values.grafana.keycloak.client.id | quote }}
+              value: {{ .Values.grafana.keycloak.client.id | default "grafana" | quote }}
             {{- with .Values.grafana.keycloak.client.secret }}
             - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
               value: {{ . | quote }}
-            {{- end }}
-
-            {{- else }}
-
-            - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.grafana.keycloak.client.kubernetesSecret | quote }}
-                  key: CLIENT_ID
-            - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.grafana.keycloak.client.kubernetesSecret | quote }}
-                  key: CLIENT_SECRET
-
             {{- end }}
 
             - name: GF_AUTH_GENERIC_OAUTH_SCOPES

@@ -4,30 +4,28 @@ Apply OAuth2 (token provider, authenticator) env-vars.
 Arguments: (dict)
  * root - .
  * prefix (String) - Env-var prefix
- * external (bool) - Don't use service CA, even if it is available (because it is an external endpoint)
+ * external (bool) - Must be accessible from external
 */}}
 {{- define "drogue-cloud-core.oauth2-env-vars" -}}
 
 {{- with .root.Values.oauth2.issuerUrl }}
 
-- name: {{ $.prefix }}ISSUER_URL
+- name: {{ .prefix }}ISSUER_URL
   value: {{ . | quote }}
 
 {{- else }} {{/* with issuerUrl */}}
 
-{{- if and .root.Values.keycloak.useServiceCA (not .external ) }}
-- name: {{ .prefix }}SSO_URL
-  value: https://keycloak.{{ .root.Release.Namespace }}.svc:8443
-{{- else }} {{/* if useServiceCA && !external */}}
-{{/* being an external endpoint, we must use the external url, and fall back to "insecure" later */}}
+{{- if .external }}
 - name: {{ .prefix }}SSO_URL
   value: {{ include "drogue-cloud-common.ingress.url" (dict "root" .root "prefix" "sso" "ingress" .root.Values.services.sso.ingress ) }}
+{{- else }}
+- name: {{ .prefix }}SSO_URL
+  value: {{ include "drogue-cloud-common.keycloak.url" .root }}
 {{- end }}
 
 {{- end }} {{/* without issuerUrl */}}
 
-
-{{- if .root.Values.keycloak.useServiceCA }}
+{{- if .root.Values.global.drogueCloud.keycloak.tls.useServiceCA }}
 
 - name: {{ .prefix }}TLS_CA_CERTIFICATES
   value: /etc/certs/keycloak/service-ca.crt
@@ -51,7 +49,7 @@ Apply OAuth2 (token provider, authenticator) volumes.
 Arguments: .
 */}}
 {{- define "drogue-cloud-core.keycloak-volumes" -}}
-{{- if .Values.keycloak.useServiceCA }}
+{{- if .Values.global.drogueCloud.keycloak.tls.useServiceCA }}
 - name: keycloak-tls
   configMap:
     name: keycloak-service-ca
@@ -64,7 +62,7 @@ Apply OAuth2 (token provider, authenticator) volume mounts.
 Arguments: .
 */}}
 {{- define "drogue-cloud-core.keycloak-volume-mounts" -}}
-{{- if .Values.keycloak.useServiceCA }}
+{{- if .Values.global.drogueCloud.keycloak.tls.useServiceCA }}
 - mountPath: /etc/certs/keycloak
   name: keycloak-tls
 {{- end }}
@@ -95,7 +93,7 @@ Arguments: (dict)
       name: keycloak-client-secret-{{ . }}
       key: CLIENT_SECRET
 
-{{- if and (eq . "drogue") (and $.root.Values.keycloak.useServiceCA $.root.Values.keycloak.insecureExternal) }}
+{{- if and (eq . "drogue") (and $.root.Values.global.drogueCloud.keycloak.tls.useServiceCA $.root.Values.keycloak.insecureExternal) }}
 {{/* the console uses the issuer from an external endpoint, which is insecure */}}
 - name: OAUTH__CLIENTS__{{ . | upper }}__ISSUER_URL
   value: {{ include "drogue-cloud-common.ingress.url" (dict "root" $.root "prefix" "sso" "ingress" $.root.Values.services.sso.ingress ) }}/auth/realms/drogue

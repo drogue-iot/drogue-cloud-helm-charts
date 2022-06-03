@@ -77,17 +77,17 @@ spec:
               value: 15s
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SENDER__PROPERTIES__" ) | nindent 12 }}
             - name: KEYCLOAK__URL
-              value: https://keycloak.$(NAMESPACE).svc.cluster.local.:8443
+              value: {{ include "drogue-cloud-common.keycloak.url" . | quote }}
             - name: KEYCLOAK__ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:
-                  key: ADMIN_USERNAME
-                  name: credential-sso
+                  key: username
+                  name: sso-service-credentials
             - name: KEYCLOAK__ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  key: ADMIN_PASSWORD
-                  name: credential-sso
+                  key: password
+                  name: sso-service-credentials
             - name: "KEYCLOAK__TLS_INSECURE"
               value: {{ .Values.oauth2.tls.insecure | quote }}
           readinessProbe:

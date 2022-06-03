@@ -46,13 +46,8 @@ spec:
                   name: credential-sso
                   key: ADMIN_PASSWORD
 
-            {{- if .Values.keycloak.useServiceCA }}
             - name: KEYCLOAK_URL
-              value: https://keycloak.{{ .Release.Namespace }}.svc:8443
-            {{- else }}
-            - name: KEYCLOAK_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
-            {{- end }}
+              value: {{ include "drogue-cloud-common.keycloak.url" . | quote }}
 
             - name: KCADM_PATH
               value: {{ .Values.keycloak.postInstall.kcAdmPath | default "/opt/jboss/keycloak/bin/kcadm.sh" }}

@@ -9,6 +9,7 @@ metadata:
   annotations:
     helm.sh/hook: post-install,post-upgrade
     helm.sh/hook-delete-policy: before-hook-creation
+    helm.sh/hook-weight: "100"
 spec:
   backoffLimit: 1000
   completions: 1
