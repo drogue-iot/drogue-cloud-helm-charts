@@ -192,6 +192,9 @@ spec:
               value: "/etc/certs/keycloak/service-ca.crt"
             {{- end }}
 
+            - name: REALM
+              value: drogue
+
           volumeMounts:
             - mountPath: /etc/init-data
               name: init-data
@@ -225,60 +228,69 @@ spec:
               REALM_OPTS+=(-s registrationAllowed=true)
               REALM_OPTS+=(-s resetPasswordAllowed=true)
               REALM_OPTS+=(-s loginWithEmailAllowed=false)
-              if kcadm get realms/drogue &> /dev/null ; then
+              if kcadm get "realms/${REALM}" &> /dev/null ; then
                 # exists -> update
-                kcadm update realms/drogue "${REALM_OPTS[@]}"
+                kcadm update "realms/${REALM}" "${REALM_OPTS[@]}"
               else
                 # need to create
-                kcadm create realms -s realm=drogue "${REALM_OPTS[@]}"
+                kcadm create realms -s "realm=${REALM}" "${REALM_OPTS[@]}"
               fi
 
               # create realm roles
-              kcadm create roles -r drogue -s name=drogue-user || true
-              kcadm create roles -r drogue -s name=drogue-admin || true
+              kcadm create roles -r "${REALM}" -s name=drogue-user || true
+              kcadm create roles -r "${REALM}" -s name=drogue-admin || true
               # add drogue-user as default role
-              kcadm add-roles -r drogue --rname default-roles-drogue --rolename drogue-user
+              kcadm add-roles -r "${REALM}" --rname "default-roles-${REALM}" --rolename drogue-user
 
               # create clients - drogue
-              ID=$(kcadm get clients -r drogue --query "clientId=drogue" --fields id --format csv --noquotes)
+              ID=$(kcadm get clients -r "${REALM}" --query "clientId=drogue" --fields id --format csv --noquotes)
               CLIENT_OPTS=()
               CLIENT_OPTS+=(-s "redirectUris=[\"{{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}\", \"{{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}/*\", \"http://localhost:*\"]")
               if [[ -n "$ID" ]]; then
-                kcadm update "clients/$ID" -r drogue -f /etc/init-data/client.json "${CLIENT_OPTS[@]}"
+                kcadm update "clients/$ID" -r "${REALM}" -f /etc/init-data/client.json "${CLIENT_OPTS[@]}"
               else
-                kcadm create clients -r drogue -f /etc/init-data/client.json "${CLIENT_OPTS[@]}"
+                kcadm create clients -r "${REALM}" -f /etc/init-data/client.json "${CLIENT_OPTS[@]}"
               fi
 
               # client clients - services
-              ID=$(kcadm get clients -r drogue --query "clientId=services" --fields id --format csv --noquotes)
+              ID=$(kcadm get clients -r "${REALM}" --query "clientId=services" --fields id --format csv --noquotes)
               if [[ -n "$ID" ]]; then
-                kcadm update "clients/$ID" -r drogue -f /etc/init-data/client-services.json
+                kcadm update "clients/$ID" -r "${REALM}" -f /etc/init-data/client-services.json
               else
-                kcadm create clients -r drogue -f /etc/init-data/client-services.json
+                kcadm create clients -r "${REALM}" -f /etc/init-data/client-services.json
               fi
 
               # default role for service account of services
-              kcadm add-roles -r drogue --uusername service-account-services --rolename drogue-admin
+              kcadm add-roles -r "${REALM}" --uusername service-account-services --rolename drogue-admin
 
               # export secrets
-              ID=$(kcadm get clients -r drogue --query "clientId=services" --fields id --format csv --noquotes)
-              kcadm get -r drogue clients/${ID}/client-secret > /var/secret-data/client-secret-services.json
+              ID=$(kcadm get clients -r "${REALM}" --query "clientId=services" --fields id --format csv --noquotes)
+              while : ; do
+                SECRET=$(kcadm get -r "${REALM}" clients/${ID}/client-secret --fields value --format csv --noquotes)
+                # check for missing secret in keycloak, unfortunately the CSV output is broken (JSON) when the field is missing
+                # TODO: the check for JSON can be removed once https://github.com/keycloak/keycloak/issues/12330 is fixed
+                [ "$SECRET" != "" -a "$SECRET" != '{"type":"secret"}' ] && break
+                echo "Secret missing, resetting secret..."
+                kcadm create -r "${REALM}" clients/${ID}/client-secret
+                sleep 5
+              done
+              echo "$SECRET" > /var/secret-data/client-secret-services
 
               {{ if .Values.keycloak.postInstall.user.enabled }}
               # create user
-              ID=$(kcadm get users -r drogue --query "username={{ .Values.keycloak.postInstall.user.name }}" --fields id --format csv --noquotes)
+              ID=$(kcadm get users -r "${REALM}" --query "username={{ .Values.keycloak.postInstall.user.name }}" --fields id --format csv --noquotes)
               if [[ -n "$ID" ]]; then
-                kcadm update "users/$ID" -r drogue -s enabled=true
+                kcadm update "users/$ID" -r "${REALM}" -s enabled=true
               else
-                kcadm create users -r drogue -s "username={{ .Values.keycloak.postInstall.user.name }}" -s enabled=true
+                kcadm create users -r "${REALM}" -s "username={{ .Values.keycloak.postInstall.user.name }}" -s enabled=true
               fi
 
               # set role
-              kcadm add-roles -r drogue --uusername "{{ .Values.keycloak.postInstall.user.name }}" --rolename drogue-admin
+              kcadm add-roles -r "${REALM}" --uusername "{{ .Values.keycloak.postInstall.user.name }}" --rolename drogue-admin
 
               # set password
-              ID=$(kcadm get users -r drogue --query "username={{ .Values.keycloak.postInstall.user.name }}" --fields id --format csv --noquotes)
-              kcadm update "users/${ID}/reset-password" -r drogue -s type=password -s "value={{ .Values.keycloak.postInstall.user.password }}" -s temporary=false -n
+              ID=$(kcadm get users -r "${REALM}" --query "username={{ .Values.keycloak.postInstall.user.name }}" --fields id --format csv --noquotes)
+              kcadm update "users/${ID}/reset-password" -r "${REALM}" -s type=password -s "value={{ .Values.keycloak.postInstall.user.password }}" -s temporary=false -n
               {{ end }}
 
               # touch done
@@ -301,14 +313,17 @@ spec:
               echo "Finish marker found"
 
               # create drogue secret
-              echo "CLIENT_ID=drogue" > /tmp/client.env
-              echo "CLIENT_SECRET=" >> /tmp/client.env
-              kubectl create secret generic --dry-run=client keycloak-client-secret-drogue --from-env-file=/tmp/client.env --output json | tee | kubectl apply -f -
+              echo "CLIENT_ID=drogue" > /tmp/secret.env
+              echo "CLIENT_SECRET=" >> /tmp/secret.env
+              kubectl create secret generic --dry-run=client keycloak-client-secret-drogue --from-env-file=/tmp/secret.env --output json | tee | kubectl apply -f -
 
               # create services secret
-              echo "CLIENT_ID=services" > /tmp/services.env
-              echo -n "CLIENT_SECRET=" >> /tmp/services.env
-              cat /var/secret-data/client-secret-services.json | jq -r .value >> /tmp/services.env
-              kubectl create secret generic --dry-run=client keycloak-client-secret-services --from-env-file=/tmp/services.env --output json | tee | kubectl apply -f -
+              echo "CLIENT_ID=services" > /tmp/secret.env
+              echo -n "CLIENT_SECRET=" >> /tmp/secret.env
+              cat /var/secret-data/client-secret-services >> /tmp/secret.env
+              kubectl create secret generic --dry-run=client keycloak-client-secret-services --from-env-file=/tmp/secret.env --output json | tee | kubectl apply -f -
+
+              cat /var/secret-data/client-secret-services
+
 
 {{- end -}}
