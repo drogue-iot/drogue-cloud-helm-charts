@@ -8,6 +8,11 @@ metadata:
 spec:
 
   kafka:
+
+    {{- with .Values.kafka.kafka.image }}
+    image: {{ . | quote }}
+    {{- end}}
+
     authorization:
       type: simple
       superUsers:
@@ -71,6 +76,9 @@ spec:
 
   zookeeper:
     replicas: {{ .Values.kafka.zookeeper.replicas }}
+    {{- with .Values.kafka.zookeeper.image }}
+    image: {{ . | quote }}
+    {{- end}}
     storage:
       {{- .Values.kafka.zookeeper.storage | toYaml | nindent 6 }}
     {{- with .Values.kafka.zookeeper.resources }}
@@ -89,6 +97,9 @@ spec:
 
     topicOperator:
       watchedNamespace: {{ .Release.Namespace }}
+      {{- with .Values.kafka.topicOperator.image }}
+      image: {{ . | quote }}
+      {{- end}}
       {{- with .Values.kafka.topicOperator.resources }}
       resources:
         {{- . | toYaml | nindent 8 }}
@@ -96,16 +107,22 @@ spec:
 
     userOperator:
       watchedNamespace: {{ .Release.Namespace }}
+      {{- with .Values.kafka.userOperator.image }}
+      image: {{ . | quote }}
+      {{- end}}
       {{- with .Values.kafka.userOperator.resources }}
       resources:
         {{- . | toYaml | nindent 8 }}
       {{- end }}
 
-    {{- with .Values.kafka.tlsSidecar.resources }}
     tlsSidecar:
+      {{- with .Values.kafka.tlsSidecar.image }}
+      image: {{ . | quote }}
+      {{- end}}
+      {{- with .Values.kafka.tlsSidecar.resources }}
       resources:
         {{- . | toYaml | nindent 8 }}
-    {{- end }}
+      {{- end }}
 
 {{- end }}
 
