@@ -1,4 +1,3 @@
----
 apiVersion: k8s.keycloak.org/v2alpha1
 kind: Keycloak
 metadata:
@@ -32,26 +31,35 @@ spec:
         name: keycloak-db-secret
         key: password
 
-  {{- if .Values.global.drogueCloud.keycloak.tls.enabled }}
-    - name: proxy
-      value: passthrough
-  {{- else }}
+  {{- if .Values.global.drogueCloud.keycloak.insecure }}
     - name: hostname-strict-https
       value: "false"
     - name: proxy
       value: edge
+  {{- else }}
+    {{/* FIXME: handle service CA */}}
+    {{- if .Values.global.drogueCloud.useServiceCA }}
+    - name: proxy
+      value: rencrypt
+    {{- else }}
+    - name: proxy
+      value: passthrough
+    {{- end }}
   {{- end }}
 
-  hostname: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+  hostname: {{ include "drogue-cloud-core.sso.host" . }}
 
-  {{- if .Values.global.drogueCloud.keycloak.tls.enabled }}
+  {{- if .Values.global.drogueCloud.keycloak.insecure }}
 
-  {{- if .Values.global.drogueCloud.keycloak.tls.useServiceCA }}
-  tlsSecret: # FIXME: check: need to create one, or maybe not
-  {{- else }}
-  tlsSecret: {{ .Values.global.drogueCloud.keycloak.tls.secret }}
-  {{- end }}
-
-  {{- else }}
   tlsSecret: INSECURE-DISABLE
+
+  {{- else }}
+
+  {{/* FIXME: handle service CA */}}
+  {{- if .Values.global.drogueCloud.useServiceCA }}
+  tlsSecret:
+  {{- else }}
+  tlsSecret: {{ .Values.global.drogueCloud.keycloak.tlsSecret }}
   {{- end }}
+
+  {{- end }}{{/* endif keycloak.insecure */}}

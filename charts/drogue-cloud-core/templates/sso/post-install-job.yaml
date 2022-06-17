@@ -25,6 +25,14 @@ rules:
       - ""
     resources:
       - secrets
+  - verbs:
+      - patch
+      - get
+      - list
+    apiGroups:
+      - apps
+    resources:
+      - deployments
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -158,11 +166,6 @@ spec:
             name: post-install-keycloak-config
         - name: secret-data
           emptyDir: {}
-      {{- if .Values.global.drogueCloud.keycloak.tls.useServiceCA }}
-        - name: service-ca
-          configMap:
-            name: keycloak-service-ca
-      {{- end }}
 
       containers:
         - name: post-install
@@ -182,14 +185,14 @@ spec:
                   key: password
 
             - name: KEYCLOAK_URL
-              value: {{ include "drogue-cloud-common.keycloak.url" . | quote }}
+              value: {{ include "drogue-cloud-common.keycloak.internal.url" . | quote }}
 
             - name: KCADM_PATH
               value: {{ .Values.keycloak.postInstall.kcAdmPath | default "/opt/keycloak/bin/kcadm.sh" }}
 
-            {{- if .Values.global.drogueCloud.keycloak.tls.useServiceCA }}
+            {{- if and (not .Values.global.drogueCloud.keycloak.insecure ) .Values.global.drogueCloud.useServiceCA }}
             - name: CUSTOM_TRUSTSTORE
-              value: "/etc/certs/keycloak/service-ca.crt"
+              value: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
             {{- end }}
 
             - name: REALM
@@ -200,10 +203,6 @@ spec:
               name: init-data
             - mountPath: /var/secret-data
               name: secret-data
-          {{- if .Values.global.drogueCloud.keycloak.tls.useServiceCA }}
-            - mountPath: /etc/certs/keycloak
-              name: service-ca
-          {{- end }}
 
           command:
             - bash
@@ -228,6 +227,7 @@ spec:
               REALM_OPTS+=(-s registrationAllowed=true)
               REALM_OPTS+=(-s resetPasswordAllowed=true)
               REALM_OPTS+=(-s loginWithEmailAllowed=false)
+              REALM_OPTS+=(-s identityProviders="{{ mustToJson .Values.keycloak.identityProviders }}")
               if kcadm get "realms/${REALM}" &> /dev/null ; then
                 # exists -> update
                 kcadm update "realms/${REALM}" "${REALM_OPTS[@]}"
@@ -247,7 +247,10 @@ spec:
               CLIENT_OPTS=()
               CLIENT_OPTS+=(-s "redirectUris=[\"{{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}\", \"{{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}/*\", \"http://localhost:*\"]")
               if [[ -n "$ID" ]]; then
-                kcadm update "clients/$ID" -r "${REALM}" -f /etc/init-data/client.json "${CLIENT_OPTS[@]}"
+                # TODO: replace with update once https://github.com/keycloak/keycloak/issues/12484 is fixed
+                # kcadm update "clients/${ID}" -r "${REALM}" -f /etc/init-data/client.json "${CLIENT_OPTS[@]}"
+                kcadm delete "clients/${ID}" -r "${REALM}"
+                kcadm create clients -r "${REALM}" -f /etc/init-data/client.json "${CLIENT_OPTS[@]}"
               else
                 kcadm create clients -r "${REALM}" -f /etc/init-data/client.json "${CLIENT_OPTS[@]}"
               fi
@@ -255,7 +258,10 @@ spec:
               # client clients - services
               ID=$(kcadm get clients -r "${REALM}" --query "clientId=services" --fields id --format csv --noquotes)
               if [[ -n "$ID" ]]; then
-                kcadm update "clients/$ID" -r "${REALM}" -f /etc/init-data/client-services.json
+                # TODO: replace with update once https://github.com/keycloak/keycloak/issues/12484 is fixed
+                # kcadm update "clients/${ID}" -r "${REALM}" -f /etc/init-data/client-services.json
+                kcadm delete "clients/${ID}" -r "${REALM}"
+                kcadm create clients -r "${REALM}" -f /etc/init-data/client-services.json
               else
                 kcadm create clients -r "${REALM}" -f /etc/init-data/client-services.json
               fi
@@ -323,7 +329,16 @@ spec:
               cat /var/secret-data/client-secret-services >> /tmp/secret.env
               kubectl create secret generic --dry-run=client keycloak-client-secret-services --from-env-file=/tmp/secret.env --output json | tee | kubectl apply -f -
 
-              cat /var/secret-data/client-secret-services
+              # ensure pods have up-to-date client secrets
+              HASH=$(sha1sum /var/secret-data/client-secret-services | awk '{ print $1 }')
+              # this is so complicated because:
+              #  a) kubectl annotate doesn't support annotating podSpec -> use kubectl patch
+              #  b) because kubectl patch doesn't support label selectors -> use kubectl get -l upfront
+              #  c) because kubectl does client side rate limiting -> run tasks in parallel, wait at the end
+              for i in $(kubectl get deploy -l client.oauth2.drogue.io/services -o name); do
+                echo "$HASH" | jq -R '{spec:{template:{metadata:{annotations:{"oauth2-client-secret-hash": .}}}}}' | kubectl patch $i --patch-file=/dev/stdin &
+              done
+              wait
 
 
 {{- end -}}

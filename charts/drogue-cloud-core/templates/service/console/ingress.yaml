@@ -10,7 +10,7 @@ metadata:
 spec:
   {{- include "drogue-cloud-core.ingress.className" ( dict "root" . "ingress" .Values.services.console.ingress) | nindent 2 }}
   rules:
-    - host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}
+    - host: {{ include "drogue-cloud-core.console.host" . | quote }}
       http:
         paths:
           - path: /api

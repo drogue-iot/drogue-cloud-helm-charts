@@ -9,15 +9,6 @@ global:
   drogueCloud:
     jaeger:
       enabled: false
-    keycloak:
-      postInstall:
-        image: quay.io/keycloak/keycloak:18.0.0
-      tls:
-        enabled: true
-        # Use the OpenShift service CA for the internal service endpoint. Will override the "secret" field.
-        useServiceCA: false
-        # an explicit secret holding the TLS key/cert
-        secret: sso-tls
 
 defaults:
   images:
@@ -54,13 +45,13 @@ console:
     mqttEndpointWs: {}
       # url: wss://mqtt-ws
     mqttEndpointWsBrowser: {}
-    # url: wss://mqtt-ws
+      # url: wss://mqtt-ws
     mqttIntegration: {}
       # port: 8883
     mqttIntegrationWsBrowser: {}
-    # url: wss://mqtt-ws
+      # url: wss://mqtt-ws
     mqttIntegrationWs: {}
-    # url: wss://mqtt-ws
+      # url: wss://mqtt-ws
     wsIntegration: {}
       # url: wss://foo-bar
     kafka: {}
@@ -139,19 +130,21 @@ services:
     eventSource:
       image: ghcr.io/drogue-cloud/drogue-event-source:0.2.0
 
+
 certificates:
   generator:
     enabled: true
+
 
 helper:
   image: registry.access.redhat.com/ubi8-minimal:latest
 
 
 oauth2:
-  # The issuer URL. By default, this is the locally deployed keycloak instance
-  # issuerUrl: http://service/some/realm
   tls:
     insecure: false
+  # The issuer URL. By default, this is the locally deployed keycloak instance
+  # issuerUrl: http://service/some/realm
 
 
 keycloak:
@@ -186,6 +179,7 @@ keycloak:
       name: admin
       password: admin123456
 
+
 postgres:
   databaseName: registry
   username: admin
@@ -193,6 +187,7 @@ postgres:
   podSecurityContext:
     enabled: false
   image: docker.io/bitnami/postgresql:14
+
 
 kafka:
 

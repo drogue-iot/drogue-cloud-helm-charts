@@ -7,6 +7,7 @@ metadata:
     app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"postgres"}]'
     {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
   labels:
+    client.oauth2.drogue.io/services: ""
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   replicas: 1
@@ -74,12 +75,8 @@ spec:
             {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}
 
           {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.services.auth ) | nindent 10 }}
-          volumeMounts:
-            {{- include "drogue-cloud-core.keycloak-volume-mounts" . | nindent 12 }}
 
       volumes:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
-
-        {{- include "drogue-cloud-core.keycloak-volumes" . | nindent 8 }}

@@ -3,10 +3,11 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: {{ .name | quote }}
-  labels:
-    {{- include "drogue-cloud-core.labels" . | nindent 4 }}
   annotations:
     {{- include "drogue-cloud-common.jaeger-annotations" .root | nindent 4 }}
+  labels:
+    client.oauth2.drogue.io/services: ""
+    {{- include "drogue-cloud-core.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -37,11 +38,11 @@ spec:
                 configMapKeyRef:
                   name: configuration
                   key: instance
-            {{- include "drogue-cloud-core.oauth2-authenticator.env-vars" (dict "root" .root "clients" (list "drogue" )) | nindent 12 }}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            {{- include "drogue-cloud-core.oauth2-authenticator.env-vars" (dict "root" .root "clients" (list "drogue" )) | nindent 12 }}
             - name: USER_AUTH__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -52,7 +53,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" .root "prefix" "USER_AUTH__" ) | nindent 12 }}
+            {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" .root "prefix" "USER_AUTH__" ) | nindent 12 }}
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -63,7 +64,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" .root "prefix" "REGISTRY__" ) | nindent 12 }}
+            {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" .root "prefix" "REGISTRY__" ) | nindent 12 }}
             - name: SERVICE__KAFKA__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" .root -}}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" .root "prefix" "SERVICE__KAFKA__PROPERTIES__" ) | nindent 12 }}
@@ -77,7 +78,7 @@ spec:
             - name: DISABLE_CLIENT_CERTIFICATES
               value: "true"
             {{ end }}
-            {{ if .insecure }}
+            {{ if .app.ingress.insecure }}
             - name: DISABLE_TLS
               value: "true"
             {{ else }}
@@ -113,15 +114,14 @@ spec:
               path: /liveness
 
           volumeMounts:
-          {{- if not .insecure }}
+          {{- if not .app.ingress.insecure }}
             - mountPath: /etc/endpoint
               name: endpoint-tls
           {{- end }}
-          {{- include "drogue-cloud-core.keycloak-volume-mounts" .root | nindent 12 }}
 
       volumes:
 
-        {{- if not .insecure }}
+        {{- if not .app.ingress.insecure }}
         - name: endpoint-tls
           secret:
             secretName: mqtt-endpoint-tls
@@ -130,7 +130,5 @@ spec:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
-
-        {{- include "drogue-cloud-core.keycloak-volumes" .root | nindent 8 }}
 
 {{- end -}}

@@ -2,7 +2,6 @@
   "root" .
   "name" "mqtt-integration"
   "component" "integrations"
-  "insecure" .Values.integrations.mqtt.insecure
   "app" .Values.integrations.mqtt
   "transport" "mqtt"
   "metrics" true

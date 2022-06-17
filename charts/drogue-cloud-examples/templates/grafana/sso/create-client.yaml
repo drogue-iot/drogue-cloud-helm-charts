@@ -71,11 +71,6 @@ spec:
         - name: init-data
           configMap:
             name: post-install-keycloak-config-grafana
-      {{- if .Values.global.drogueCloud.keycloak.tls.useServiceCA }}
-        - name: service-ca
-          configMap:
-            name: keycloak-service-ca
-      {{- end }}
 
       containers:
         - name: post-install
@@ -95,23 +90,19 @@ spec:
                   key: password
 
             - name: KEYCLOAK_URL
-              value: {{ include "drogue-cloud-common.keycloak.url" . | quote }}
+              value: {{ include "drogue-cloud-common.keycloak.internal.url" . | quote }}
 
             - name: KCADM_PATH
               value: "/opt/keycloak/bin/kcadm.sh"
 
-            {{- if .Values.global.drogueCloud.keycloak.tls.useServiceCA }}
+            {{- if and (not .Values.global.drogueCloud.keycloak.insecure ) .Values.global.drogueCloud.useServiceCA }}
             - name: CUSTOM_TRUSTSTORE
-              value: "/etc/certs/keycloak/service-ca.crt"
+              value: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
             {{- end }}
 
           volumeMounts:
             - mountPath: /etc/init-data
               name: init-data
-          {{- if .Values.global.drogueCloud.keycloak.tls.useServiceCA }}
-            - mountPath: /etc/certs/keycloak
-              name: service-ca
-          {{- end }}
 
           command:
             - bash

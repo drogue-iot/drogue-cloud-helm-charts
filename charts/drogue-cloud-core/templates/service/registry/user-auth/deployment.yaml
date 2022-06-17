@@ -7,6 +7,7 @@ metadata:
     app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"postgres"}]'
     {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
   labels:
+    client.oauth2.drogue.io/services: ""
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 
 spec:
@@ -61,20 +62,7 @@ spec:
                   name: postgres-secret
                   key: admin.password
             {{- include "drogue-cloud-core.oauth2-authenticator.env-vars" ( dict "root" . "clients" ( list "services" ) ) | nindent 12 }}
-            - name: KEYCLOAK__URL
-              value: {{ include "drogue-cloud-common.keycloak.url" . | quote }}
-            - name: KEYCLOAK__ADMIN_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  key: username
-                  name: sso-service-credentials
-            - name: KEYCLOAK__ADMIN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: password
-                  name: sso-service-credentials
-            - name: "KEYCLOAK__TLS_INSECURE"
-              value: {{ .Values.oauth2.tls.insecure | quote }}
+            {{- include "drogue-cloud-core.keycloak.internal-access" . | nindent 12 }}
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1
@@ -99,12 +87,7 @@ spec:
 
           {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.services.userAuth) | nindent 10 }}
 
-          volumeMounts:
-            {{- include "drogue-cloud-core.keycloak-volume-mounts" . | nindent 12 }}
-
       volumes:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
-
-        {{- include "drogue-cloud-core.keycloak-volumes" . | nindent 8 }}

@@ -2,7 +2,6 @@
   "root" .
   "name" "mqtt-endpoint"
   "component" "endpoints"
-  "insecure" .Values.endpoints.mqtt.insecure
   "app" .Values.endpoints.mqtt
   "transport" "mqtt"
   "metrics" true

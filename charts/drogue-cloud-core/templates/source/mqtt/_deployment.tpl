@@ -6,6 +6,7 @@ metadata:
   annotations:
     {{- include "drogue-cloud-common.jaeger-annotations" .root | nindent 4 }}
   labels:
+    client.oauth2.drogue.io/services: ""
     {{- include "drogue-cloud-core.labels" . | nindent 4 }}
 spec:
   replicas: 1
@@ -55,7 +56,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" .root "prefix" "STATE__CLIENT__" ) | nindent 12 }}
+            {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" .root "prefix" "STATE__CLIENT__" ) | nindent 12 }}
             - name: AUTH__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -66,7 +67,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" .root "prefix" "AUTH__" ) | nindent 12 }}
+            {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" .root "prefix" "AUTH__" ) | nindent 12 }}
             - name: COMMAND_SOURCE_KAFKA__TOPIC
               value: iot-commands
             - name: COMMAND_SOURCE_KAFKA__CONSUMER_GROUP
@@ -84,7 +85,7 @@ spec:
             - name: DISABLE_CLIENT_CERTIFICATES
               value: "true"
             {{ end }}
-            {{ if .insecure }}
+            {{ if .app.ingress.insecure }}
             - name: DISABLE_TLS
               value: "true"
             {{ else }}
@@ -120,15 +121,14 @@ spec:
           {{- include "drogue-cloud-core.container-resources" ( dict "root" .root "app" .app ) | nindent 10 }}
 
           volumeMounts:
-          {{- if not .insecure }}
+          {{- if not .app.ingress.insecure }}
             - mountPath: /etc/endpoint
               name: endpoint-tls
           {{- end }}
-          {{- include "drogue-cloud-core.keycloak-volume-mounts" .root | nindent 12 }}
 
       volumes:
 
-        {{- if not .insecure }}
+        {{- if not .app.ingress.insecure }}
         - name: endpoint-tls
           secret:
             secretName: mqtt-endpoint-tls
@@ -137,7 +137,5 @@ spec:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
-
-        {{- include "drogue-cloud-core.keycloak-volumes" .root | nindent 8 }}
 
 {{- end -}}

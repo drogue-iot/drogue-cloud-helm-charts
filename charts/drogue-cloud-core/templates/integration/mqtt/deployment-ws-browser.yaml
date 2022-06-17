@@ -2,7 +2,6 @@
   "root" .
   "name" "mqtt-integration-ws-browser"
   "component" "integrations"
-  "insecure" .Values.integrations.mqttWsBrowser.insecure
   "app" .Values.integrations.mqttWsBrowser
   "transport" "websocket"
   "disableClientCertificates" true

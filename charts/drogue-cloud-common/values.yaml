@@ -6,3 +6,12 @@ global:
 
   drogueCloud:
     jaeger: {}
+    # if the openshift service CA is available and should be used
+    useServiceCA: false
+    keycloak:
+      # enable keycloak deployment
+      enabled: true
+      # downgrade to insecure deployment
+      insecure: false
+      postInstall:
+        image: quay.io/keycloak/keycloak:18.0.0

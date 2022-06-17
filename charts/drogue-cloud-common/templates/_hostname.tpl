@@ -2,7 +2,6 @@
 {{/*
 Service host:
  * root - .
- * insecure - https or not
  * prefix - DNS prefix
 */}}
 {{- define "drogue-cloud-common.ingress.host" -}}
@@ -15,7 +14,7 @@ Service host:
 {{/*
 Service URL:
  * root - .
- * insecure - https or not
+ * ingress - the ingress configuration
  * prefix - DNS prefix
 */}}
 {{- define "drogue-cloud-common.ingress.url" -}}
@@ -24,42 +23,25 @@ Service URL:
 {{- include "drogue-cloud-common.ingress.host" . -}}
 
 {{- $port := .ingress.port | default 443 | toString -}}
-{{- /*
-  The next line means:
-    !( port == 80 && insecure ) || ( port == 443 && !insecure)
-*/ -}}
-{{- if not (or (and (eq $port "80") .insecure) (and (eq $port "443") (not .insecure )) ) -}}
-:{{ $port }}
-{{- end }}
+{{- include "drogue-cloud-common.ingress._port-part" ( dict "ingress" .ingress "securePort" "443" "insecurePort" "80" "port" $port ) }}
 
 {{- end }}
 
 {{/*
 Ingress HTTP protocol:
  * root - .
- * insecure - https or not
+ * ingress - the ingress configuration
 */}}
 {{- define "drogue-cloud-common.ingress.proto" -}}
-    {{- with .ingress.proto -}}{{ . }}{{- else -}}
-    {{- if not ( kindIs "invalid" .insecure ) -}}
-        {{- if .insecure -}}http{{- else -}}https{{- end -}}
-    {{- else -}}
-        {{- if eq .root.Values.global.cluster "openshift" -}}
-            https
-        {{- else -}}
-            http
-        {{- end }}
-    {{- end }}{{/* end-if defined .insecure */}}
-    {{- end }}{{/* end-with .ingress.proto */}}
+{{- include "drogue-cloud-common.ingress._proto" ( deepCopy . | merge ( dict "secureProto" "https" "insecureProto" "http" )) }}
 {{- end }}
-
 
 {{/* CoAP specific */}}
 
 {{/*
 CoAP Service URL:
  * root - .
- * insecure - coaps or not
+ * ingress - the ingress configuration
  * prefix - DNS prefix
 */}}
 {{- define "drogue-cloud-common.ingress.coap-url" -}}
@@ -68,33 +50,18 @@ CoAP Service URL:
 {{- include "drogue-cloud-common.ingress.host" . -}}
 
 {{- $port := .ingress.port | default 5683 | toString -}}
-{{- /*
-  The next line means:
-    !( port == 5683 && insecure ) || ( port == 5684 && !insecure)
-*/ -}}
-{{- if not (or (and (eq $port "5683") .insecure) (and (eq $port "5684") (not .insecure )) ) -}}
-:{{ $port }}
-{{- end }}
+{{- include "drogue-cloud-common.ingress._port-part" ( dict "ingress" .ingress "securePort" "5684" "insecurePort" "5683" "port" $port ) }}
 
 {{- end }}
 
 {{/*
 Ingress CoAP protocol:
  * root - .
- * insecure - coaps or not
+ * ingress - the ingress configuration
+ * ingress - the ingress object
 */}}
 {{- define "drogue-cloud-common.ingress.coap-proto" -}}
-    {{- with .ingress.proto -}}{{ . }}{{- else -}}
-    {{- if not ( kindIs "invalid" .insecure ) -}}
-        {{- if .insecure -}}coap{{- else -}}coaps{{- end -}}
-    {{- else -}}
-        {{- if eq .root.Values.global.cluster "openshift" -}}
-            coaps
-        {{- else -}}
-            coap
-        {{- end }}
-    {{- end }}{{/* end-if defined .insecure */}}
-    {{- end }}{{/* end-with .ingress.coap-proto */}}
+{{- include "drogue-cloud-common.ingress._proto" ( deepCopy . | merge ( dict "secureProto" "coaps" "insecureProto" "coap" )) }}
 {{- end }}
 
 {{/* WS specific */}}
@@ -102,7 +69,7 @@ Ingress CoAP protocol:
 {{/*
 WS Service URL:
  * root - .
- * insecure - wss or not
+ * ingress - the ingress configuration
  * prefix - DNS prefix
 */}}
 {{- define "drogue-cloud-common.ingress.ws-url" -}}
@@ -111,33 +78,47 @@ WS Service URL:
 {{- include "drogue-cloud-common.ingress.host" . -}}
 
 {{- $port := .ingress.port | default 443 | toString -}}
-{{- /*
-  The next line means:
-    !( port == 80 && insecure ) || ( port == 443 && !insecure)
-*/ -}}
-{{- if not (or (and (eq $port "80") .insecure) (and (eq $port "443") (not .insecure )) ) -}}
-:{{ $port }}
-{{- end }}
+{{- include "drogue-cloud-common.ingress._port-part" ( dict "ingress" .ingress "securePort" "443" "insecurePort" "80" "port" $port ) }}
 
 {{- end }}
 
 {{/*
 Ingress WS protocol:
  * root - .
- * insecure - wss or not
+ * ingress - the ingress configuration
 */}}
 {{- define "drogue-cloud-common.ingress.ws-proto" -}}
-    {{- with .ingress.proto -}}{{ . }}{{- else -}}
-    {{- if not ( kindIs "invalid" .insecure ) -}}
-        {{- if .insecure -}}ws{{- else -}}wss{{- end -}}
-    {{- else -}}
-        {{- if eq .root.Values.global.cluster "openshift" -}}
-            wss
-        {{- else -}}
-            ws
-        {{- end }}
-    {{- end }}{{/* end-if defined .insecure */}}
-    {{- end }}{{/* end-with .ingress.ws-proto */}}
+{{- include "drogue-cloud-common.ingress._proto" ( deepCopy . | merge ( dict "secureProto" "wss" "insecureProto" "ws" )) }}
+{{- end }}
+
+{{/*
+Ingress protocol:
+ * root - the root context
+ * ingress - the ingress configuration
+ * insecureProto - the insecure protocol prefix
+ * secureProto - the secure protocol prefix
+*/}}
+{{- define "drogue-cloud-common.ingress._proto" -}}
+    {{- with .ingress.proto -}}{{ . }}
+    {{- else -}}{{- if .ingress.insecure }}{{- .insecureProto -}}{{- else }}{{- .secureProto -}}{{- end }}
+    {{- end }}{{/* with ingress.proto */}}
+{{- end }}
+
+
+{{/*
+Ingress port (with prefixed :), or nothing.
+
+Arguments:
+ * ingress - the ingress configuration
+ * securePort - default port number for secure connections
+ * insecurePort - default port number for insecure connections
+ * port - the actual port number
+*/}}
+{{- define "drogue-cloud-common.ingress._port-part" }}
+{{- if and .ingress.insecure ( eq .port .insecurePort ) }}
+{{- else if and ( not .ingress.insecure ) ( eq .port .securePort ) }}
+{{- else }}:{{ .port }}
+{{- end }}
 {{- end }}
 
 {{- define "drogue-cloud-common.ingress.cert-altnames" -}}

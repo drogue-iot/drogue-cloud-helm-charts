@@ -1,13 +1,13 @@
 {{/*
-Keycloak API URL
+Internal Keycloak API URL
 
 This requires the global "drogueCloud" section.
 */}}
-{{- define "drogue-cloud-common.keycloak.url" -}}
-{{- if .Values.global.drogueCloud.keycloak.tls.useServiceCA -}}
-https://sso-service.{{ .Release.Namespace }}.svc:8443
-{{- else -}}
+{{- define "drogue-cloud-common.keycloak.internal.url" -}}
+{{- if .Values.global.drogueCloud.keycloak.insecure -}}
 http://sso-service.{{ .Release.Namespace }}.svc:8080
+{{- else -}}
+https://sso-service.{{ .Release.Namespace }}.svc:8443
 {{- end }}
 {{- end }}
 

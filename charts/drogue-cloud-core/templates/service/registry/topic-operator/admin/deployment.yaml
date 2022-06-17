@@ -8,6 +8,7 @@ metadata:
     app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"device-management-service"}]'
     {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
   labels:
+    client.oauth2.drogue.io/services: ""
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   replicas: 1
@@ -49,7 +50,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
+            {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
             - name: WORK_QUEUE__INSTANCE
               value: topic-operator
             - name: WORK_QUEUE__PG__HOST
@@ -100,14 +101,9 @@ spec:
 
           {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.services.topicOperator) | nindent 10 }}
 
-          volumeMounts:
-            {{- include "drogue-cloud-core.keycloak-volume-mounts" . | nindent 12 }}
-
       volumes:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
-
-        {{- include "drogue-cloud-core.keycloak-volumes" . | nindent 8 }}
 
 {{- end }}{{/* if type == "admin" */}}

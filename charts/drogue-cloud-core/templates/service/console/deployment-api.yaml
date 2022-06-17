@@ -23,11 +23,11 @@ spec:
             - name: BASE_URL
               value: /api
             - name: OAUTH2_REDIRECT_URL
-              value: {{ .Values.console.overrides.console.url | default ( include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) ) }}/api/oauth2-redirect.html
+              value: {{ .Values.console.overrides.console.url | default ( include "drogue-cloud-core.console.url" . ) }}/api/oauth2-redirect.html
             - name: VALIDATOR_URL
               value: none
             - name: URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) }}
+              value: {{ include "drogue-cloud-core.api.url" . | quote }}
             - name: OAUTH_CLIENT_ID
               value: drogue
             - name: OAUTH_SCOPES

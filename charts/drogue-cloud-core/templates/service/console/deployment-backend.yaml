@@ -3,10 +3,11 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: console-backend
-  labels:
-    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
   annotations:
     {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
+  labels:
+    client.oauth2.drogue.io/services: ""
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -35,9 +36,10 @@ spec:
               value: "true"
             - name: KAFKA__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
-            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA__PROPERTIES__" ) | nindent 12 }}
             - name: SSO_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}
+              value: {{ include "drogue-cloud-core.sso.url" . }}
+            {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA__PROPERTIES__" ) | nindent 12 }}
+            {{/* The UI client is just needed to auto-discover some endpoints */}}
             - name: UI__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -48,7 +50,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-drogue
                   key: CLIENT_SECRET
-            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "UI__" "external" true ) | nindent 12 }}
+            {{- include "drogue-cloud-core.oauth2-external.env-vars" (dict "root" . "prefix" "UI__" ) | nindent 12 }}
             {{- include "drogue-cloud-core.oauth2-authenticator.env-vars" (dict "root" . "clients" (list "drogue" "services" )) | nindent 12 }}
             - name: NAMESPACE
               valueFrom:
@@ -64,7 +66,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "USER_AUTH__" ) | nindent 12 }}
+            {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" . "prefix" "USER_AUTH__" ) | nindent 12 }}
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -76,39 +78,28 @@ spec:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
                   optional: true
-            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
-            - name: KEYCLOAK__URL
-              value: {{ include "drogue-cloud-common.keycloak.url" . | quote }}
-            - name: KEYCLOAK__ADMIN_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  key: username
-                  name: sso-service-credentials
-            - name: KEYCLOAK__ADMIN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: password
-                  name: sso-service-credentials
-            - name: "KEYCLOAK__TLS_INSECURE"
-              value: {{ .Values.oauth2.tls.insecure | quote }}
+            {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
+
+            {{- include "drogue-cloud-core.keycloak.internal-access" . | nindent 12 }}
+
             - name: ENDPOINTS__LOCAL_CERTS
               value: {{ .Values.console.localCertificates | quote }}
             - name: ENDPOINTS__API_URL
-              value: {{ .Values.console.overrides.api.url | default ( include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) ) }}
+              value: {{ .Values.console.overrides.api.url | default ( include "drogue-cloud-core.api.url" . ) }}
             - name: ENDPOINTS__SSO_URL
               value: $(SSO_URL)
             - name: ENDPOINTS__CONSOLE_URL
-              value: {{ .Values.console.overrides.console.url | default ( include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) ) }}
+              value: {{ .Values.console.overrides.console.url | default ( include "drogue-cloud-core.console.url" . ) }}
             - name: ENDPOINTS__REDIRECT_URL
-              value: {{ .Values.console.overrides.console.url | default ( include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) ) }}
+              value: {{ .Values.console.overrides.console.url | default ( include "drogue-cloud-core.console.url" . ) }}
             - name: ENDPOINTS__DEVICE_REGISTRY_URL
               value: {{ .Values.console.overrides.api.url | default ( include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) ) }}
             - name: ENDPOINTS__COMMAND_ENDPOINT_URL
               value: {{ .Values.console.overrides.api.url | default ( include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) ) }}
             - name: ENDPOINTS__COAP_ENDPOINT_URL
-              value: {{ .Values.console.overrides.coapEndpoint.url | default ( include "drogue-cloud-common.ingress.coap-url" (dict "root" . "prefix" "coap-endpoint" "ingress" .Values.endpoints.coap.ingress "insecure" .Values.endpoints.coap.insecure ) ) }}
+              value: {{ .Values.console.overrides.coapEndpoint.url | default ( include "drogue-cloud-common.ingress.coap-url" (dict "root" . "prefix" "coap-endpoint" "ingress" .Values.endpoints.coap.ingress ) ) }}
             - name: ENDPOINTS__HTTP_ENDPOINT_URL
-              value: {{ .Values.console.overrides.httpEndpoint.url | default ( include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "http-endpoint" "ingress" .Values.endpoints.http.ingress "insecure" .Values.endpoints.http.insecure ) ) }}
+              value: {{ .Values.console.overrides.httpEndpoint.url | default ( include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "http-endpoint" "ingress" .Values.endpoints.http.ingress ) ) }}
             - name: ENDPOINTS__MQTT_ENDPOINT_HOST
               value: {{ .Values.console.overrides.mqttEndpoint.host | default ( include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-endpoint" "ingress" .Values.endpoints.mqtt.ingress ) ) }}
             - name: ENDPOINTS__MQTT_ENDPOINT_PORT
@@ -118,13 +109,13 @@ spec:
             - name: ENDPOINTS__MQTT_ENDPOINT_WS_PORT
               value: {{ .Values.console.overrides.mqttEndpointWs.port | default .Values.endpoints.mqttWs.ingress.port | quote }}
             - name: ENDPOINTS__MQTT_ENDPOINT_WS_URL
-              value: {{ .Values.console.overrides.mqttEndpointWs.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "mqtt-endpoint-ws" "ingress" .Values.endpoints.mqttWs.ingress "insecure" .Values.endpoints.http.insecure ) ) }}
+              value: {{ .Values.console.overrides.mqttEndpointWs.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "mqtt-endpoint-ws" "ingress" .Values.endpoints.mqttWs.ingress ) ) }}
             - name: ENDPOINTS__MQTT_ENDPOINT_WS_BROWSER_HOST
               value: {{ .Values.console.overrides.mqttEndpointWsBrowser.host | default ( include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-endpoint-ws-browser" "ingress" .Values.endpoints.mqttWsBrowser.ingress ) ) }}
             - name: ENDPOINTS__MQTT_ENDPOINT_WS_BROWSER_PORT
               value: {{ .Values.console.overrides.mqttEndpointWsBrowser.port | default .Values.endpoints.mqttWsBrowser.ingress.port | quote }}
             - name: ENDPOINTS__MQTT_ENDPOINT_WS_BROWSER_URL
-              value: {{ .Values.console.overrides.mqttEndpointWsBrowser.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "mqtt-endpoint-ws-browser" "ingress" .Values.endpoints.mqttWsBrowser.ingress "insecure" .Values.endpoints.http.insecure ) ) }}
+              value: {{ .Values.console.overrides.mqttEndpointWsBrowser.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "mqtt-endpoint-ws-browser" "ingress" .Values.endpoints.mqttWsBrowser.ingress ) ) }}
             - name: ENDPOINTS__MQTT_INTEGRATION_HOST
               value: {{ .Values.console.overrides.mqttIntegration.host | default ( include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-integration" "ingress" .Values.integrations.mqtt.ingress ) ) }}
             - name: ENDPOINTS__MQTT_INTEGRATION_PORT
@@ -134,15 +125,15 @@ spec:
             - name: ENDPOINTS__MQTT_INTEGRATION_WS_PORT
               value: {{ .Values.console.overrides.mqttIntegrationWs.port | default .Values.integrations.mqttWs.ingress.port | quote }}
             - name: ENDPOINTS__MQTT_INTEGRATION_WS_URL
-              value: {{ .Values.console.overrides.mqttIntegrationWs.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "mqtt-integration-ws" "ingress" .Values.integrations.mqttWs.ingress "insecure" .Values.endpoints.http.insecure ) ) }}
+              value: {{ .Values.console.overrides.mqttIntegrationWs.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "mqtt-integration-ws" "ingress" .Values.integrations.mqttWs.ingress ) ) }}
             - name: ENDPOINTS__MQTT_INTEGRATION_WS_BROWSER_HOST
               value: {{ .Values.console.overrides.mqttIntegrationWsBrowser.host | default ( include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-integration-ws-browser" "ingress" .Values.integrations.mqttWsBrowser.ingress ) ) }}
             - name: ENDPOINTS__MQTT_INTEGRATION_WS_BROWSER_PORT
               value: {{ .Values.console.overrides.mqttIntegrationWsBrowser.port | default .Values.integrations.mqttWsBrowser.ingress.port | quote }}
             - name: ENDPOINTS__MQTT_INTEGRATION_WS_BROWSER_URL
-              value: {{ .Values.console.overrides.mqttIntegrationWsBrowser.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "mqtt-integration-ws-browser" "ingress" .Values.integrations.mqttWsBrowser.ingress "insecure" .Values.endpoints.http.insecure ) ) }}
+              value: {{ .Values.console.overrides.mqttIntegrationWsBrowser.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "mqtt-integration-ws-browser" "ingress" .Values.integrations.mqttWsBrowser.ingress ) ) }}
             - name: ENDPOINTS__WEBSOCKET_INTEGRATION_URL
-              value: {{ .Values.console.overrides.wsIntegration.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "websocket-integration" "ingress" .Values.integrations.websocket.ingress "insecure" .Values.integrations.websocket.insecure ) ) }}
+              value: {{ .Values.console.overrides.wsIntegration.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "websocket-integration" "ingress" .Values.integrations.websocket.ingress ) ) }}
             - name: ENDPOINTS__KAFKA_BOOTSTRAP_SERVERS
               value: {{ .Values.console.overrides.kafka.servers | default ( include "drogue-cloud-common.kafka-bootstrap-server" . ) }}
           ports:
@@ -170,9 +161,6 @@ spec:
               port: 9090
               path: /liveness
 
-          volumeMounts:
-            {{- include "drogue-cloud-core.keycloak-volume-mounts" . | nindent 12 }}
-
       volumes:
         - name: client-secret-drogue
           secret:
@@ -180,5 +168,3 @@ spec:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
-
-        {{- include "drogue-cloud-core.keycloak-volumes" . | nindent 8 }}

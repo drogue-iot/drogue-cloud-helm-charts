@@ -3,11 +3,12 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: device-management-controller
-  labels:
-    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
   annotations:
     app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"postgres"}]'
     {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
+  labels:
+    client.oauth2.drogue.io/services: ""
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -39,7 +40,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
+            {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
             - name: WORK_QUEUE__INSTANCE
               value: ttn-operator
             - name: WORK_QUEUE__PG__HOST
@@ -101,12 +102,7 @@ spec:
 
           {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.services.deviceManagementController) | nindent 10 }}
 
-          volumeMounts:
-            {{- include "drogue-cloud-core.keycloak-volume-mounts" . | nindent 12 }}
-
       volumes:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
-
-        {{- include "drogue-cloud-core.keycloak-volumes" . | nindent 8 }}

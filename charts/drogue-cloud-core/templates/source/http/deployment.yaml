@@ -3,10 +3,11 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: http-endpoint
-  labels:
-    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
   annotations:
     {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
+  labels:
+    client.oauth2.drogue.io/services: ""
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -31,7 +32,7 @@ spec:
             {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.endpoints.http ) | nindent 12 }}
             {{- include "drogue-cloud-common.jaeger-env" ( dict "root" . "app" .Values.endpoints.http ) | nindent 12 }}
             - name: BIND_ADDR
-              value: "0.0.0.0:{{ if .Values.endpoints.http.insecure }}8080{{ else }}8443{{ end }}"
+              value: "0.0.0.0:{{ if .Values.endpoints.http.ingress.insecure }}8080{{ else }}8443{{ end }}"
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
             - name: INSTANCE
@@ -49,7 +50,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "AUTH__" ) | nindent 12 }}
+            {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" . "prefix" "AUTH__" ) | nindent 12 }}
             - name: COMMAND_SOURCE_KAFKA__TOPIC
               value: iot-commands
             - name: COMMAND_SOURCE_KAFKA__CONSUMER_GROUP
@@ -103,7 +104,6 @@ spec:
             - mountPath: /etc/endpoint
               name: endpoint-tls
           {{ end }}
-          {{- include "drogue-cloud-core.keycloak-volume-mounts" . | nindent 12 }}
 
       volumes:
 
@@ -116,5 +116,3 @@ spec:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
-
-        {{- include "drogue-cloud-core.keycloak-volumes" . | nindent 8 }}

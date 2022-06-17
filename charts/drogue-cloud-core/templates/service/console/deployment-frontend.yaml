@@ -21,9 +21,9 @@ spec:
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
           env:
             - name: API_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) }}
+              value: {{ include "drogue-cloud-core.api.url" . | quote }}
             - name: ISSUER_URL
-              value: {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "sso" "ingress" .Values.services.sso.ingress ) }}/realms/drogue
+              value: {{ include "drogue-cloud-core.sso.issuer-url" . | quote }}
           ports:
             - containerPort: 8080
               name: endpoint

@@ -1,15 +1,26 @@
 {{/*
 Create the default ingress annotations.
+
+Arguments:
+ * endpoint:
+   * insecure
+   * ingress
 */}}
 {{- define "drogue-cloud-core.ingress.annotations" -}}
+
 {{- with .ingress.annotations }}
 {{- . | toYaml }}
 {{- else }}
+
 {{- if eq .root.Values.global.cluster "openshift" }}
+{{- if not .ingress.insecure }}
 route.openshift.io/termination: "edge"
-{{- end }}
-{{- end }}
-{{- end }}
+{{- end }}{{/* .insecure */}}
+{{- end }}{{/* is openshift */}}
+
+{{- end }}{{/* with .ingress.annotations */}}
+
+{{- end }}{{/* define */}}
 
 {{/*
 Create the ingressClassName field.

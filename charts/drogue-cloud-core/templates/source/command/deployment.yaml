@@ -3,10 +3,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: command-endpoint
-  labels:
-    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
   annotations:
     {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
+  labels:
+    client.oauth2.drogue.io/services: ""
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   selector:
     matchLabels:
@@ -45,7 +46,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
+            {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
             - name: USER_AUTH__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -56,7 +57,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            {{- include "drogue-cloud-core.oauth2-env-vars" (dict "root" . "prefix" "USER_AUTH__" ) | nindent 12 }}
+            {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" . "prefix" "USER_AUTH__" ) | nindent 12 }}
             - name: COMMAND_KAFKA_SINK__TOPIC
               value: iot-commands
             - name: COMMAND_KAFKA_SINK__BOOTSTRAP_SERVERS
@@ -86,12 +87,7 @@ spec:
 
           {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.services.command ) | nindent 10 }}
 
-          volumeMounts:
-            {{- include "drogue-cloud-core.keycloak-volume-mounts" . | nindent 12 }}
-
       volumes:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
-
-        {{- include "drogue-cloud-core.keycloak-volumes" . | nindent 8 }}

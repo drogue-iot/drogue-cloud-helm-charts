@@ -2,7 +2,6 @@
   "root" .
   "name" "mqtt-integration-ws"
   "component" "integrations"
-  "insecure" .Values.integrations.mqttWs.insecure
   "app" .Values.integrations.mqttWs
   "transport" "websocket"
   "metrics" true

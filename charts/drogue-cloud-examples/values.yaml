@@ -37,7 +37,8 @@ grafana:
   image: docker.io/grafana/grafana:8.5.2
   podSecurityContext:
     enabled: false
-  ingress: {}
+  ingress:
+    insecure: false
 
   keycloak:
     enabled: false
