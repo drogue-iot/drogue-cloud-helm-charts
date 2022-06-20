@@ -1,0 +1,27 @@
+{{- if not .Values.keycloak.ingress.disable }}
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: sso-ingress
+  annotations:
+    {{- .Values.keycloak.ingress.annotations | toYaml | nindent 4 }}
+  labels:
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "sso-ingress" "component" "sso") | nindent 4 }}
+spec:
+  defaultBackend:
+    service:
+      name: sso-service
+      port:
+        number: {{ if .Values.global.keycloak.insecure }}8080{{ else }}8443{{ end }}
+  rules:
+    - host: {{ include "drogue-cloud-core.sso.host" . }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: sso-service
+                port:
+                  number: {{ if .Values.global.keycloak.insecure }}8080{{ else }}8443{{ end }}
+{{- end }}

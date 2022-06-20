@@ -48,6 +48,7 @@ spec:
   {{- end }}
 
   hostname: {{ include "drogue-cloud-core.sso.host" . }}
+  disableDefaultIngress: true
 
   {{- if .Values.global.drogueCloud.keycloak.insecure }}
 
