@@ -25,7 +25,7 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: sso-service
+                name: sso-tls
                 port:
                   number: {{ if .Values.global.drogueCloud.keycloak.insecure }}8080{{ else }}8443{{ end }}
 {{- end }}

@@ -7,8 +7,12 @@ This requires the global "drogueCloud" section.
 {{- if .Values.global.drogueCloud.keycloak.insecure -}}
 http://sso-service.{{ .Release.Namespace }}.svc:8080
 {{- else -}}
+{{- if .Values.global.drogueCloud.useServiceCA -}}
+https://sso-tls.{{ .Release.Namespace }}.svc:8443
+{{- else -}}
 https://sso-service.{{ .Release.Namespace }}.svc:8443
-{{- end }}
+{{- end }}{{/* .useServiceCA */}}
+{{- end }}{{/* .insecure */}}
 {{- end }}
 
 {{/*

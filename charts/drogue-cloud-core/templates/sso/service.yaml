@@ -8,5 +8,11 @@ metadata:
   labels:
     {{- include "drogue-cloud-core.labels" (dict "root" . "name" "sso-tls" "component" "sso") | nindent 4 }}
 spec:
-  clusterIP: None
+  ports:
+    - port: 8443
+      protocol: TCP
+      targetPort: 8443
+  selector:
+    app: keycloak
+  type: ClusterIP
 {{- end }}
