@@ -2,9 +2,8 @@
 Create the default ingress annotations.
 
 Arguments:
- * endpoint:
-   * insecure
-   * ingress
+  * root - .
+  * ingress
 */}}
 {{- define "drogue-cloud-core.ingress.annotations" -}}
 
@@ -24,6 +23,10 @@ route.openshift.io/termination: "edge"
 
 {{/*
 Create the ingressClassName field.
+
+Arguments:
+  * root - .
+  * ingress
 */}}
 {{- define "drogue-cloud-core.ingress.className" -}}
 {{- with .ingress.className | default .root.Values.defaults.ingress.className }}
