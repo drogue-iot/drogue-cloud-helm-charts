@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: endpoint
-          image: docker.io/swaggerapi/swagger-ui:v4.1.3
+          image: docker.io/swaggerapi/swagger-ui:v4.12.0
           imagePullPolicy: IfNotPresent
           env:
             - name: BASE_URL
