@@ -6,7 +6,9 @@ Selector labels
 */}}
 {{- define "drogue-cloud-common.selectorLabels" -}}
 app.kubernetes.io/name: {{ .name }}
-app.kubernetes.io/component: {{ .component }}
+{{- with .component}}
+app.kubernetes.io/component: {{ . }}
+{{- end }}
 app.kubernetes.io/instance: {{ .root.Values.coreReleaseName | default .root.Release.Name }}
 {{- end }}
 
