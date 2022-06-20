@@ -26,6 +26,6 @@ dependencies:
     repository: "https://prometheus-community.github.io/helm-charts"
     condition: prometheus.createInstance
   - name: grafana
-    version: ~6.24.1
+    version: ~6.30.2
     repository: "https://grafana.github.io/helm-charts"
     condition: grafana.enabled
