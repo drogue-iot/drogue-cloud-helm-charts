@@ -40,7 +40,7 @@ spec:
     {{/* FIXME: handle service CA */}}
     {{- if .Values.global.drogueCloud.useServiceCA }}
     - name: proxy
-      value: rencrypt
+      value: reencrypt
     {{- else }}
     - name: proxy
       value: passthrough
