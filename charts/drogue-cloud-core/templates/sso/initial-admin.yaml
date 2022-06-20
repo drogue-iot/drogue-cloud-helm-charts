@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: sso-initial-admin # sso- is from the name of the instance metadata name
+  labels:
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "sso-initial-admin" "component" "sso") | nindent 4 }}
 type: kubernetes.io/basic-auth
 data:
   username: YWRtaW4= # admin
