@@ -160,8 +160,6 @@ keycloak:
   identityProviders: []
   ingress:
     disable: false
-    # additional annotations
-    annotations: []
   postgres:
     # mode is the way postgres gets configured. This can be:
     #  - drogue: Re-use the Drogue Cloud postgres instance
