@@ -55,9 +55,8 @@ spec:
 
   {{- else }}
 
-  {{/* FIXME: handle service CA */}}
   {{- if .Values.global.drogueCloud.useServiceCA }}
-  tlsSecret:
+  tlsSecret: drogue-cloud-service-ca
   {{- else }}
   tlsSecret: {{ .Values.global.drogueCloud.keycloak.tlsSecret }}
   {{- end }}

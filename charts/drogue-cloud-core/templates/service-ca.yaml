@@ -1,0 +1,10 @@
+{{- if .Values.global.drogueCloud.useServiceCA }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: drogue-cloud-service-ca
+  annotations:
+    service.beta.openshift.io/inject-cabundle: "true"
+  labels:
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "drogue-cloud-service-ca") | nindent 4 }}
+{{- end }}
