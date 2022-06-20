@@ -56,7 +56,7 @@ spec:
   {{- else }}
 
   {{- if .Values.global.drogueCloud.useServiceCA }}
-  tlsSecret: drogue-cloud-service-ca
+  tlsSecret: sso-tls
   {{- else }}
   tlsSecret: {{ .Values.global.drogueCloud.keycloak.tlsSecret }}
   {{- end }}
