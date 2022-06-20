@@ -5,13 +5,13 @@ metadata:
   name: sso-ingress
   annotations:
     {{/* replace with drogue-cloud-core.ingress.annotations once it suppors service CA settings */}}
-    {{- with .Values.keycloak.ingress.annotations }}
+    {{- with .Values.services.sso.ingress.annotations }}
     {{- . | toYaml | nindent 4 }}
     {{- end }}
   labels:
     {{- include "drogue-cloud-core.labels" (dict "root" . "name" "sso-ingress" "component" "sso") | nindent 4 }}
 spec:
-  ingressClassName: {{ include "drogue-cloud-core.ingress.className" (dict "root" . "ingress" .Values.keycloak.ingress )}}
+  ingressClassName: {{ include "drogue-cloud-core.ingress.className" (dict "root" . "ingress" .Values.services.sso.ingress )}}
   defaultBackend:
     service:
       name: sso-service
