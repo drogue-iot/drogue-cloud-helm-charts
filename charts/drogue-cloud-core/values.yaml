@@ -11,7 +11,12 @@ global:
       enabled: false
 
     keycloak:
+      # enable keycloak deployment
+      enabled: true
+      # downgrade to insecure deployment
       insecure: false
+      postInstall:
+        image: quay.io/keycloak/keycloak:18.0.0
 
 defaults:
   images:
