@@ -12,7 +12,7 @@ spec:
     service:
       name: sso-service
       port:
-        number: {{ if .Values.global.keycloak.insecure }}8080{{ else }}8443{{ end }}
+        number: {{ if .Values.global.drogueCloud.keycloak.insecure }}8080{{ else }}8443{{ end }}
   rules:
     - host: {{ include "drogue-cloud-core.sso.host" . }}
       http:
@@ -23,5 +23,5 @@ spec:
               service:
                 name: sso-service
                 port:
-                  number: {{ if .Values.global.keycloak.insecure }}8080{{ else }}8443{{ end }}
+                  number: {{ if .Values.global.drogueCloud.keycloak.insecure }}8080{{ else }}8443{{ end }}
 {{- end }}
