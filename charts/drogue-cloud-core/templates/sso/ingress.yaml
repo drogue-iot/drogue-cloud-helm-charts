@@ -14,7 +14,7 @@ spec:
   ingressClassName: {{ include "drogue-cloud-core.ingress.className" (dict "root" . "ingress" .Values.services.sso.ingress )}}
   defaultBackend:
     service:
-      name: sso-service
+      name: sso-tls
       port:
         number: {{ if .Values.global.drogueCloud.keycloak.insecure }}8080{{ else }}8443{{ end }}
   rules:
