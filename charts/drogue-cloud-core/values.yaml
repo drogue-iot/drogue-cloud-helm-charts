@@ -16,7 +16,7 @@ global:
       # downgrade to insecure deployment
       insecure: false
       postInstall:
-        image: quay.io/keycloak/keycloak:18.0.0
+        image: quay.io/keycloak/keycloak:18.0.1
 
 defaults:
   images:
