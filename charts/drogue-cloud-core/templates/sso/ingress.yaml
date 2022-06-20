@@ -5,7 +5,9 @@ metadata:
   name: sso-ingress
   annotations:
     {{/* replace with drogue-cloud-core.ingress.annotations once it suppors service CA settings */}}
-    {{- .Values.keycloak.ingress.annotations | toYaml | nindent 4 }}
+    {{- with .Values.keycloak.ingress.annotations }}
+    {{- . | toYaml | nindent 4 }}
+    {{- end }}
   labels:
     {{- include "drogue-cloud-core.labels" (dict "root" . "name" "sso-ingress" "component" "sso") | nindent 4 }}
 spec:
