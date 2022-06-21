@@ -1,8 +1,8 @@
 {{- if not .Values.keycloak.ingress.disable }}
 
-{{ $service := "ssl-service" }}
+{{ $service := "sso-service" }}
 {{- if and ( not .Values.global.drogueCloud.keycloak.insecure ) .Values.global.drogueCloud.useServiceCA }}
-{{ $service = "ssl-tls" }}
+{{ $service = "sso-tls" }}
 {{- end }}
 
 kind: Ingress
