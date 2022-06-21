@@ -35,6 +35,7 @@ grafana:
     url: http://drogue-iot-prometheus-server.drogue-iot:9090
     tlsSkipVerify: false
     # token: <bearer token>
+    # customQueryParameters: <custom query parameters>
 
   sidecar:
     dashboards:
