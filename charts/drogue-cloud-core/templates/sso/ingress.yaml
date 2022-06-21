@@ -1,22 +1,23 @@
 {{- if not .Values.keycloak.ingress.disable }}
+
+{{ $service := "ssl-service" }}
+{{- if and ( not .Values.global.drogueCloud.keycloak.insecure ) .Values.global.drogueCloud.useServiceCA }}
+{{ $service = "ssl-tls" }}
+{{- end }}
+
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
   name: sso-ingress
+  {{/* replace with drogue-cloud-core.ingress.annotations once it suppors service CA settings */}}
+  {{ with .Values.services.sso.ingress.annotations }}
   annotations:
-    {{/* replace with drogue-cloud-core.ingress.annotations once it suppors service CA settings */}}
-    {{- with .Values.services.sso.ingress.annotations }}
-    {{- . | toYaml | nindent 4 }}
-    {{- end }}
+    {{ . | toYaml | nindent 4 }}
+  {{ end }}
   labels:
     {{- include "drogue-cloud-core.labels" (dict "root" . "name" "sso-ingress" "component" "sso") | nindent 4 }}
 spec:
-  ingressClassName: {{ include "drogue-cloud-core.ingress.className" (dict "root" . "ingress" .Values.services.sso.ingress )}}
-  defaultBackend:
-    service:
-      name: sso-tls
-      port:
-        number: {{ if .Values.global.drogueCloud.keycloak.insecure }}8080{{ else }}8443{{ end }}
+  {{- include "drogue-cloud-core.ingress.className" (dict "root" . "ingress" .Values.services.sso.ingress ) | nindent 2 }}
   rules:
     - host: {{ include "drogue-cloud-core.sso.host" . }}
       http:
@@ -25,7 +26,7 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: sso-tls
+                name: {{ $service }}
                 port:
                   number: {{ if .Values.global.drogueCloud.keycloak.insecure }}8080{{ else }}8443{{ end }}
 {{- end }}
