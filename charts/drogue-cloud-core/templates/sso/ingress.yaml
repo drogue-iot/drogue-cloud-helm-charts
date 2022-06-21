@@ -8,7 +8,7 @@
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: sso-ingress
+  name: sso {{/* doesn't use -ingress suffix to not conflict with the keycloak operator, which would delete it*/}}
   {{/* replace with drogue-cloud-core.ingress.annotations once it suppors service CA settings */}}
   {{ with .Values.services.sso.ingress.annotations }}
   annotations:
