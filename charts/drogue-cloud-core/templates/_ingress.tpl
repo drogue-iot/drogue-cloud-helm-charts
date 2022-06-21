@@ -29,7 +29,7 @@ Arguments:
   * ingress
 */}}
 {{- define "drogue-cloud-core.ingress.className" -}}
-{{- with .ingress.className | default .root.Values.defaults.ingress.className }}
+{{- with .ingress.className | default .root.Values.defaults.ingress.className -}}
 ingressClassName: {{ . }}
 {{- end }}
 {{- end }}
