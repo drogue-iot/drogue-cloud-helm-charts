@@ -25,7 +25,22 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 2,
-  "links": [],
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [
+        "drogue"
+      ],
+      "targetBlank": false,
+      "title": "Drogue Cloud",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
   "liveNow": true,
   "panels": [
     {
@@ -520,6 +535,6 @@
   "timezone": "",
   "title": "Drogue IoT dashboard",
   "uid": "RdhmR4Anz",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
