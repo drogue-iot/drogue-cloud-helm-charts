@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -21,7 +24,7 @@
   "description": "",
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "graphTooltip": 1,
+  "graphTooltip": 2,
   "links": [],
   "liveNow": true,
   "panels": [
@@ -112,7 +115,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "targets": [
@@ -210,7 +214,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "targets": [
@@ -219,22 +224,17 @@
             "type": "prometheus",
             "uid": "PCF44A6F8518AA255"
           },
+          "editorMode": "code",
           "exemplar": true,
           "expr": "sum by (protocol) (drogue_connections{type=\"endpoint\"})",
           "interval": "",
-          "legendFormat": "Connections",
+          "legendFormat": "__auto",
+          "range": true,
           "refId": "A"
         }
       ],
       "title": "Connections",
-      "transformations": [
-        {
-          "id": "labelsToFields",
-          "options": {
-            "valueLabel": "protocol"
-          }
-        }
-      ],
+      "transformations": [],
       "type": "timeseries"
     },
     {
@@ -351,7 +351,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "targets": [
@@ -393,6 +394,10 @@
     },
     {
       "collapsed": false,
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -473,7 +478,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "multi",
+          "sort": "none"
         }
       },
       "targets": [
@@ -482,29 +488,27 @@
             "type": "prometheus",
             "uid": "PCF44A6F8518AA255"
           },
+          "editorMode": "code",
           "exemplar": true,
           "expr": "sum by (protocol) (drogue_connections{type=\"integration\"})",
           "interval": "",
-          "legendFormat": "Connections",
+          "legendFormat": "__auto",
+          "range": true,
           "refId": "A"
         }
       ],
       "title": "Connections",
-      "transformations": [
-        {
-          "id": "labelsToFields",
-          "options": {
-            "valueLabel": "protocol"
-          }
-        }
-      ],
+      "transformations": [],
       "type": "timeseries"
     }
   ],
-  "refresh": "30s",
-  "schemaVersion": 34,
+  "refresh": "10s",
+  "schemaVersion": 36,
   "style": "dark",
-  "tags": ["drogue", "iot"],
+  "tags": [
+    "drogue",
+    "iot"
+  ],
   "templating": {
     "list": []
   },
@@ -516,6 +520,6 @@
   "timezone": "",
   "title": "Drogue IoT dashboard",
   "uid": "RdhmR4Anz",
-  "version": 2,
+  "version": 1,
   "weekStart": ""
 }
