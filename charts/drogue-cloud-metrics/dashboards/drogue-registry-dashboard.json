@@ -25,7 +25,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 3,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -134,7 +133,10 @@
   "refresh": "10s",
   "schemaVersion": 36,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "drogue",
+    "iot"
+  ],
   "templating": {
     "list": []
   },
@@ -146,6 +148,6 @@
   "timezone": "",
   "title": "Device Registry",
   "uid": "wGA_NHq7z",
-  "version": 5,
+  "version": 6,
   "weekStart": ""
 }
