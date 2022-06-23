@@ -191,6 +191,10 @@ keycloak:
 
 
 postgres:
+  tls:
+    enabled: false
+    # the secret containing the key/cert, ignored if .global.drogueCloud.useServiceCA is true
+    secret: postgres-tls
   databaseName: registry
   username: admin
   password: admin123456

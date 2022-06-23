@@ -32,6 +32,26 @@
         },
         "partOf": {
           "type": "string"
+        },
+        "drogueCloud": {
+          "type": "object",
+          "description": "Global Drogue Cloud specific values",
+          "properties": {
+            "useServiceCA": {
+              "description": "If the OpenShift service CA should be leveraged. Only useful is TLS is enabled.",
+              "type": "boolean",
+              "default": false
+            },
+            "tls": {
+              "type": "object",
+              "description": "Global TLS configuration",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
         }
       }
     },

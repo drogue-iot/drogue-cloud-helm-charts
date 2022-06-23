@@ -42,6 +42,17 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: admin.password
+
+          {{- if .Values.postgres.tls.enabled }}
+            - name: POSTGRESQL_ENABLE_TLS
+              value: "yes"
+            - name: POSTGRESQL_TLS_CERT_FILE
+              value: /etc/tls/tls.cert
+            - name: POSTGRESQL_TLS_KEY_FILE
+              value: /etc/tls/tls.key
+
+          {{- end }}
+
           readinessProbe:
             initialDelaySeconds: 5
             periodSeconds: 5
@@ -65,13 +76,32 @@ spec:
             limits:
               memory: 512Mi
             {{- end }}
+
           volumeMounts:
             - mountPath: /bitnami/postgresql
               name: storage
+          {{- if .Values.postgres.tls.enabled }}
+            - mountPath: /etc/tls
+              name: tls
+          {{- end }}
+
       {{- if .Values.postgres.podSecurityContext.enabled }}
       securityContext: {{- omit .Values.postgres.podSecurityContext "enabled" | toYaml | nindent 8 }}
       {{- end }}
+
       volumes:
         - name: storage
           persistentVolumeClaim:
             claimName: postgres-pvc
+
+      {{- if .Values.postgres.tls.enabled }}
+      {{- if .Values.global.drogueCloud.useServiceCA }}
+        - name: tls
+          secret:
+            secretName: postgres-tls
+      {{- else }}
+        - name: tls
+          secret:
+            secretName: {{ .Values.postgres.tls.secret }}
+      {{- end }}
+      {{- end }}

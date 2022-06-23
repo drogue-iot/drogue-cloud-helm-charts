@@ -3,8 +3,11 @@ kind: Service
 apiVersion: v1
 metadata:
   name: postgres
+  annotations:
+    service.beta.openshift.io/serving-cert-secret-name: postgres-tls
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+
 spec:
   selector:
     {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
@@ -16,4 +19,3 @@ spec:
       port: 5432
       protocol: TCP
       targetPort: 5432
-
