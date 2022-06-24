@@ -19,7 +19,7 @@ data:
   port: {{ .port | default 5432 | toString | b64enc | quote }}
   {{- else }}
   {{/* shared, internal postgres instance */}}
-  host: {{ printf "postgres.%s.svc.cluster.local." .Release.Namespace | b64enc | quote }}
+  host: {{ printf "postgres.%s.svc.cluster.local" .Release.Namespace | b64enc | quote }}
   port: {{ "5432" | b64enc | quote }}
   {{- end }}
 
