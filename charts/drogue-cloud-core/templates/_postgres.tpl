@@ -35,7 +35,7 @@
 - name: {{ $.prefix }}DB__SSL_MODE
   value: required
 
-{{- if not .Values.global.drogueCloud.useServiceCA -}}
+{{- if not .root.Values.global.drogueCloud.useServiceCA -}}
 - name: {{ $.prefix }}TLS__CA_CERTIFICATE
   value: /etc/tls/postgres/ca.crt
 {{- end }} {{/* if not .useServiceCA */}}
