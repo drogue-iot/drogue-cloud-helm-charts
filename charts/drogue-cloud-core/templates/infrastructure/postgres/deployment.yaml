@@ -44,7 +44,7 @@ spec:
             - name: POSTGRESQL_ENABLE_TLS
               value: "yes"
             - name: POSTGRESQL_TLS_CERT_FILE
-              value: /etc/tls/tls.cert
+              value: /etc/tls/tls.crt
             - name: POSTGRESQL_TLS_KEY_FILE
               value: /etc/tls/tls.key
 
