@@ -11,7 +11,7 @@
   value: {{ .port | default 5432 | quote }}
 {{- else }}
 - name: {{ .prefix }}DB__HOST
-  value: postgres
+  value: postgres.{{ .root.Release.Namespace }}.svc
 - name: {{ $.prefix }}DB__PORT
   value: "5432"
 {{- end }} {{/* with .external */}}
