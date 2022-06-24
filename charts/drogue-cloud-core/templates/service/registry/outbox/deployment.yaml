@@ -8,6 +8,7 @@ metadata:
   annotations:
     app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"postgres"}]'
     {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
+    core.drogue.io/secret-hash: {{ include "drogue-cloud-core.postgres.secret-hash" . }}
 spec:
   replicas: 1
   selector:
@@ -27,23 +28,7 @@ spec:
             {{- include "drogue-cloud-common.jaeger-env" ( dict "root" . "app" .Values.services.outbox ) | nindent 12 }}
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
-            - name: PG__HOST
-              value: postgres
-            - name: PG__DBNAME
-              valueFrom:
-                configMapKeyRef:
-                  name: postgres-config
-                  key: databaseName
-            - name: PG__USER
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: admin.username
-            - name: PG__PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: admin.password
+            {{- include "drogue-cloud-core.postgres.env-vars-default" . | nindent 12 }}
             - name: KAFKA_SENDER__TOPIC
               value: registry
             - name: KAFKA_SENDER__QUEUE_TIMEOUT
@@ -81,3 +66,22 @@ spec:
             {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}
 
           {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.services.outbox ) | nindent 10 }}
+
+          volumeMounts:
+            {{- include "drogue-cloud-core.postgres.volume-mounts" . | nindent 10 }}
+
+      volumes:
+        - name: f
+          secret:
+            secretName: user-asdf
+            items:
+              - key: tls.crt
+                path: ca.crt
+        - name: foo
+          configMap:
+            name: config-service-cabundle
+            items:
+              - key: service-ca.crt
+                path: ca.crt
+        {{- include "drogue-cloud-core.postgres.volumes" . | nindent 8 }}
+

@@ -195,6 +195,10 @@ postgres:
     enabled: false
     # the secret containing the key/cert, ignored if .global.drogueCloud.useServiceCA is true
     secret: postgres-tls
+    # the configmap containing the client trust anchor, defaults to the certificate of the secret
+    # trustAnchor:
+    #   configMap: <name>
+    #   key: <key> # defaults to ca.crt
   databaseName: registry
   username: admin
   password: admin123456
@@ -202,6 +206,10 @@ postgres:
     enabled: false
   image: docker.io/bitnami/postgresql:14
 
+  # use an external postgres instance
+  # external:
+  #  host: <hostname>
+  #  port: <port>
 
 kafka:
 
