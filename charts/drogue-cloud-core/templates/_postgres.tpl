@@ -35,10 +35,20 @@
 - name: {{ $.prefix }}DB__SSL_MODE
   value: Require
 
-{{- if not .root.Values.global.drogueCloud.useServiceCA -}}
+
+{{- if .root.Values.global.drogueCloud.useServiceCA -}}
+{{ /* nothing required */ }}
+{{- else }}
+
+{{- with .root.Values.postgres.tls.trustAnchor }}
+{{/* only required if we have a secret or config map */}}
+{{- if or .secret .configMap }}
 - name: {{ $.prefix }}TLS__CA_CERTIFICATE
   value: /etc/tls/postgres/ca.crt
-{{- end }} {{/* if not .useServiceCA */}}
+{{- end}}
+
+{{- end }}{{/* with trustAchor */}}
+{{- end }}{{/* if useServiceCA */}}
 
 {{- end }} {{/* if .tls.enabled */}}
 
@@ -60,6 +70,8 @@
 {{- if and .Values.postgres.tls.enabled ( not .Values.global.drogueCloud.useServiceCA ) }}
 - name: postgres-tls
   {{- with .Values.postgres.tls.trustAnchor }}
+
+  {{- if .configMap }}
   configMap:
     name: {{ .configMap }}
     {{- with .key }}
@@ -67,12 +79,20 @@
       - key: {{ . | quote }}
         path: ca.crt
     {{- end }}
-  {{- else }}
+  {{- else if .secret }}
   secret:
-    secretName: {{ . }}
+    secretName: {{ .secret }}
+    {{- with .key }}
+    items:
+      - key: {{ . | quote }}
+        path: ca.crt
+    {{- else }}
     items:
       - key: tls.crt
         path: ca.crt
+    {{- end }}
   {{- end }}
-{{- end }}
+
+  {{- end }}{{/* with trustAnchor */}}
+{{- end }}{{/* if tls.enabled && !useServiceCA */}}
 {{- end }}

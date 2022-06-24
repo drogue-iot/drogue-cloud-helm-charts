@@ -10,13 +10,22 @@ data:
   {{- if eq .Values.keycloak.postgres.mode "drogue" }}
 
   database: {{ .Values.postgres.databaseName | b64enc | quote }}
-  host: {{ printf "postgres.%s.svc.cluster.local." .Release.Namespace | b64enc | quote }}
-  port: {{ "5432" | b64enc | quote }}
   username: {{ .Values.postgres.username | b64enc | quote }}
   password: {{ .Values.postgres.password | b64enc | quote }}
 
+  {{- with .Values.postgres.external }}
+  {{/* shared, external postgres instance */}}
+  host: {{ .host | b64enc | quote }}
+  port: {{ .port | default 5432 | toString | b64enc | quote }}
+  {{- else }}
+  {{/* shared, internal postgres instance */}}
+  host: {{ printf "postgres.%s.svc.cluster.local." .Release.Namespace | b64enc | quote }}
+  port: {{ "5432" | b64enc | quote }}
+  {{- end }}
+
   {{- else if eq .Values.keycloak.postgres.mode "external" }}
 
+  {{/* dedicated, external postgres instance */}}
   database: {{ .Values.postgres.databaseName | b64enc | quote }}
   host: {{ .Values.keycloak.postgres.host | b64enc | quote }}
   port: {{ .Values.keycloak.postgres.port | default "5432" | b64enc | quote }}
