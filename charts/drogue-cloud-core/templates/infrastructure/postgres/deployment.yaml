@@ -23,10 +23,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: POSTGRES_DB
-              valueFrom:
-                configMapKeyRef:
-                  name: postgres-config
-                  key: databaseName
+              value: {{ .Values.postgres.databaseName | quote }}
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:

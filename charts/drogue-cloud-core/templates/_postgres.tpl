@@ -8,10 +8,12 @@
 - name: {{ $.prefix }}DB__HOST
   value: {{ .host | quote }}
 - name: {{ $.prefix }}DB__PORT
-  value: {{ .port | quote }}
+  value: {{ .port | default 5432 | quote }}
 {{- else }}
 - name: {{ .prefix }}DB__HOST
   value: postgres
+- name: {{ $.prefix }}DB__PORT
+  value: "5432"
 {{- end }} {{/* with .external */}}
 
 - name: {{ .prefix }}DB__DBNAME

@@ -1,9 +1,0 @@
-{{- $ref := dict "root" . "name" "postgres-config" "component" "device-registry" -}}
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: postgres-config
-  labels:
-    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
-data:
-  databaseName: {{ .Values.postgres.databaseName }}
