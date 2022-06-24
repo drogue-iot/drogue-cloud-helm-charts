@@ -65,23 +65,7 @@ spec:
 
             - name: WORK_QUEUE__INSTANCE
               value: knative-operator
-            - name: WORK_QUEUE__PG__HOST
-              value: postgres
-            - name: WORK_QUEUE__PG__DBNAME
-              valueFrom:
-                configMapKeyRef:
-                  name: postgres-config
-                  key: databaseName
-            - name: WORK_QUEUE__PG__USER
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: admin.username
-            - name: WORK_QUEUE__PG__PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: admin.password
+            {{- include "drogue-cloud-core.postgres.env-vars" ( dict "root" . "prefix" "WORK_QUEUE__PG__" ) | nindent 12 }}
 
             - name: KAFKA_SOURCE__TOPIC
               value: registry

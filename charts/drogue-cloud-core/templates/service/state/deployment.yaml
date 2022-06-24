@@ -32,23 +32,7 @@ spec:
               value: 0.0.0.0:8080
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
-            - name: SERVICE__PG__HOST
-              value: postgres
-            - name: SERVICE__PG__DBNAME
-              valueFrom:
-                configMapKeyRef:
-                  name: postgres-config
-                  key: databaseName
-            - name: SERVICE__PG__USER
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: admin.username
-            - name: SERVICE__PG__PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: admin.password
+            {{- include "drogue-cloud-core.postgres.env-vars" ( dict "root" . "prefix" "SERVICE__PG__" ) | nindent 12 }}
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:

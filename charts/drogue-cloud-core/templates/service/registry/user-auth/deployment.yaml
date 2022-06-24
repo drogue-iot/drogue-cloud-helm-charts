@@ -44,23 +44,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            - name: SERVICE__PG__HOST
-              value: postgres
-            - name: SERVICE__PG__DBNAME
-              valueFrom:
-                configMapKeyRef:
-                  name: postgres-config
-                  key: databaseName
-            - name: SERVICE__PG__USER
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: admin.username
-            - name: SERVICE__PG__PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: admin.password
+            {{- include "drogue-cloud-core.postgres.env-vars" ( dict "root" . "prefix" "SERVICE__PG__" ) | nindent 12 }}
             {{- include "drogue-cloud-core.oauth2-authenticator.env-vars" ( dict "root" . "clients" ( list "services" ) ) | nindent 12 }}
             {{- include "drogue-cloud-core.keycloak.internal-access" . | nindent 12 }}
           readinessProbe:

@@ -51,25 +51,7 @@ spec:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
             {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
-            - name: WORK_QUEUE__INSTANCE
-              value: topic-operator
-            - name: WORK_QUEUE__PG__HOST
-              value: postgres
-            - name: WORK_QUEUE__PG__DBNAME
-              valueFrom:
-                configMapKeyRef:
-                  name: postgres-config
-                  key: databaseName
-            - name: WORK_QUEUE__PG__USER
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: admin.username
-            - name: WORK_QUEUE__PG__PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: admin.password
+            {{- include "drogue-cloud-core.postgres.env-vars" ( dict "root" . "prefix" "WORK_QUEUE__PG__" ) | nindent 12 }}
             - name: KAFKA_SOURCE__TOPIC
               value: registry
             - name: KAFKA_SOURCE__CONSUMER_GROUP
