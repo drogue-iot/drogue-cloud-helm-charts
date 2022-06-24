@@ -71,17 +71,4 @@ spec:
             {{- include "drogue-cloud-core.postgres.volume-mounts" . | nindent 10 }}
 
       volumes:
-        - name: f
-          secret:
-            secretName: user-asdf
-            items:
-              - key: tls.crt
-                path: ca.crt
-        - name: foo
-          configMap:
-            name: config-service-cabundle
-            items:
-              - key: service-ca.crt
-                path: ca.crt
         {{- include "drogue-cloud-core.postgres.volumes" . | nindent 8 }}
-
