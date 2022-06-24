@@ -37,7 +37,7 @@
 
 
 {{- if .root.Values.global.drogueCloud.useServiceCA -}}
-{{ /* nothing required */ }}
+{{/* nothing required */}}
 {{- else }}
 
 {{- with .root.Values.postgres.tls.trustAnchor }}
