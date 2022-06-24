@@ -33,7 +33,7 @@
 
 {{- if .root.Values.postgres.tls.enabled }}
 - name: {{ $.prefix }}DB__SSL_MODE
-  value: require
+  value: Require
 
 {{- if not .root.Values.global.drogueCloud.useServiceCA -}}
 - name: {{ $.prefix }}TLS__CA_CERTIFICATE
