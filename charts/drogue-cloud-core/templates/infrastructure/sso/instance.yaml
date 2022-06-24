@@ -34,14 +34,14 @@ spec:
     {{- if .Values.postgres.tls.enabled }}
     {{- if .Values.global.drogueCloud.useServiceCA }}
     - name: db-url-properties
-      value: sslmode=verify-full&sslrootcert=/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+      value: /sslmode=verify-full&sslrootcert=/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
     {{- else }}{{/* useServiceCA */}}
 
     {{- with .Values.postgres.tls.trustAnchor}}
 
       {{- if or .configMap .secret }}
     - name: db-url-properties
-      value: sslmode=verify-full&sslrootcert=/etc/tls/postgres/ca.crt
+      value: /sslmode=verify-full&sslrootcert=/etc/tls/postgres/ca.crt
       {{- end }}
 
     {{- end }}{{/* with trustAnchor */}}
