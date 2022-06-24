@@ -96,9 +96,11 @@ spec:
         - name: tls
           secret:
             secretName: postgres-tls
+            defaultMode: 0600
       {{- else }}
         - name: tls
           secret:
             secretName: {{ .Values.postgres.tls.secret }}
+            defaultMode: 0600
       {{- end }}
       {{- end }}
