@@ -31,13 +31,29 @@ spec:
         name: keycloak-db-secret
         key: password
 
+    {{- if .Values.postgres.tls.enabled }}
+    {{- if .Values.global.drogueCloud.useServiceCA }}
+    - name: db-url-properties
+      value: sslmode=verify-full&sslrootcert=/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+    {{- else }}{{/* useServiceCA */}}
+
+    {{- with .Values.postgres.tls.trustAnchor}}
+
+      {{- if or .configMap .secret }}
+    - name: db-url-properties
+      value: sslmode=verify-full&sslrootcert=/etc/tls/postgres/ca.crt
+      {{- end }}
+
+    {{- end }}{{/* with trustAnchor */}}
+    {{- end }}{{/* useServiceCA */}}
+    {{- end }}{{/* tls.enabled */}}
+
   {{- if .Values.global.drogueCloud.keycloak.insecure }}
     - name: hostname-strict-https
       value: "false"
     - name: proxy
       value: edge
   {{- else }}
-    {{/* FIXME: handle service CA */}}
     {{- if .Values.global.drogueCloud.useServiceCA }}
     - name: proxy
       value: reencrypt
@@ -63,3 +79,15 @@ spec:
   {{- end }}
 
   {{- end }}{{/* endif keycloak.insecure */}}
+
+  {{- if and .Values.postgres.tls.enabled ( not .Values.global.drogueCloud.useServiceCA ) ( or .Values.postgres.tls.trustAnchor.secret .Values.postgres.tls.trustAnchor.configMap ) }}
+  {{/* we need to inject a certificate */}}
+  unsupported:
+    podTemplate:
+      spec:
+        containers:
+          - volumeMounts:
+              {{- include "drogue-cloud-core.postgres.volume-mounts" . | nindent 14 }}
+        volumes:
+          {{- include "drogue-cloud-core.postgres.volumes" . | nindent 10 }}
+  {{- end }}
