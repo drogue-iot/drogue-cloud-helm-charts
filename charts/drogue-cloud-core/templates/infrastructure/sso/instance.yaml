@@ -80,14 +80,18 @@ spec:
 
   {{- end }}{{/* endif keycloak.insecure */}}
 
-  {{- if and .Values.postgres.tls.enabled ( not .Values.global.drogueCloud.useServiceCA ) ( or .Values.postgres.tls.trustAnchor.secret .Values.postgres.tls.trustAnchor.configMap ) }}
+  {{- if and .Values.postgres.tls.enabled ( not .Values.global.drogueCloud.useServiceCA ) }}
+  {{- with .Values.postgres.tls.trustAnchor }}
+  {{- if or .secret .configMap }}
   {{/* we need to inject a certificate */}}
   unsupported:
     podTemplate:
       spec:
         containers:
           - volumeMounts:
-              {{- include "drogue-cloud-core.postgres.volume-mounts" . | nindent 14 }}
+              {{- include "drogue-cloud-core.postgres.volume-mounts" $. | nindent 14 }}
         volumes:
-          {{- include "drogue-cloud-core.postgres.volumes" . | nindent 10 }}
+          {{- include "drogue-cloud-core.postgres.volumes" $. | nindent 10 }}
+  {{- end }}
+  {{- end }}
   {{- end }}
