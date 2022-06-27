@@ -246,7 +246,7 @@ spec:
               # create clients - drogue
               ID=$(kcadm get clients -r "${REALM}" --query "clientId=drogue" --fields id --format csv --noquotes)
               CLIENT_OPTS=()
-              CLIENT_OPTS+=(-s "redirectUris=[\"{{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}\", \"{{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}/*\", \"http://localhost:*\"]")
+              CLIENT_OPTS+=(-s 'redirectUris=["{{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}", "{{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}/*", "http://localhost:*"]')
               if [[ -n "$ID" ]]; then
                 # TODO: replace with update once https://github.com/keycloak/keycloak/issues/12484 is fixed
                 # kcadm update "clients/${ID}" -r "${REALM}" -f /etc/init-data/client.json "${CLIENT_OPTS[@]}"
