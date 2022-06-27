@@ -23,6 +23,9 @@ spec:
       - {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}
       - {{ include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ) }}/*
       - "http://localhost:*" {{/* used for the CLI */}}
+      {{- with .Values.keycloak.clients.api.extraRedirectUris }}
+      {{- . | nindent 6 }}
+      {{- end }}
     defaultClientScopes:
       - "email"
       - "profile"

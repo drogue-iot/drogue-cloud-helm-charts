@@ -172,6 +172,9 @@ keycloak:
     # a Keycloak 12 instance, in which case you need to manually configure the roles.
     enabled: true
     image: quay.io/keycloak/keycloak:17.0.0-legacy
+  clients:
+    api: {}
+    services: {}
 
 postgres:
   databaseName: registry
