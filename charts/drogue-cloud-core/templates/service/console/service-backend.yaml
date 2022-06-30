@@ -1,10 +1,12 @@
 {{- $ref := dict "root" . "name" "console-backend" "component" "console" -}}
+{{- $app := dict "root" . "app" .Values.services.auth -}}
 kind: Service
 apiVersion: v1
 metadata:
   name: console-backend
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+
 spec:
 
   selector:
@@ -13,7 +15,7 @@ spec:
   type: ClusterIP
 
   ports:
-    - name: endpoint
+    - name: service
       protocol: TCP
-      port: 8080
-      targetPort: endpoint
+      port: {{ include "drogue-cloud-core.http-service-port" $app }}
+      targetPort: service

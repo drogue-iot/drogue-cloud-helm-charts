@@ -1,4 +1,5 @@
 {{- $ref := dict "root" . "name" "device-management-service" "component" "device-registry" "metrics" true  -}}
+{{- $app := dict "root" . "app" .Values.services.registry -}}
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -26,10 +27,9 @@ spec:
           image: {{ include "drogue-cloud-common.image" $ref | quote }}
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
           env:
-            {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.services.registry ) | nindent 12 }}
-            {{- include "drogue-cloud-common.jaeger-env" ( dict "root" . "app" .Values.services.registry ) | nindent 12 }}
-            - name: BIND_ADDR
-              value: 0.0.0.0:8080
+            {{- include "drogue-cloud-common.rust.logging" $app | nindent 12 }}
+            {{- include "drogue-cloud-common.jaeger-env" $app | nindent 12 }}
+            {{- include "drogue-cloud-core.http-service-env" $app | nindent 12 }}
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
             {{- include "drogue-cloud-core.postgres.env-vars-default" . | nindent 12 }}
@@ -79,12 +79,10 @@ spec:
               port: 9090
               path: /liveness
           ports:
-            - containerPort: 8080
-              name: api
-              protocol: TCP
+            {{- include "drogue-cloud-core.http-service-container-port" $app | nindent 12 }}
             {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}
 
-          {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.services.registry) | nindent 10 }}
+          {{- include "drogue-cloud-core.container-resources" $app | nindent 10 }}
 
       volumes:
         - name: client-secret-drogue

@@ -69,27 +69,27 @@ console:
 endpoints:
 
   http:
-    insecure: false
+    service: {}
     ingress:
       port: 443
 
   mqtt:
-    insecure: false
+    service: {}
     ingress:
       port: 8883
 
   mqttWs:
-    insecure: false
+    service: {}
     ingress:
       port: 443
 
   mqttWsBrowser:
-    insecure: false
+    service: {}
     ingress:
       port: 443
 
   coap:
-    insecure: true
+    service: {}
     ingress:
       port: 5683
 
@@ -97,42 +97,53 @@ endpoints:
 integrations:
 
   mqtt:
-    insecure: false
+    service: {}
     ingress:
       port: 8883
 
   mqttWs:
-    insecure: false
+    service: {}
     ingress:
       port: 443
 
   mqttWsBrowser:
-    insecure: false
+    service: {}
     ingress:
       port: 443
 
   websocket:
-    insecure: false
+    service: {}
     ingress:
       port: 443
-
+    resources:
+      limits:
+        memory: 64Mi
 
 services:
   console:
     ingress: {}
+    service: {}
   api:
     ingress: {}
+    service: {}
   sso:
     ingress: {}
-  registry: {}
+  registry:
+    ingress: {}
+    service: {}
   deviceManagementController: {}
-  deviceState: {}
+  deviceState:
+    service: {}
   topicOperator: {}
   outbox: {}
   ttnOperator: {}
-  auth: {}
-  userAuth: {}
-  command: {}
+  auth:
+    service: {}
+  userAuth:
+    service: {}
+  command:
+    ingress: {}
+    service: {}
   knativeOperator:
     enabled: true
     eventSource:

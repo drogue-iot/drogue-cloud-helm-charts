@@ -77,78 +77,105 @@
       "type": "object",
       "properties": {
         "coap": {
-          "type": "object",
-          "required": [
-            "ingress"
-          ],
-          "properties": {
-            "insecure": {
-              "type": "boolean",
-              "default": true
+          "allOf": [
+            {
+              "$ref": "#/$defs/service"
             },
-            "ingress": {
-              "type": "object",
-              "properties": {
-                "host": {
-                  "type": "string",
-                  "format": "hostname"
-                },
-                "port": {
-                  "type": "integer",
-                  "minimum": 1,
-                  "maximum": 65536
-                }
-              }
+            {
+              "$ref": "#/$defs/ingress"
             }
-          }
+          ]
         },
         "http": {
-          "type": "object",
-          "required": [
-            "ingress"
-          ],
-          "properties": {
-            "insecure": {
-              "type": "boolean",
-              "default": false
+          "allOf": [
+            {
+              "$ref": "#/$defs/service"
             },
-            "ingress": {
-              "type": "object",
-              "properties": {
-                "host": {
-                  "type": "string",
-                  "format": "hostname"
-                },
-                "port": {
-                  "type": "integer",
-                  "minimum": 1,
-                  "maximum": 65536
-                }
-              }
+            {
+              "$ref": "#/$defs/http"
+            },
+            {
+              "$ref": "#/$defs/ingress"
             }
-          }
+          ]
         },
         "mqtt": {
-          "type": "object",
-          "required": [
-            "ingress"
-          ],
-          "properties": {
-            "ingress": {
-              "type": "object",
-              "properties": {
-                "host": {
-                  "type": "string",
-                  "format": "hostname"
-                },
-                "port": {
-                  "type": "integer",
-                  "minimum": 1,
-                  "maximum": 65536
-                }
-              }
+          "allOf": [
+            {
+              "$ref": "#/$defs/service"
+            },
+            {
+              "$ref": "#/$defs/ingress"
             }
-          }
+          ]
+        },
+        "mqttWs": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/service"
+            },
+            {
+              "$ref": "#/$defs/ingress"
+            }
+          ]
+        },
+        "mqttBrowser": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/service"
+            },
+            {
+              "$ref": "#/$defs/ingress"
+            }
+          ]
+        }
+      }
+    },
+    "integrations": {
+      "type": "object",
+      "properties": {
+        "mqtt": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/service"
+            },
+            {
+              "$ref": "#/$defs/ingress"
+            }
+          ]
+        },
+        "mqttWs": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/service"
+            },
+            {
+              "$ref": "#/$defs/ingress"
+            }
+          ]
+        },
+        "mqttWsBrowser": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/service"
+            },
+            {
+              "$ref": "#/$defs/ingress"
+            }
+          ]
+        },
+        "websocket": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/service"
+            },
+            {
+              "$ref": "#/$defs/http"
+            },
+            {
+              "$ref": "#/$defs/ingress"
+            }
+          ]
         }
       }
     },
@@ -207,6 +234,32 @@
               ]
             }
           }
+        },
+        "console": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/service"
+            },
+            {
+              "$ref": "#/$defs/http"
+            },
+            {
+              "$ref": "#/$defs/ingress"
+            }
+          ]
+        },
+        "api": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/service"
+            },
+            {
+              "$ref": "#/$defs/http"
+            },
+            {
+              "$ref": "#/$defs/ingress"
+            }
+          ]
         }
       }
     },
@@ -294,6 +347,69 @@
             }
           }
         }
+      }
+    }
+  },
+  "$defs": {
+    "service": {
+      "type": "object",
+      "properties": {
+        "ingress": {
+          "$ref": "#/$defs/serviceConfig"
+        }
+      }
+    },
+    "serviceConfig": {
+      "type": "object",
+      "properties": {
+        "insecure": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "required": [
+        "ingress"
+      ],
+      "properties": {
+        "ingress": {
+          "$ref": "#/$defs/ingressConfig"
+        }
+      }
+    },
+    "ingressConfig": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string",
+          "format": "hostname"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "className": {
+          "type": "string"
+        }
+      }
+    },
+    "http": {
+      "properties": {
+        "http": {
+          "$ref": "#/$defs/httpConfig"
+        }
+      }
+    },
+    "httpConfig": {
+      "type": "object",
+      "properties": {
       }
     }
   }

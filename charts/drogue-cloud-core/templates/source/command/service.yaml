@@ -1,4 +1,5 @@
 {{- $ref := dict "root" . "name" "command-endpoint" "component" "endpoints" -}}
+{{- $app :=  dict "root" . "app" .Values.services.command -}}
 kind: Service
 apiVersion: v1
 metadata:
@@ -12,8 +13,7 @@ spec:
   type: ClusterIP
 
   ports:
-    - name: endpoint
+    - name: service
       protocol: TCP
-      port: 8080
-      targetPort: endpoint
-
+      port: {{ include "drogue-cloud-core.http-service-port" $app }}
+      targetPort: service

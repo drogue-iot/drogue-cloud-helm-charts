@@ -12,7 +12,7 @@ spec:
     kind: Service
     name: http-endpoint
   port:
-    targetPort: endpoint
+    targetPort: service
   tls:
     termination: passthrough
 {{- end }}

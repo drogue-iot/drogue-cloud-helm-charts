@@ -1,10 +1,12 @@
 {{- $ref := dict "root" . "name" "device-state-service" "component" "device-state" -}}
+{{- $app :=  dict "root" . "app" .Values.services.deviceState -}}
 kind: Service
 apiVersion: v1
 metadata:
   name: device-state-service
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+
 spec:
 
   selector:
@@ -13,7 +15,7 @@ spec:
   type: ClusterIP
 
   ports:
-    - name: api
-      port: 80
+    - name: service
+      port: {{ include "drogue-cloud-core.http-service-port" $app }}
       protocol: TCP
-      targetPort: 8080
+      targetPort: service

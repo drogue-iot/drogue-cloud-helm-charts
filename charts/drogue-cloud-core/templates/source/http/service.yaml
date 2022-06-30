@@ -1,4 +1,5 @@
 {{- $ref := dict "root" . "name" "http-endpoint" "component" "endpoints" -}}
+{{- $app := dict "root" . "app" .Values.endpoints.http -}}
 kind: Service
 apiVersion: v1
 metadata:
@@ -18,10 +19,10 @@ spec:
   {{- end }}
 
   ports:
-    - name: endpoint
-      port: {{ if .Values.endpoints.http.insecure }}8080{{ else }}443{{ end }}
+    - name: service
+      port: {{ include "drogue-cloud-core.http-service-port" $app }}
       protocol: TCP
-      targetPort: endpoint
+      targetPort: service
       {{- if has .Values.global.cluster (list "minikube" "kind" ) }}
       nodePort: {{ .Values.endpoints.http.ingress.port }}
       {{- end }}

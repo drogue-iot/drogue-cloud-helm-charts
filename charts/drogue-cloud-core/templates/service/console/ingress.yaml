@@ -7,6 +7,7 @@ metadata:
     {{- include "drogue-cloud-core.ingress.annotations" (dict "root" . "ingress" .Values.services.console.ingress ) | nindent 4 }}
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+
 spec:
   {{- include "drogue-cloud-core.ingress.className" ( dict "root" . "ingress" .Values.services.console.ingress) | nindent 2 }}
   rules:
@@ -19,11 +20,11 @@ spec:
               service:
                 name: console-api
                 port:
-                  name: endpoint
+                  name: service
           - path: /
             pathType: Prefix
             backend:
               service:
                 name: console
                 port:
-                  name: endpoint
+                  name: service

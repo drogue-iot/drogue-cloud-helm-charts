@@ -19,60 +19,60 @@ spec:
               service:
                 name: console-backend
                 port:
-                  name: endpoint
+                  name: service
           - path: /api
             pathType: Prefix
             backend:
               service:
                 name: console-backend
                 port:
-                  name: endpoint
+                  name: service
           - path: /.well-known/
             pathType: Prefix
             backend:
               service:
                 name: console-backend
                 port:
-                  name: endpoint
+                  name: service
           - path: /api/console/
             pathType: Prefix
             backend:
               service:
                 name: console-backend
                 port:
-                  name: endpoint
+                  name: service
           - path: /api/tokens/
             pathType: Prefix
             backend:
               service:
                 name: console-backend
                 port:
-                  name: endpoint
+                  name: service
           - path: /api/admin/v1alpha1/user
             pathType: Prefix
             backend:
               service:
                 name: console-backend
                 port:
-                  name: endpoint
+                  name: service
           - path: /api/admin/v1alpha1/apps
             pathType: Prefix
             backend:
               service:
                 name: device-management-service
                 port:
-                  name: api
+                  name: service
           - path: /api/registry/
             pathType: Prefix
             backend:
               service:
                 name: device-management-service
                 port:
-                  name: api
+                  name: service
           - path: /api/command/
             pathType: Prefix
             backend:
               service:
                 name: command-endpoint
                 port:
-                  name: endpoint
+                  name: service

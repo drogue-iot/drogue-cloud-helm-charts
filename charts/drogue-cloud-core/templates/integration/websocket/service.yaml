@@ -1,10 +1,12 @@
-{{ $ref := dict "root" . "name" "websocket-integration" "component" "integrations" }}
+{{- $ref := dict "root" . "name" "websocket-integration" "component" "integrations" -}}
+{{- $app := dict "root" . "app" .Values.integrations.websocket -}}
 kind: Service
 apiVersion: v1
 metadata:
   name: websocket-integration
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+
 spec:
   selector:
     {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
@@ -20,7 +22,7 @@ spec:
   ports:
     - name: service
       protocol: TCP
-      port: 8080
+      port: {{ include "drogue-cloud-core.http-service-port" $app }}
       targetPort: service
       {{- if has .Values.global.cluster (list "minikube" "kind" ) }}
       nodePort: {{ .Values.integrations.websocket.ingress.port }}
