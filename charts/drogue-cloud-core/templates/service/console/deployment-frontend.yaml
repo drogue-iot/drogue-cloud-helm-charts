@@ -26,7 +26,7 @@ spec:
               value: {{ include "drogue-cloud-core.sso.issuer-url" . | quote }}
           ports:
             - containerPort: 8080
-              name: endpoint
+              name: service
               protocol: TCP
           resources:
             limits:
