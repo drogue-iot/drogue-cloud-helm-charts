@@ -25,7 +25,7 @@ Arguments (dict):
   * app - application structure
 */}}
 {{- define "drogue-cloud-core.tls-service-annotations" }}
-{{- if and ( not .app.service.insecure ) .Values.global.drogueCloud.useServiceCA }}
+{{- if and ( not .app.service.insecure ) .root.Values.global.drogueCloud.useServiceCA }}
 service.beta.openshift.io/serving-cert-secret-name: {{ .name }}-tls
 {{- end }}
 {{- end }}
