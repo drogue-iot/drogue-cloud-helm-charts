@@ -21,14 +21,13 @@ Volume mounts for using TLS.
 
 Arguments (dict):
   * root - .
-  * name - the base name of the application
   * app - application structure
 */}}
 {{- define "drogue-cloud-core.tls-volume-mounts" }}
 
 {{- if and (not .app.service.insecure) .root.Values.global.drogueCloud.useServiceCA }}
 - mountPath: /etc/tls/service
-  name: {{ .name | quote }}
+  name: service-tls
 {{- end }}
 
 {{- end }}
