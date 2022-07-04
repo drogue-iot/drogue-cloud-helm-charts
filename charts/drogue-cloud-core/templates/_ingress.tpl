@@ -3,11 +3,11 @@ Create the default ingress annotations.
 
 Arguments:
   * root - .
-  * ingress
+  * app - the application configuration
 */}}
 {{- define "drogue-cloud-core.ingress.annotations" -}}
 
-{{- with .ingress.annotations }}
+{{- with .app.ingress.annotations }}
 {{- . | toYaml }}
 {{- else }}
 
@@ -16,17 +16,16 @@ Arguments:
 {{- else }}
 
 {{- if eq .root.Values.global.cluster "openshift" }}
-{{- if not .ingress.insecure }}
-{{- if .root.Values.global.drogueCloud.useServiceCA }}
+{{- if not .app.ingress.insecure }}
+{{- if and (not .app.service.insecure) .root.Values.global.drogueCloud.useServiceCA }}
 route.openshift.io/termination: "reencrypt"
 {{- else }}
 route.openshift.io/termination: "edge"
-{{- end }}{{/* .useServiceCA */}}
-{{- end }}{{/* .insecure */}}
+{{- end }}{{/* !.service.insecure && .useServiceCA */}}
+{{- end }}{{/* .ingress.insecure */}}
 {{- end }}{{/* is openshift */}}
 
 {{- end }}{{/* with .default.ingress.annotations */}}
-
 {{- end }}{{/* with .ingress.annotations */}}
 
 {{- end }}{{/* define */}}
