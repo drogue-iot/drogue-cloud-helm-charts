@@ -17,7 +17,7 @@ https://{{ .name }}.{{ .root.Release.Namespace }}.svc
 {{/* The following macros are there to avoid repetition in other files */}}
 
 {{- define "drogue-cloud-core.service-url.auth-service" }}
-{{- include "drogue-cloud-core.service-url" (dict "root" . "name" "console" "app" .Values.services.auth ) }}
+{{- include "drogue-cloud-core.service-url" (dict "root" . "name" "authentication-service" "app" .Values.services.auth ) }}
 {{- end }}
 
 {{- define "drogue-cloud-core.service-url.device-state-service" }}
