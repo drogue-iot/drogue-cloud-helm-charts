@@ -4,9 +4,10 @@ kind: Service
 apiVersion: v1
 metadata:
   name: console-backend
+  annotations:
+    {{- include "drogue-cloud-core.tls-service-annotations" $app | nindent 4 }}
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
-    {{- include "drogue-cloud-core.tls-service-annotations" $app | nindent 4 }}
 
 spec:
 
