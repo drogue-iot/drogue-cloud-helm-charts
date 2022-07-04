@@ -44,12 +44,12 @@ External SSO Hostname.
 External Websocket integration URL.
 */}}
 {{- define "drogue-cloud-core.websocket-integration.url" -}}
-{{- include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "websocket-intergation" "ingress" .Values.integrations.websocket.ingress ) -}}
+{{- include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "websocket-integration" "ingress" .Values.integrations.websocket.ingress ) -}}
 {{- end }}
 
 {{/*
 External Websocket integration Hostname.
 */}}
 {{- define "drogue-cloud-core.websocket-integration.host" -}}
-{{- include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "websocket-intergation" "ingress" .Values.integrations.websocket.ingress ) -}}
+{{- include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "websocket-integration" "ingress" .Values.integrations.websocket.ingress ) -}}
 {{- end }}
