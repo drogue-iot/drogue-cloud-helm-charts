@@ -24,7 +24,7 @@ Arguments (dict):
   * name - the base name of the application
   * app - application structure
 */}}
-{{- define "drogue-cloud-core.tls-volumes" }}
+{{- define "drogue-cloud-core.tls-volume-mounts" }}
 
 {{- if and (not .app.service.insecure) .Values.global.drogueCloud.useServiceCA }}
 - mountPath: /etc/tls/service
