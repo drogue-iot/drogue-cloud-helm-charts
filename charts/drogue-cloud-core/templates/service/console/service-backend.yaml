@@ -1,5 +1,5 @@
 {{- $ref := dict "root" . "name" "console-backend" "component" "console" -}}
-{{- $app := dict "root" . "app" .Values.services.auth -}}
+{{- $app := dict "root" . "app" .Values.services.console -}}
 kind: Service
 apiVersion: v1
 metadata:
