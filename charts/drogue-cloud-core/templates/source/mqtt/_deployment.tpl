@@ -47,7 +47,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: STATE__CLIENT__URL
-              value: {{- include "drogue-cloud-core.service-url.device-state-service" .root }}
+              value: {{ include "drogue-cloud-core.service-url.device-state-service" .root }}
             - name: STATE__CLIENT__CLIENT_ID
               valueFrom:
                 secretKeyRef:
