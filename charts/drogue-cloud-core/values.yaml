@@ -89,9 +89,8 @@ endpoints:
       port: 443
 
   coap:
-    service:
-      insecure: true # currently we only have CoAP without DTLS
     ingress:
+      insecure: true # currently we only have CoAP without DTLS
       port: 5683
 
 
