@@ -11,7 +11,7 @@ Arguments (dict):
 {{- if and (not .app.service.insecure) .root.Values.global.drogueCloud.useServiceCA }}
 - name: service-tls
   secret:
-    secretName: {{ .name | quote }}-tls
+    secretName: {{ .name }}-tls
 {{- end }}
 
 {{- end }}
