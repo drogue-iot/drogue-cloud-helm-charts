@@ -12,7 +12,7 @@ metadata:
 spec:
   {{- include "drogue-cloud-core.ingress.className" ( dict "root" . "ingress" .Values.integrations.websocket.ingress ) | nindent 2 }}
   rules:
-    - host: {{ include "drogue-cloud-core.console.host" . | quote }}
+    - host: {{ include "drogue-cloud-core.websocket-integration.host" . | quote }}
       http:
         paths:
           - path: /
