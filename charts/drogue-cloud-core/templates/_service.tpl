@@ -7,9 +7,9 @@ Arguments (dict):
   * app - app section of the service (of the target service)
 */}}
 {{- define "drogue-cloud-core.service-url" }}
-{{- if .app.service.insecure }}
+{{- if .app.service.insecure -}}
 http://{{ .name }}.{{ .root.Release.Namespace }}.svc
-{{- else }}
+{{- else -}}
 https://{{ .name }}.{{ .root.Release.Namespace }}.svc
 {{- end }}
 {{- end }}
