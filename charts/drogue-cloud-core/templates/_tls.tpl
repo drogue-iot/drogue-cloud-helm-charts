@@ -11,9 +11,23 @@ Arguments (dict):
 {{- if and (not .app.service.insecure) .root.Values.global.drogueCloud.useServiceCA }}
 - name: service-tls
   secret:
-    secretName: {{ .name | quote }}
+    secretName: {{ .name | quote }}-tls
 {{- end }}
 
+{{- end }}
+
+{{/*
+Volumes for using TLS.
+
+Arguments (dict):
+  * root - .
+  * name - the base name of the application
+  * app - application structure
+*/}}
+{{- define "drogue-cloud-core.tls-service-annotations" }}
+{{- if and ( not .app.service.insecure ) .Values.global.drogueCloud.useServiceCA }}
+service.beta.openshift.io/serving-cert-secret-name: {{ .name }}-tls
+{{- end }}
 {{- end }}
 
 {{/*

@@ -6,9 +6,7 @@ metadata:
   name: console-backend
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
-    {{- if and ( not $app.app.service.insecure ) .Values.global.drogueCloud.useServiceCA }}
-    service.beta.openshift.io/serving-cert-secret-name: {{ $app.name }}
-    {{- end }}
+    {{- include "drogue-cloud-core.tls-service-annotations" $app | nindent 4 }}
 
 spec:
 
