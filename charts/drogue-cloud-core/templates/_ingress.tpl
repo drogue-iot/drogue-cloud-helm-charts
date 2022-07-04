@@ -4,6 +4,7 @@ Create the default ingress annotations.
 Arguments:
   * root - .
   * app - the application configuration
+  * insecure - service is always insecure (or not)
 */}}
 {{- define "drogue-cloud-core.ingress.annotations" -}}
 
@@ -16,7 +17,7 @@ Arguments:
 {{- else }}
 
 {{- if eq .root.Values.global.cluster "openshift" }}
-{{- if not .app.ingress.insecure }}
+{{- if not ( and .app.ingress.insecure .insecure ) }}
 {{- if and (not .app.service.insecure) .root.Values.global.drogueCloud.useServiceCA }}
 route.openshift.io/termination: "reencrypt"
 {{- else }}
