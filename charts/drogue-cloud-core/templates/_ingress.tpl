@@ -17,7 +17,11 @@ Arguments:
 
 {{- if eq .root.Values.global.cluster "openshift" }}
 {{- if not .ingress.insecure }}
+{{- if .root.Values.global.drogueCloud.useServiceCA }}
+route.openshift.io/termination: "reencrypt"
+{{- else }}
 route.openshift.io/termination: "edge"
+{{- end }}{{/* .useServiceCA */}}
 {{- end }}{{/* .insecure */}}
 {{- end }}{{/* is openshift */}}
 
