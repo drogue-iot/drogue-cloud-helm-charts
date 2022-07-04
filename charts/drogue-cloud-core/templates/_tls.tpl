@@ -8,7 +8,7 @@ Arguments (dict):
 */}}
 {{- define "drogue-cloud-core.tls-volumes" }}
 
-{{- if and (not .app.service.insecure) .Values.global.drogueCloud.useServiceCA }}
+{{- if and (not .app.service.insecure) .root.Values.global.drogueCloud.useServiceCA }}
 - name: service-tls
   secret:
     secretName: {{ .name | quote }}
@@ -26,7 +26,7 @@ Arguments (dict):
 */}}
 {{- define "drogue-cloud-core.tls-volume-mounts" }}
 
-{{- if and (not .app.service.insecure) .Values.global.drogueCloud.useServiceCA }}
+{{- if and (not .app.service.insecure) .root.Values.global.drogueCloud.useServiceCA }}
 - mountPath: /etc/tls/service
   name: {{ .name | quote }}
 {{- end }}
