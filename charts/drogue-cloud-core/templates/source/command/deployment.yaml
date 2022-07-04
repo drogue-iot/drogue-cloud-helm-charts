@@ -1,5 +1,5 @@
 {{- $ref := dict "root" . "name" "command-endpoint" "component" "endpoints" "metrics" true -}}
-{{- $app :=  dict "root" . "app" .Values.services.command -}}
+{{- $app := dict "root" . "name" "command-endpoint" "app" .Values.services.command -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

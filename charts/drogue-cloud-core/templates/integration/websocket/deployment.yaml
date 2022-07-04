@@ -1,5 +1,5 @@
 {{- $ref := dict "root" . "name" "websocket-integration" "component" "integrations" "metrics" true -}}
-{{- $app :=  dict "root" . "app" .Values.integrations.websocket -}}
+{{- $app := dict "root" . "name" "websocket-integration" "app" .Values.integrations.websocket -}}
 kind: Deployment
 apiVersion: apps/v1
 metadata:

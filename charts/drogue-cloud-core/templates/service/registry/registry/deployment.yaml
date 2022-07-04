@@ -1,5 +1,5 @@
 {{- $ref := dict "root" . "name" "device-management-service" "component" "device-registry" "metrics" true  -}}
-{{- $app := dict "root" . "app" .Values.services.registry -}}
+{{- $app := dict "root" . "name" "device-management-service" "app" .Values.services.registry -}}
 kind: Deployment
 apiVersion: apps/v1
 metadata:
