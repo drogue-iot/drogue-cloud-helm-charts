@@ -56,6 +56,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: USER_AUTH__URL
+              value: {{ include "drogue-cloud-core.service-url.user-auth-service" . }}
             - name: USER_AUTH__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -67,6 +69,8 @@ spec:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
             {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" . "prefix" "USER_AUTH__" ) | nindent 12 }}
+            - name: REGISTRY__URL
+              value: {{ include "drogue-cloud-core.service-url.device-management-service" . }}
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -159,6 +163,9 @@ spec:
               port: 9090
               path: /liveness
 
+          volumeMounts:
+            {{- include "drogue-cloud-core.tls-volume-mounts" $app | nindent 12 }}
+
       volumes:
         - name: client-secret-drogue
           secret:
@@ -166,3 +173,4 @@ spec:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
+        {{- include "drogue-cloud-core.tls-volumes" $app | nindent 8 }}

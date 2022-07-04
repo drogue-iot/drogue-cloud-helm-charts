@@ -43,6 +43,8 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             {{- include "drogue-cloud-core.oauth2-authenticator.env-vars" (dict "root" .root "clients" (list "drogue" )) | nindent 12 }}
+            - name: USER_AUTH__URL
+              value: {{ include "drogue-cloud-core.service-url.user-auth-service" .root }}
             - name: USER_AUTH__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -54,6 +56,8 @@ spec:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
             {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" .root "prefix" "USER_AUTH__" ) | nindent 12 }}
+            - name: REGISTRY__URL
+              value: {{ include "drogue-cloud-core.service-url.device-management-service" .root }}
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:

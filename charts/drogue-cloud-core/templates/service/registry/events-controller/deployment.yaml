@@ -30,6 +30,8 @@ spec:
             {{- include "drogue-cloud-common.jaeger-env" ( dict "root" . "app" .Values.services.deviceManagementController ) | nindent 12 }}
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
+            - name: REGISTRY__URL
+              value: {{ include "drogue-cloud-core.service-url.device-management-service" . }}
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:

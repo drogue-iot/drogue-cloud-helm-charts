@@ -1,9 +1,13 @@
 {{- $ref := dict "root" . "name" "command-endpoint" "component" "endpoints" -}}
-{{- $app :=  dict "root" . "app" .Values.services.command -}}
+{{- $app := dict "root" . "name" "command-endpoint" "app" .Values.services.command -}}
 kind: Service
 apiVersion: v1
 metadata:
   name: command-endpoint
+  annotations:
+    {{- if and ( not $app.app.service.insecure ) .Values.global.drogueCloud.useServiceCA }}
+    service.beta.openshift.io/serving-cert-secret-name: {{ $app.name }}
+    {{- end }}
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:

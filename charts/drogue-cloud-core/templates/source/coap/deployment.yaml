@@ -37,6 +37,8 @@ spec:
                 configMapKeyRef:
                   name: configuration
                   key: instance
+            - name: AUTH__URL
+              value: {{ include "drogue-cloud-core.service-url.auth-service" . }}
             - name: AUTH__CLIENT_ID
               valueFrom:
                 secretKeyRef:

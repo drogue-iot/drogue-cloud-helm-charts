@@ -36,6 +36,8 @@ spec:
                   name: configuration
                   key: instance
             {{- include "drogue-cloud-core.oauth2-authenticator.env-vars" (dict "root" . "clients" (list "drogue" "services" )) | nindent 12 }}
+            - name: REGISTRY__URL
+              value: {{ include "drogue-cloud-core.service-url.device-management-service" . }}
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -47,6 +49,8 @@ spec:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
             {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
+            - name: USER_AUTH__URL
+              value: {{ include "drogue-cloud-core.service-url.user-auth-service" . }}
             - name: USER_AUTH__CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -85,7 +89,11 @@ spec:
 
           {{- include "drogue-cloud-core.container-resources" $app | nindent 10 }}
 
+          volumeMounts:
+            {{- include "drogue-cloud-core.tls-volume-mounts" $app | nindent 12 }}
+
       volumes:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
+        {{- include "drogue-cloud-core.tls-volumes" $app | nindent 8 }}

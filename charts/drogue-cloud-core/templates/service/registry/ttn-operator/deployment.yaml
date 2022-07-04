@@ -35,6 +35,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: REGISTRY__URL
+              value: {{ include "drogue-cloud-core.service-url.device-management-service" . }}
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:

@@ -33,6 +33,8 @@ spec:
             - name: HEALTH__BIND_ADDR
               value: "0.0.0.0:9090"
             {{- include "drogue-cloud-core.postgres.env-vars" ( dict "root" . "prefix" "SERVICE__PG__" ) | nindent 12 }}
+            - name: REGISTRY__URL
+              value: {{ include "drogue-cloud-core.service-url.device-management-service" . }}
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:

@@ -59,6 +59,8 @@ spec:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
             {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" .root "prefix" "STATE__CLIENT__" ) | nindent 12 }}
+            - name: AUTH__URL
+              value: {{ include "drogue-cloud-core.service-url.auth-service" .root }}
             - name: AUTH__CLIENT_ID
               valueFrom:
                 secretKeyRef:

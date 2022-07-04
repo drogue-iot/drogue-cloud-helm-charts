@@ -69,7 +69,11 @@ spec:
 
           {{- include "drogue-cloud-core.container-resources" $app | nindent 10 }}
 
+          volumeMounts:
+            {{- include "drogue-cloud-core.tls-volume-mounts" $app | nindent 12 }}
+
       volumes:
         - name: client-secret-services
           secret:
             secretName: keycloak-client-secret-services
+        {{- include "drogue-cloud-core.tls-volumes" $app | nindent 8 }}

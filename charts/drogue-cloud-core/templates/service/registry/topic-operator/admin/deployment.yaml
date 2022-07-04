@@ -40,6 +40,8 @@ spec:
             - name: CONTROLLER__NUM_REPLICAS
               value: {{ .Values.services.topicOperator.numberOfReplicas | default 1 | quote }}
             {{- include "drogue-cloud-common.translate-kafka-properties" (dict "properties" .Values.services.topicOperator.properties "prefix" "CONTROLLER__PROPERTIES__" ) | nindent 12 }}
+            - name: REGISTRY__URL
+              value: {{ include "drogue-cloud-core.service-url.device-management-service" . }}
             - name: REGISTRY__CLIENT_ID
               valueFrom:
                 secretKeyRef:
