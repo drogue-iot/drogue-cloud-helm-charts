@@ -22,8 +22,6 @@ spec:
         prometheus.io/path: /metrics
         prometheus.io/port: "9090"
     spec:
-      initContainers:
-        {{- include "drogue-cloud-common.init-container.wait-for-client-secret" ( dict "root" .root "volume" "client-secret-services")  | nindent 8 }}
       containers:
         - name: endpoint
           image: {{ include "drogue-cloud-common.image" (dict "root" .root "name" "mqtt-endpoint" ) | quote }}
@@ -99,29 +97,15 @@ spec:
               value: /etc/endpoint/tls.key
             {{ end }}
 
+            {{- include "drogue-cloud-core.env-vars-extras" ( dict "root" .root "app" .app ) | nindent 12 }}
+
           ports:
             - containerPort: 1883
               name: endpoint
               protocol: TCP
             {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}
 
-          readinessProbe:
-            initialDelaySeconds: 2
-            periodSeconds: 1
-            timeoutSeconds: 1
-            failureThreshold: 3
-            httpGet:
-              port: 9090
-              path: /readiness
-          livenessProbe:
-            initialDelaySeconds: 2
-            periodSeconds: 1
-            timeoutSeconds: 1
-            failureThreshold: 3
-            httpGet:
-              port: 9090
-              path: /liveness
-
+          {{- include "drogue-cloud-core.health-probes" ( dict "root" .root "app" .app ) | nindent 10 }}
           {{- include "drogue-cloud-core.container-resources" ( dict "root" .root "app" .app ) | nindent 10 }}
 
           volumeMounts:

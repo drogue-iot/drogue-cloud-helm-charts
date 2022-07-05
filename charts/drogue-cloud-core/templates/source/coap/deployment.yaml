@@ -70,6 +70,7 @@ spec:
             - name: KEY_FILE # TLS
               value: /etc/endpoint/tls.key
             {{ end }}
+            {{- include "drogue-cloud-core.env-vars-extras" $app | nindent 12 }}
 
           ports:
             - containerPort: {{ if .Values.endpoints.coap.ingress.insecure }}5683{{ else }}5684{{ end }}
@@ -77,23 +78,7 @@ spec:
               protocol: UDP
             {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}
 
-          readinessProbe:
-            initialDelaySeconds: 2
-            periodSeconds: 1
-            timeoutSeconds: 1
-            failureThreshold: 3
-            httpGet:
-              port: 9090
-              path: /readiness
-          livenessProbe:
-            initialDelaySeconds: 2
-            periodSeconds: 1
-            timeoutSeconds: 1
-            failureThreshold: 3
-            httpGet:
-              port: 9090
-              path: /liveness
-
+          {{- include "drogue-cloud-core.health-probes" $app | nindent 10 }}
           {{- include "drogue-cloud-core.container-resources" $app | nindent 10 }}
 
           volumeMounts:

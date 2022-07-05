@@ -62,22 +62,10 @@ spec:
               value: 15s
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SENDER__PROPERTIES__" ) | nindent 12 }}
             {{- include "drogue-cloud-core.keycloak.internal-access" . | nindent 12 }}
-          readinessProbe:
-            initialDelaySeconds: 2
-            periodSeconds: 1
-            timeoutSeconds: 1
-            failureThreshold: 3
-            httpGet:
-              port: 9090
-              path: /readiness
-          livenessProbe:
-            initialDelaySeconds: 2
-            periodSeconds: 1
-            timeoutSeconds: 1
-            failureThreshold: 3
-            httpGet:
-              port: 9090
-              path: /liveness
+            {{- include "drogue-cloud-core.env-vars-extras" $app | nindent 12 }}
+
+          {{- include "drogue-cloud-core.health-probes" ( dict "root" . "app" $app ) | nindent 10 }}
+
           ports:
             {{- include "drogue-cloud-core.http-service-container-port" $app | nindent 12 }}
             {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}

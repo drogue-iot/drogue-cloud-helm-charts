@@ -34,22 +34,10 @@ spec:
               value: "0.0.0.0:9090"
             {{- include "drogue-cloud-core.postgres.env-vars-default" . | nindent 12 }}
             {{- include "drogue-cloud-core.oauth2-authenticator.env-vars" (dict "root" . "clients" (list "services" )) | nindent 12 }}
-          readinessProbe:
-            initialDelaySeconds: 2
-            periodSeconds: 1
-            timeoutSeconds: 1
-            failureThreshold: 3
-            httpGet:
-              port: 9090
-              path: /readiness
-          livenessProbe:
-            initialDelaySeconds: 2
-            periodSeconds: 1
-            timeoutSeconds: 1
-            failureThreshold: 3
-            httpGet:
-              port: 9090
-              path: /liveness
+            {{- include "drogue-cloud-core.env-vars-extras" $app | nindent 12 }}
+
+          {{- include "drogue-cloud-core.health-probes" $app | nindent 10 }}
+
           ports:
             {{- include "drogue-cloud-core.http-service-container-port" $app | nindent 12 }}
             {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}

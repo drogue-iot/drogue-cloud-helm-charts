@@ -18,8 +18,6 @@ spec:
       labels:
         {{- include "drogue-cloud-core.labels" . | nindent 8 }}
     spec:
-      initContainers:
-        {{- include "drogue-cloud-common.init-container.wait-for-client-secret" ( dict "root" .root "volume" "client-secret-services")  | nindent 8 }}
       containers:
         - name: service
           image: {{ include "drogue-cloud-common.image" (dict "root" .root "name" "mqtt-integration" ) | quote }}
@@ -77,6 +75,7 @@ spec:
             - name: COMMAND_KAFKA_SINK__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" .root -}}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" .root "prefix" "COMMAND_KAFKA_SINK__PROPERTIES__" ) | nindent 12 }}
+            {{- include "drogue-cloud-core.env-vars-extras" ( dict "root" .root "app" .app ) | nindent 12 }}
 
             {{ if .disableClientCertificates }}
             - name: DISABLE_CLIENT_CERTIFICATES
@@ -100,22 +99,7 @@ spec:
 
           {{- include "drogue-cloud-core.container-resources" ( dict "root" .root "app" .app ) | nindent 10 }}
 
-          readinessProbe:
-            initialDelaySeconds: 2
-            periodSeconds: 1
-            timeoutSeconds: 1
-            failureThreshold: 3
-            httpGet:
-              port: 9090
-              path: /readiness
-          livenessProbe:
-            initialDelaySeconds: 2
-            periodSeconds: 1
-            timeoutSeconds: 1
-            failureThreshold: 3
-            httpGet:
-              port: 9090
-              path: /liveness
+          {{- include "drogue-cloud-core.health-probes" ( dict "root" .root "app" .app ) | nindent 10 }}
 
           volumeMounts:
           {{- if not .app.ingress.insecure }}
