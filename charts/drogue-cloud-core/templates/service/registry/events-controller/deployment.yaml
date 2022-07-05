@@ -19,8 +19,6 @@ spec:
       labels:
         {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
     spec:
-      initContainers:
-        {{- include "drogue-cloud-common.init-container.wait-for-client-secret" ( dict "root" . "volume" "client-secret-services")  | nindent 8 }}
       containers:
         - name: service
           image: {{ include "drogue-cloud-common.image" $ref | quote }}

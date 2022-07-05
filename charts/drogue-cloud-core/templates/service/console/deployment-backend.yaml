@@ -20,8 +20,6 @@ spec:
         {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
     spec:
       serviceAccountName: console-backend
-      initContainers:
-        {{- include "drogue-cloud-common.init-container.wait-for-client-secret" ( dict "root" . "volume" "client-secret-services")  | nindent 8 }}
       containers:
         - name: endpoint
           image: {{ include "drogue-cloud-common.image" $ref | quote }}
