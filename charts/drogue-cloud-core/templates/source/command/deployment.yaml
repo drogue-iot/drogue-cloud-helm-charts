@@ -10,6 +10,7 @@ metadata:
     client.oauth2.drogue.io/services: ""
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
+  replicas: {{ $app.app.deployment.replicas | default 1 }}
   selector:
     matchLabels:
       {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
@@ -17,6 +18,11 @@ spec:
     metadata:
       labels:
         {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "9090"
+
     spec:
       containers:
         - name: endpoint

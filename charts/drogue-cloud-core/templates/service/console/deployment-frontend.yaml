@@ -1,12 +1,14 @@
 {{- $ref := dict "root" . "name" "console-frontend" "component" "console" -}}
+{{- $app := dict "root" . "name" "console-frontend" "app"  .Values.services.consoleFrontend }}
 kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: console-frontend
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+
 spec:
-  replicas: 1
+  replicas: {{ $app.app.deployment.replicas | default 1 }}
   selector:
     matchLabels:
       {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
@@ -24,13 +26,15 @@ spec:
               value: {{ include "drogue-cloud-core.api.url" . | quote }}
             - name: ISSUER_URL
               value: {{ include "drogue-cloud-core.sso.issuer-url" . | quote }}
+            {{- include "drogue-cloud-core.env-vars-extras" $app | nindent 12 }}
+
           ports:
             - containerPort: 8080
               name: service
               protocol: TCP
-          resources:
-            limits:
-              memory: 64Mi
+
+          {{ include "drogue-cloud-core.container-resources" $app }}
+
           volumeMounts:
             - mountPath: /run
               name: run
@@ -39,6 +43,7 @@ spec:
             - mountPath: /etc/config/login
               name: login-config
               readOnly: true
+
           readinessProbe:
             initialDelaySeconds: 2
             periodSeconds: 1
@@ -47,6 +52,7 @@ spec:
             httpGet:
               port: 8080
               path: /
+
       volumes:
         - name: run
           emptyDir: {}

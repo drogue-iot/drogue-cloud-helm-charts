@@ -69,26 +69,31 @@ console:
 endpoints:
 
   http:
+    deployment: {}
     service: {}
     ingress:
       port: 443
 
   mqtt:
+    deployment: {}
     service: {}
     ingress:
       port: 8883
 
   mqttWs:
+    deployment: {}
     service: {}
     ingress:
       port: 443
 
   mqttWsBrowser:
+    deployment: {}
     service: {}
     ingress:
       port: 443
 
   coap:
+    deployment: {}
     ingress:
       insecure: true # currently we only have CoAP without DTLS
       port: 5683
@@ -97,21 +102,25 @@ endpoints:
 integrations:
 
   mqtt:
+    deployment: {}
     service: {}
     ingress:
       port: 8883
 
   mqttWs:
+    deployment: {}
     service: {}
     ingress:
       port: 443
 
   mqttWsBrowser:
+    deployment: {}
     service: {}
     ingress:
       port: 443
 
   websocket:
+    deployment: {}
     service: {}
     ingress:
       port: 443
@@ -120,31 +129,52 @@ integrations:
         memory: 64Mi
 
 services:
+  # console frontend
+  consoleFrontend:
+    deployment: {}
+    ingress: {}
+    service: {}
+
+  # console backend
   console:
+    deployment: {}
     ingress: {}
     service: {}
   api:
+    deployment: {}
     ingress: {}
     service: {}
+  swaggerUi:
+    deployment: {}
   sso:
     ingress: {}
   registry:
+    deployment: {}
     ingress: {}
     service: {}
-  deviceManagementController: {}
+  deviceManagementController:
+    deployment: {}
   deviceState:
+    deployment: {}
     service: {}
-  topicOperator: {}
-  outbox: {}
-  ttnOperator: {}
+  topicOperator:
+    deployment: {}
+  outbox:
+    deployment: {}
+  ttnOperator:
+    deployment: {}
   auth:
+    deployment: {}
     service: {}
   userAuth:
+    deployment: {}
     service: {}
   command:
+    deployment: {}
     ingress: {}
     service: {}
   knativeOperator:
+    deployment: {}
     enabled: true
     eventSource:
       image: ghcr.io/drogue-cloud/drogue-event-source:0.2.0

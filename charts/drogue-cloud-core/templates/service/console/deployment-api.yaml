@@ -5,8 +5,9 @@ metadata:
   name: console-api
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+
 spec:
-  replicas: 1
+  replicas: {{ .Values.services.swaggerUi.deployment.replicas | default 1 }}
   selector:
     matchLabels:
       {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
@@ -17,8 +18,8 @@ spec:
     spec:
       containers:
         - name: endpoint
-          image: docker.io/swaggerapi/swagger-ui:v4.12.0
-          imagePullPolicy: IfNotPresent
+          image: {{ .Values.services.swaggerUi.deployment.image | default "docker.io/swaggerapi/swagger-ui:v4.12.0" }}
+          imagePullPolicy: {{ .Values.services.swaggerUi.deployment.imagePullPolicy | default "IfNotPresent" }}
           env:
             - name: BASE_URL
               value: /api

@@ -79,6 +79,9 @@
         "coap": {
           "allOf": [
             {
+              "$ref": "#/$defs/deployment"
+            },
+            {
               "$ref": "#/$defs/service"
             },
             {
@@ -88,6 +91,9 @@
         },
         "http": {
           "allOf": [
+            {
+              "$ref": "#/$defs/deployment"
+            },
             {
               "$ref": "#/$defs/service"
             },
@@ -102,6 +108,9 @@
         "mqtt": {
           "allOf": [
             {
+              "$ref": "#/$defs/deployment"
+            },
+            {
               "$ref": "#/$defs/service"
             },
             {
@@ -112,6 +121,9 @@
         "mqttWs": {
           "allOf": [
             {
+              "$ref": "#/$defs/deployment"
+            },
+            {
               "$ref": "#/$defs/service"
             },
             {
@@ -121,6 +133,9 @@
         },
         "mqttBrowser": {
           "allOf": [
+            {
+              "$ref": "#/$defs/deployment"
+            },
             {
               "$ref": "#/$defs/service"
             },
@@ -137,6 +152,9 @@
         "mqtt": {
           "allOf": [
             {
+              "$ref": "#/$defs/deployment"
+            },
+            {
               "$ref": "#/$defs/service"
             },
             {
@@ -146,6 +164,9 @@
         },
         "mqttWs": {
           "allOf": [
+            {
+              "$ref": "#/$defs/deployment"
+            },
             {
               "$ref": "#/$defs/service"
             },
@@ -157,6 +178,9 @@
         "mqttWsBrowser": {
           "allOf": [
             {
+              "$ref": "#/$defs/deployment"
+            },
+            {
               "$ref": "#/$defs/service"
             },
             {
@@ -166,6 +190,9 @@
         },
         "websocket": {
           "allOf": [
+            {
+              "$ref": "#/$defs/deployment"
+            },
             {
               "$ref": "#/$defs/service"
             },
@@ -235,8 +262,27 @@
             }
           }
         },
+        "consoleFrontend": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/deployment"
+            },
+            {
+              "$ref": "#/$defs/service"
+            },
+            {
+              "$ref": "#/$defs/http"
+            },
+            {
+              "$ref": "#/$defs/ingress"
+            }
+          ]
+        },
         "console": {
           "allOf": [
+            {
+              "$ref": "#/$defs/deployment"
+            },
             {
               "$ref": "#/$defs/service"
             },
@@ -351,6 +397,24 @@
     }
   },
   "$defs": {
+    "deployment": {
+      "type": "object",
+      "properties": {
+        "deployment": {
+          "$ref": "#/$defs/deploymentConfig"
+        }
+      }
+    },
+    "deploymentConfig": {
+      "type": "object",
+      "properties": {
+        "replicas": {
+          "type": "number",
+          "minimum": 0,
+          "default": 1
+        }
+      }
+    },
     "service": {
       "type": "object",
       "properties": {

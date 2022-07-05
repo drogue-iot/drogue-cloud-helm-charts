@@ -10,7 +10,7 @@ metadata:
     client.oauth2.drogue.io/services: ""
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ $app.app.deployment.replicas | default 1 }}
   selector:
     matchLabels:
       {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
