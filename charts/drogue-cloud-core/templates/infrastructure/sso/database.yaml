@@ -26,7 +26,7 @@ data:
   {{- else if eq .Values.keycloak.postgres.mode "external" }}
 
   {{/* dedicated, external postgres instance */}}
-  database: {{ .Values.postgres.databaseName | b64enc | quote }}
+  database: {{ .Values.keycloak.postgres.databaseName | b64enc | quote }}
   host: {{ .Values.keycloak.postgres.host | b64enc | quote }}
   port: {{ .Values.keycloak.postgres.port | default "5432" | b64enc | quote }}
   username: {{ .Values.keycloak.postgres.username | b64enc | quote }}
