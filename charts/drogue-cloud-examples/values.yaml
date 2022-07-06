@@ -68,7 +68,7 @@ timescale:
 pusher:
   enabled: true
   knative: false
-  image: ghcr.io/drogue-iot/postgresql-pusher:0.1.0
+  image: ghcr.io/drogue-iot/postgresql-pusher:0.2.1
 
 source:
   kafka:
