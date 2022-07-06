@@ -95,7 +95,7 @@ endpoints:
   coap:
     deployment: {}
     ingress:
-      insecure: true # currently we only have CoAP without DTLS
+      insecure: true  # currently we only have CoAP without DTLS
       port: 5683
 
 
