@@ -9,7 +9,7 @@ data:
 
   {{- if eq .Values.keycloak.postgres.mode "drogue" }}
 
-  database: {{ .Values.postgres.databaseName | b64enc | quote }}
+  database: {{ .Values.keycloak.postgres.databaseName | default .Values.postgres.databaseName | b64enc | quote }}
   username: {{ .Values.postgres.username | b64enc | quote }}
   password: {{ .Values.postgres.password | b64enc | quote }}
 
