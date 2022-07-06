@@ -25,7 +25,9 @@ spec:
               value: "1"
 
             - name: K_SINK
-              value: http://timescaledb-pusher:8080
+              value: {{ .Values.source.drogue.sink }}
+            - name: MODE
+              value: ws
             - name: DROGUE_ENDPOINT
               value: {{ .Values.source.drogue.endpoint }}
             - name: DROGUE_APP
