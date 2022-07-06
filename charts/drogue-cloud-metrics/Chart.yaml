@@ -12,14 +12,14 @@ maintainers:
 
 type: application
 
-version: 0.6.0-alpha1
+version: 0.6.0
 appVersion: 0.10.0
 
 kubeVersion: ">= 1.19.0"
 
 dependencies:
   - name: drogue-cloud-common
-    version: ^0.6.0-alpha1
+    version: 0.6.0
     repository: file://../drogue-cloud-common
   - name: prometheus
     version: ~14.6.0
