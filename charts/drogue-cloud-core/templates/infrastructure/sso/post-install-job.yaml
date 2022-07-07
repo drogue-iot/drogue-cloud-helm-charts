@@ -143,7 +143,9 @@ data:
   (printf "%s/*" (include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress )))
   "http://localhost:*"
 -}}
-{{- $redirect = concat $redirect (((.Values.keycloak).clients).api).extraRedirectUris }}
+{{- with (((.Values.keycloak).clients).api).extraRedirectUris }}
+{{- $redirect = concat $redirect . }}
+{{- end }}
 kind: Job
 apiVersion: batch/v1
 metadata:
