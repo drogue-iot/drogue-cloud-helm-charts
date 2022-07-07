@@ -57,6 +57,8 @@ spec:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
             {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
+            - name: WORK_QUEUE__INSTANCE
+              value: knative-operator
             {{- include "drogue-cloud-core.postgres.env-vars" ( dict "root" . "prefix" "WORK_QUEUE__PG__" ) | nindent 12 }}
             - name: KAFKA_SOURCE__TOPIC
               value: registry
