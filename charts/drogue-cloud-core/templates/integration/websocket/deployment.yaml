@@ -20,9 +20,7 @@ spec:
       labels:
         {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: /metrics
-        prometheus.io/port: "9090"
+        {{- include "drogue-cloud-common.prometheus-annotations" . | nindent 8 }}
 
     spec:
       containers:
@@ -33,8 +31,7 @@ spec:
             {{- include "drogue-cloud-common.rust.logging" $app | nindent 12 }}
             {{- include "drogue-cloud-common.jaeger-env" $app | nindent 12 }}
             {{- include "drogue-cloud-core.http-service-env" $app | nindent 12 }}
-            - name: HEALTH__BIND_ADDR
-              value: "0.0.0.0:9090"
+            {{- include "drogue-cloud-common.health-env" $app | nindent 12 }}
             - name: INSTANCE
               valueFrom:
                 configMapKeyRef:
@@ -84,9 +81,9 @@ spec:
 
           ports:
             {{- include "drogue-cloud-core.http-service-container-port" $app | nindent 12 }}
-            {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}
+            {{- include "drogue-cloud-common.health-container-port" . | nindent 12 }}
 
-          {{- include "drogue-cloud-core.health-probes" $app | nindent 10 }}
+          {{- include "drogue-cloud-common.health-probes" $app | nindent 10 }}
 
           {{- include "drogue-cloud-core.container-resources" $app | nindent 10 }}
 

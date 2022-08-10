@@ -19,9 +19,7 @@ spec:
       labels:
         {{- include "drogue-cloud-core.labels" . | nindent 8 }}
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: /metrics
-        prometheus.io/port: "9090"
+        {{- include "drogue-cloud-common.prometheus-annotations" . | nindent 8 }}
 
     spec:
       containers:
@@ -31,12 +29,11 @@ spec:
           env:
             {{- include "drogue-cloud-common.rust.logging" ( dict "root" .root "app" .app ) | nindent 12 }}
             {{- include "drogue-cloud-common.jaeger-env" ( dict "root" .root "app" .app ) | nindent 12 }}
+            {{- include "drogue-cloud-common.health-env" ( dict "root" .root "app" .app ) | nindent 12 }}
             - name: MQTT__BIND_ADDR
               value: "0.0.0.0:1883"
             - name: MQTT__TRANSPORT
               value: {{ .transport | quote }}
-            - name: HEALTH__BIND_ADDR
-              value: "0.0.0.0:9090"
             - name: INSTANCE
               valueFrom:
                 configMapKeyRef:
@@ -101,11 +98,11 @@ spec:
             - containerPort: 1883
               name: service
               protocol: TCP
-            {{- include "drogue-cloud-core.health-container-port" . | nindent 12 }}
+            {{- include "drogue-cloud-common.health-container-port" . | nindent 12 }}
 
           {{- include "drogue-cloud-core.container-resources" ( dict "root" .root "app" .app ) | nindent 10 }}
 
-          {{- include "drogue-cloud-core.health-probes" ( dict "root" .root "app" .app ) | nindent 10 }}
+          {{- include "drogue-cloud-common.health-probes" ( dict "root" .root "app" .app ) | nindent 10 }}
 
           volumeMounts:
           {{- if not .app.ingress.insecure }}

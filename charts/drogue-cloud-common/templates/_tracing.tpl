@@ -18,8 +18,8 @@ Arguments: (dict)
 */}}
 {{- define "drogue-cloud-common.jaeger-env" -}}
 {{- if eq (include "drogue-cloud-common.jaeger-enabled" .root ) "true" }}
-- name: ENABLE_TRACING
-  value: "true"
+- name: RUNTIME__TRACING
+  value: "jaeger"
 - name: OTEL_BSP_MAX_EXPORT_BATCH_SIZE
   value: {{ .root.Values.global.drogueCloud.jaeger.exportBatchSize | default 32 | quote }}
 - name: OTEL_TRACES_SAMPLER

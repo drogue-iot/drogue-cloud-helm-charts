@@ -23,9 +23,6 @@ spec:
       labels:
         {{- include "drogue-cloud-twin.labels" $ref | nindent 8 }}
     spec:
-      initContainers:
-        {{ include "drogue-cloud-common.init-container.wait-for-client-secret" ( dict "root" . "volume" "client-secret-services") | nindent 8 }}
-        {{ include "drogue-cloud-common.init-container.wait-for-client-secret" ( dict "root" . "volume" "client-secret-ditto-infra") | nindent 8 }}
       containers:
         - name: service
           image: {{ include "drogue-cloud-common.image" (dict "root" . "name" "ditto-registry-operator" ) | quote }}
@@ -33,8 +30,7 @@ spec:
           env:
             {{- include "drogue-cloud-common.rust.logging" ( dict "root" . "app" .Values.operator ) | nindent 12 }}
             {{- include "drogue-cloud-common.jaeger-env" ( dict "root" . "app" .Values.operator ) | nindent 12 }}
-            - name: HEALTH__BIND_ADDR
-              value: "0.0.0.0:9090"
+            {{- include "drogue-cloud-common.health-env" ( dict "root" . "app" .Values.operator ) | nindent 12 }}
             - name: NAMESPACE
               valueFrom:
                 fieldRef:
