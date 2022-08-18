@@ -37,7 +37,7 @@ spec:
             {{- include "drogue-cloud-common.health-env" $app | nindent 12 }}
             {{- include "drogue-cloud-common.env-vars-extras" $app | nindent 12 }}
 
-            {{- include "drogue-cloud-twin.config.event-sink" ( dict "root" .root "prefix" "SINK__" ) }}
+            {{- include "drogue-cloud-twin.config.event-sink" ( dict "root" . "prefix" "SINK__" ) }}
 
           {{- include "drogue-cloud-common.health-probes" ( dict "root" . "app" $app ) | nindent 10 }}
 
