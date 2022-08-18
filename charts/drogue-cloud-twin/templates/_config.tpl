@@ -22,14 +22,13 @@
 {{- define "drogue-cloud-twin.config.listener" }}
 - name: {{ .prefix }}TOPIC
   value: {{ .root.Values.configuration.notifications.topic | quote }}
-- name: {{ .prefix }}QUEUE_TIMEOUT
-  value: 15s
 - name: {{ .prefix }}PROPERTIES__BOOTSTRAP_SERVERS
   value: {{ include "drogue-cloud-common.kafka-bootstrap-server" .root | quote }}
 - name: {{ .prefix }}PROPERTIES__GROUP_ID
   value: doppelgaenger
 {{- include "drogue-cloud-common.kafka-properties" ( dict "root" .root "prefix" ( printf "%sPROPERTIES__" .prefix ) ) }}
 {{- end }}{{/* define */}}
+
 
 {{- define "drogue-cloud-twin.config.notifier" }}
 - name: {{ .prefix }}TOPIC
@@ -41,11 +40,10 @@
 {{- include "drogue-cloud-common.kafka-properties" ( dict "root" .root "prefix" ( printf "%sPROPERTIES__" .prefix ) ) }}
 {{- end }}{{/* define */}}
 
-{{- define "drogue-cloud-twin.config.event-sink" }}
+
+{{- define "drogue-cloud-twin.config.event-source" }}
 - name: {{ .prefix }}TOPIC
   value: {{ .root.Values.configuration.events.topic | quote }}
-- name: {{ .prefix }}QUEUE_TIMEOUT
-  value: 15s
 - name: {{ .prefix }}PROPERTIES__BOOTSTRAP_SERVERS
   value: {{ include "drogue-cloud-common.kafka-bootstrap-server" .root | quote }}
 - name: {{ .prefix }}PROPERTIES__GROUP_ID
@@ -53,12 +51,23 @@
 {{- include "drogue-cloud-common.kafka-properties" ( dict "root" .root "prefix" ( printf "%sPROPERTIES__" .prefix ) ) }}
 {{- end }}{{/* define */}}
 
+
+{{- define "drogue-cloud-twin.config.event-sink" }}
+- name: {{ .prefix }}TOPIC
+  value: {{ .root.Values.configuration.events.topic | quote }}
+- name: {{ .prefix }}QUEUE_TIMEOUT
+  value: 15s
+- name: {{ .prefix }}PROPERTIES__BOOTSTRAP_SERVERS
+  value: {{ include "drogue-cloud-common.kafka-bootstrap-server" .root | quote }}
+{{- include "drogue-cloud-common.kafka-properties" ( dict "root" .root "prefix" ( printf "%sPROPERTIES__" .prefix ) ) }}
+{{- end }}{{/* define */}}
+
 {{- define "drogue-cloud-twin.config.command-sink" }}
 - name: {{ .prefix }}MODE
   value: drogue
 
-{{- with .root.Values.configuration.commands.application }}
-- name: {{ $.prefix }}
+{{- with .root.Values.configuration.commands.mapToApplication }}
+- name: {{ $.prefix }}APPLICATION
   value: {{ . | quote }}
 {{- end }}
 

@@ -34,26 +34,36 @@ defaults:
     # backtrace: true
 
 configuration:
+  # the doppelgaenger application this instance is limited to
   application: default
   events:
     topic: events
   notifications:
     topic: notifications
   commands:
-    host: localhost
-    port: 8883
+    host: mqtt-integration.sandbox.drogue.cloud
+    port: 443
     # clientId:
     # username:
     # password:
     disableTls: false
+    # mapToApplication: <drogue cloud application>
 
 api:
   ingress: {}
 
 services:
+
   backend:
     deployment: {}
     service: {}
+
+  processor:
+    deployment: {}
+
+  waker:
+    deployment: {}
+
   sso:
     ingress: {}
 
