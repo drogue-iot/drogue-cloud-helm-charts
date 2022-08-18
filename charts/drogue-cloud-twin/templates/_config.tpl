@@ -108,3 +108,7 @@
 {{- include "drogue-cloud-twin.config.command-sink" ( dict "root" .root "prefix" ( printf "%sCOMMAND_SINK__" .prefix ) ) }}
 {{- end }}{{/* define */}}
 
+{{- define "drogue-cloud-twin.config.injector" }}
+- name: {{ .prefix }}DISABLED
+  value: {{ .Values.configuration.injector.disabled }}
+{{- end }}{{/* define */}}

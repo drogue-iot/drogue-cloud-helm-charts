@@ -1,0 +1,57 @@
+{{- if not .Values.services.injector.disabled }}
+{{- $ref := dict "root" . "name" "doppelgaenger-injector" "component" "digital-twin" "metrics" true  -}}
+{{- $app := dict "root" . "name" "doppelgaenger-injector" "app" .Values.services.injector -}}
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: doppelgaenger-injector
+  annotations:
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"postgres"}]'
+    {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+
+spec:
+
+  replicas: {{ $app.app.deployment.replicas | default 1 }}
+
+  selector:
+    matchLabels:
+      {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
+
+  template:
+    metadata:
+      labels:
+        {{- include "drogue-cloud-twin.labels" $ref | nindent 8 }}
+      annotations:
+        {{- include "drogue-cloud-common.prometheus-annotations" . | nindent 8 }}
+
+    spec:
+      containers:
+        - name: service
+          image: {{ include "drogue-cloud-common.image" $ref | quote }}
+          imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
+          env:
+            {{- include "drogue-cloud-common.rust.logging" $app | nindent 12 }}
+            {{- include "drogue-cloud-common.jaeger-env" $app | nindent 12 }}
+            {{- include "drogue-cloud-common.http-service-env" $app | nindent 12 }}
+            {{- include "drogue-cloud-common.health-env" $app | nindent 12 }}
+            {{- include "drogue-cloud-common.env-vars-extras" $app | nindent 12 }}
+
+            {{- include "drogue-cloud-twin.config.event-sink" ( dict "root" .root "prefix" "SINK__" ) }}
+
+          {{- include "drogue-cloud-common.health-probes" ( dict "root" . "app" $app ) | nindent 10 }}
+
+          ports:
+            {{- include "drogue-cloud-common.http-service-container-port" $app | nindent 12 }}
+            {{- include "drogue-cloud-common.health-container-port" . | nindent 12 }}
+
+          {{- include "drogue-cloud-common.container-resources" $app | nindent 10 }}
+
+          volumeMounts:
+            {{- include "drogue-cloud-common.tls-volume-mounts" $app | nindent 12 }}
+
+      volumes:
+        {{- include "drogue-cloud-common.tls-volumes" $app | nindent 8 }}
+
+{{- end }}{{/* if not disabled */}}

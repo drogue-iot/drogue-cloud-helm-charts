@@ -49,6 +49,7 @@ configuration:
     disableTls: false
     # mapToApplication: <drogue cloud application>
 
+
 api:
   ingress: {}
   # virtual service definition for all backends, to identify the use of TLS
@@ -69,6 +70,10 @@ services:
   sso:
     ingress: {}
 
+  injector:
+    disabled: true # enable/disable deployment
+    deployment: {}
+    extraEnvironment: {} # use to configure injector
 
 oauth2:
   tls:
