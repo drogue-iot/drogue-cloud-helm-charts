@@ -2,14 +2,14 @@
 External API URL.
 */}}
 {{- define "drogue-cloud-twin.api.url" -}}
-{{- include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) -}}
+{{- include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "api" "ingress" .Values.api.ingress ) -}}
 {{- end }}
 
 {{/*
 External API Hostname.
 */}}
 {{- define "drogue-cloud-twin.api.host" -}}
-{{- include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "api" "ingress" .Values.services.api.ingress ) -}}
+{{- include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "api" "ingress" .Values.api.ingress ) -}}
 {{- end }}
 
 {{/*
