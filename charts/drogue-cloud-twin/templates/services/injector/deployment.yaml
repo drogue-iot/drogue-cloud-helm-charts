@@ -34,7 +34,6 @@ spec:
           env:
             {{- include "drogue-cloud-common.rust.logging" $app | nindent 12 }}
             {{- include "drogue-cloud-common.jaeger-env" $app | nindent 12 }}
-            {{- include "drogue-cloud-common.http-service-env" $app | nindent 12 }}
             {{- include "drogue-cloud-common.health-env" $app | nindent 12 }}
             {{- include "drogue-cloud-common.env-vars-extras" $app | nindent 12 }}
 
@@ -43,15 +42,8 @@ spec:
           {{- include "drogue-cloud-common.health-probes" ( dict "root" . "app" $app ) | nindent 10 }}
 
           ports:
-            {{- include "drogue-cloud-common.http-service-container-port" $app | nindent 12 }}
             {{- include "drogue-cloud-common.health-container-port" . | nindent 12 }}
 
           {{- include "drogue-cloud-common.container-resources" $app | nindent 10 }}
-
-          volumeMounts:
-            {{- include "drogue-cloud-common.tls-volume-mounts" $app | nindent 12 }}
-
-      volumes:
-        {{- include "drogue-cloud-common.tls-volumes" $app | nindent 8 }}
 
 {{- end }}{{/* if not disabled */}}
