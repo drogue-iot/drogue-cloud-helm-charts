@@ -40,7 +40,7 @@ spec:
               name: service
               protocol: TCP
 
-          {{- include "drogue-cloud-core.container-resources" ( dict "root" . "app" .Values.services.api ) | nindent 10 }}
+          {{- include "drogue-cloud-common.container-resources" ( dict "root" . "app" .Values.services.api ) | nindent 10 }}
 
           readinessProbe:
             initialDelaySeconds: 2

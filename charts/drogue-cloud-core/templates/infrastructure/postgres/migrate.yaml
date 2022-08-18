@@ -23,7 +23,7 @@ spec:
           image: {{ include "drogue-cloud-common.image" ( dict "root" . "name" "database-migration") | quote }}
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
           env:
-            {{- include "drogue-cloud-core.postgres.env-vars-default" . | nindent 12 }}
+            {{- include "drogue-cloud-common.postgres.env-vars-default" . | nindent 12 }}
             # now we map that from our deadpool based configuration to diesel
             - name: DATABASE_URL
               value: postgres://$(PG__DB__USER):$(PG__DB__PASSWORD)@$(PG__DB__HOST):$(PG__DB__PORT)/$(PG__DB__DBNAME)

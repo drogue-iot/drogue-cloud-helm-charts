@@ -6,7 +6,7 @@ Kafka bootstrap server
     {{- if .Values.kafka.external.enabled -}}
         {{- .Values.kafka.external.bootstrapServer | quote -}}
     {{- else -}}
-        drogue-iot-kafka-bootstrap.{{ .Release.Namespace }}.svc.cluster.local.:9092
+        {{ .Values.kafka.clusterResourceName }}-kafka-bootstrap.{{ .Release.Namespace }}.svc.cluster.local.:9092
     {{- end }}
 
 {{- end }}
@@ -56,11 +56,11 @@ Kafka connection properties
 - name: {{ .prefix }}SASL_MECHANISM
   value: SCRAM-SHA-512
 - name: {{ .prefix }}SASL_USERNAME
-  value: drogue-iot
+  value: {{ .root.Values.kafka.internalUserName }}
 - name: {{ .prefix }}SASL_PASSWORD
   valueFrom:
     secretKeyRef:
-      name: drogue-iot
+      name: {{ .root.Values.kafka.internalUserName }}
       key: password
 
 {{- end }}{{/* if kafka.external.enabled */}}

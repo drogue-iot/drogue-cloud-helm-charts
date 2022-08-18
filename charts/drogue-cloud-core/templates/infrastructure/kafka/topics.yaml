@@ -3,9 +3,9 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
 metadata:
-  name: iot-commands
+  name: {{ .Values.kafka.internalUserName }}
   labels:
-    strimzi.io/cluster: drogue-iot
+    strimzi.io/cluster: {{ .Values.kafka.clusterResourceName }}
     {{- include "drogue-cloud-core.labels" (dict "root" . "name" "iot-commands" "component" "kafka") | nindent 4 }}
 spec:
   config: {}
@@ -18,7 +18,7 @@ kind: KafkaTopic
 metadata:
   name: registry
   labels:
-    strimzi.io/cluster: drogue-iot
+    strimzi.io/cluster: {{ .Values.kafka.clusterResourceName }}
     {{- include "drogue-cloud-core.labels" (dict "root" . "name" "registry" "component" "kafka") | nindent 4 }}
 spec:
   config: {}

@@ -1,0 +1,18 @@
+{{- if and ( not .Values.global.drogueCloud.keycloak.insecure ) .Values.global.drogueCloud.useServiceCA }}
+kind: Service
+apiVersion: v1
+metadata:
+  name: sso-tls
+  annotations:
+    service.beta.openshift.io/serving-cert-secret-name: sso-tls
+  labels:
+    {{- include "drogue-cloud-twin.labels" (dict "root" . "name" "sso-tls" "component" "sso") | nindent 4 }}
+spec:
+  ports:
+    - port: 8443
+      protocol: TCP
+      targetPort: 8443
+  selector:
+    app: keycloak
+  type: ClusterIP
+{{- end }}

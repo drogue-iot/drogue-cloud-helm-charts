@@ -1,0 +1,23 @@
+{{- $ref := dict "root" . "name" "postgres" "component" "digital-twin" -}}
+kind: Service
+apiVersion: v1
+metadata:
+  name: postgres
+  annotations:
+    {{- if and .Values.postgres.tls.enabled .Values.global.drogueCloud.useServiceCA }}
+    service.beta.openshift.io/serving-cert-secret-name: postgres-tls
+    {{- end }}
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+
+spec:
+  selector:
+    {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
+
+  type: ClusterIP
+
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432

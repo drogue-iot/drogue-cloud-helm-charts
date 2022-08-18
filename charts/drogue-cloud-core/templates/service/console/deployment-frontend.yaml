@@ -25,15 +25,15 @@ spec:
             - name: API_URL
               value: {{ include "drogue-cloud-core.api.url" . | quote }}
             - name: ISSUER_URL
-              value: {{ include "drogue-cloud-core.sso.issuer-url" . | quote }}
-            {{- include "drogue-cloud-core.env-vars-extras" $app | nindent 12 }}
+              value: {{ include "drogue-cloud-common.sso.issuer-url" . | quote }}
+            {{- include "drogue-cloud-common.env-vars-extras" $app | nindent 12 }}
 
           ports:
             - containerPort: 8080
               name: service
               protocol: TCP
 
-          {{ include "drogue-cloud-core.container-resources" $app }}
+          {{ include "drogue-cloud-common.container-resources" $app }}
 
           volumeMounts:
             - mountPath: /run

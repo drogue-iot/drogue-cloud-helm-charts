@@ -1,0 +1,23 @@
+{{- $ref := dict "root" . "name" "doppelgaenger-backend" "component" "digital-twin" -}}
+{{- $app := dict "root" . "name" "doppelgaenger-backend" "app" .Values.services.backend -}}
+kind: Service
+apiVersion: v1
+metadata:
+  name: doppelgaenger-backend
+  annotations:
+    {{- include "drogue-cloud-common.tls-service-annotations" $app | nindent 4 }}
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+
+spec:
+
+  selector:
+    {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
+
+  type: ClusterIP
+
+  ports:
+    - name: service
+      port: {{ include "drogue-cloud-common.http-service-port" $app }}
+      protocol: TCP
+      targetPort: service

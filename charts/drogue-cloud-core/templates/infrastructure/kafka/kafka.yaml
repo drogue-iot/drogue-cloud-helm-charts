@@ -2,9 +2,9 @@
 kind: Kafka
 apiVersion: kafka.strimzi.io/v1beta2
 metadata:
-  name: drogue-iot
+  name: {{ .Values.kafka.clusterResourceName }}
   labels:
-    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "drogue-iot" "component" "kafka") | nindent 4 }}
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" .Values.kafka.clusterResourceName "component" "kafka") | nindent 4 }}
 spec:
 
   kafka:
@@ -16,7 +16,7 @@ spec:
     authorization:
       type: simple
       superUsers:
-        - drogue-iot
+        - {{ .Values.kafka.internalUserName }}
     config:
       auto.create.topics.enable: false
       {{ .Values.kafka.kafkaConfigProperties | toYaml | nindent 6 }}

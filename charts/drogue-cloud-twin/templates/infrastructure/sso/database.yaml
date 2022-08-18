@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: keycloak-db-secret
+  labels:
+    {{- include "drogue-cloud-twin.labels" (dict "root" . "name" "keycloak-db-secret" "component" "sso") | nindent 4 }}
+
+data:
+
+  {{- if eq .Values.keycloak.postgres.mode "drogue" }}
+
+  database: {{ .Values.keycloak.postgres.databaseName | default .Values.postgres.databaseName | b64enc | quote }}
+  username: {{ .Values.postgres.username | b64enc | quote }}
+  password: {{ .Values.postgres.password | b64enc | quote }}
+
+  {{- with .Values.postgres.external }}
+  {{/* shared, external postgres instance */}}
+  host: {{ .host | b64enc | quote }}
+  port: {{ .port | default 5432 | toString | b64enc | quote }}
+  {{- else }}
+  {{/* shared, internal postgres instance */}}
+  host: {{ printf "postgres.%s.svc.cluster.local" .Release.Namespace | b64enc | quote }}
+  port: {{ "5432" | b64enc | quote }}
+  {{- end }}
+
+  {{- else if eq .Values.keycloak.postgres.mode "external" }}
+
+  {{/* dedicated, external postgres instance */}}
+  database: {{ .Values.keycloak.postgres.databaseName | b64enc | quote }}
+  host: {{ .Values.keycloak.postgres.host | b64enc | quote }}
+  port: {{ .Values.keycloak.postgres.port | default "5432" | b64enc | quote }}
+  username: {{ .Values.keycloak.postgres.username | b64enc | quote }}
+  password: {{ .Values.keycloak.postgres.password | b64enc | quote }}
+
+  {{- end }}

@@ -6,7 +6,7 @@ Arguments (dict):
   * name - the base name of the application
   * app - application structure
 */}}
-{{- define "drogue-cloud-core.tls-volumes" }}
+{{- define "drogue-cloud-common.tls-volumes" }}
 
 {{- if and (not .app.service.insecure) .root.Values.global.drogueCloud.useServiceCA }}
 - name: service-tls
@@ -24,7 +24,7 @@ Arguments (dict):
   * name - the base name of the application
   * app - application structure
 */}}
-{{- define "drogue-cloud-core.tls-service-annotations" }}
+{{- define "drogue-cloud-common.tls-service-annotations" }}
 {{- if and ( not .app.service.insecure ) .root.Values.global.drogueCloud.useServiceCA -}}
 service.beta.openshift.io/serving-cert-secret-name: {{ .name }}-tls
 {{- end }}
@@ -37,7 +37,7 @@ Arguments (dict):
   * root - .
   * app - application structure
 */}}
-{{- define "drogue-cloud-core.tls-volume-mounts" }}
+{{- define "drogue-cloud-common.tls-volume-mounts" }}
 
 {{- if and (not .app.service.insecure) .root.Values.global.drogueCloud.useServiceCA }}
 - mountPath: /etc/tls/service

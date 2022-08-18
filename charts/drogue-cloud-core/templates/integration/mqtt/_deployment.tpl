@@ -43,7 +43,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            {{- include "drogue-cloud-core.oauth2-authenticator.env-vars" (dict "root" .root "clients" (list "drogue" )) | nindent 12 }}
+            {{- include "drogue-cloud-common.oauth2-authenticator.env-vars" (dict "root" .root "clients" (list "drogue" )) | nindent 12 }}
             - name: USER_AUTH__URL
               value: {{ include "drogue-cloud-core.service-url.user-auth-service" .root }}
             - name: USER_AUTH__CLIENT_ID
@@ -56,7 +56,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" .root "prefix" "USER_AUTH__" ) | nindent 12 }}
+            {{- include "drogue-cloud-common.oauth2-internal.env-vars" (dict "root" .root "prefix" "USER_AUTH__" ) | nindent 12 }}
             - name: REGISTRY__URL
               value: {{ include "drogue-cloud-core.service-url.device-management-service" .root }}
             - name: REGISTRY__CLIENT_ID
@@ -69,7 +69,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" .root "prefix" "REGISTRY__" ) | nindent 12 }}
+            {{- include "drogue-cloud-common.oauth2-internal.env-vars" (dict "root" .root "prefix" "REGISTRY__" ) | nindent 12 }}
             - name: SERVICE__KAFKA__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" .root -}}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" .root "prefix" "SERVICE__KAFKA__PROPERTIES__" ) | nindent 12 }}
@@ -78,7 +78,7 @@ spec:
             - name: COMMAND_KAFKA_SINK__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" .root -}}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" .root "prefix" "COMMAND_KAFKA_SINK__PROPERTIES__" ) | nindent 12 }}
-            {{- include "drogue-cloud-core.env-vars-extras" ( dict "root" .root "app" .app ) | nindent 12 }}
+            {{- include "drogue-cloud-common.env-vars-extras" ( dict "root" .root "app" .app ) | nindent 12 }}
 
             {{ if .disableClientCertificates }}
             - name: DISABLE_CLIENT_CERTIFICATES
@@ -100,7 +100,7 @@ spec:
               protocol: TCP
             {{- include "drogue-cloud-common.health-container-port" . | nindent 12 }}
 
-          {{- include "drogue-cloud-core.container-resources" ( dict "root" .root "app" .app ) | nindent 10 }}
+          {{- include "drogue-cloud-common.container-resources" ( dict "root" .root "app" .app ) | nindent 10 }}
 
           {{- include "drogue-cloud-common.health-probes" ( dict "root" .root "app" .app ) | nindent 10 }}
 

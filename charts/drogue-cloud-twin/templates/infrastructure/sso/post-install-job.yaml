@@ -1,0 +1,351 @@
+{{- $ref := dict "root" . "name" "post-install-keycloak" "component" "sso" -}}
+
+{{- if .Values.keycloak.postInstall.enabled -}}
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: post-install-keycloak
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: post-install-keycloak
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+rules:
+  - verbs:
+      - create
+      - update
+      - get
+      - patch
+    apiGroups:
+      - ""
+    resources:
+      - secrets
+  - verbs:
+      - patch
+      - get
+      - list
+    apiGroups:
+      - apps
+    resources:
+      - deployments
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: post-install-keycloak
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+roleRef:
+  kind: Role
+  apiGroup: rbac.authorization.k8s.io
+  name: post-install-keycloak
+subjects:
+  - kind: ServiceAccount
+    name: post-install-keycloak
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: post-install-keycloak-config
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+data:
+  client.json: |
+    {
+      "clientId": "api",
+      "clientAuthenticatorType": "client-secret",
+      "enabled": true,
+      "publicClient": true,
+      "implicitFlowEnabled": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "fullScopeAllowed": true,
+      "webOrigins": [
+        "*"
+      ],
+      "defaultClientScopes": [
+        "email",
+        "profile",
+        "roles",
+        "web-origins"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "microprofile-jwt",
+        "offline_access",
+        "phone"
+      ],
+      "defaultRoles": [
+        "doppelgaenger-user"
+      ],
+      "protocolMappers": [
+        {
+          "name": "add-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "api",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    }
+  client-services.json: |
+    {
+      "clientId": "services",
+      "clientAuthenticatorType": "client-secret",
+      "enabled": true,
+      "publicClient": false,
+      "implicitFlowEnabled": false,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "fullScopeAllowed": true,
+      "defaultClientScopes": [
+        "email",
+        "profile",
+        "roles",
+        "web-origins"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "microprofile-jwt",
+        "offline_access",
+        "phone"
+      ],
+      "defaultRoles": [
+        "doppelgaenger-user",
+        "doppelgaenger-admin"
+      ],
+      "protocolMappers": [
+        {
+          "name": "add-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "services",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    }
+---
+{{- $redirect := list
+  "http://localhost:*"
+-}}
+{{- with (((.Values.keycloak).clients).api).extraRedirectUris }}
+{{- $redirect = concat $redirect . }}
+{{- end }}
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: post-install-keycloak
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: "0"
+    helm.sh/hook-weight: "5"
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
+  labels:
+      {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+spec:
+  backoffLimit: 1000
+  completions: 1
+  parallelism: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: post-install-keycloak
+
+      volumes:
+        - name: init-data
+          configMap:
+            name: post-install-keycloak-config
+        - name: secret-data
+          emptyDir: {}
+
+      containers:
+        - name: post-install
+          image: {{ .Values.keycloak.postInstall.image | default .Values.global.drogueCloud.keycloak.postInstall.image }}
+          imagePullPolicy: IfNotPresent
+
+          env:
+            - name: ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: sso-initial-admin
+                  key: username
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sso-initial-admin
+                  key: password
+
+            - name: KEYCLOAK_URL
+              value: {{ include "drogue-cloud-common.keycloak.internal.url" . | quote }}
+
+            - name: KCADM_PATH
+              value: {{ .Values.keycloak.postInstall.kcAdmPath | default "/opt/keycloak/bin/kcadm.sh" }}
+
+            {{- if and (not .Values.global.drogueCloud.keycloak.insecure ) .Values.global.drogueCloud.useServiceCA }}
+            - name: CUSTOM_TRUSTSTORE
+              value: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
+            {{- end }}
+
+            - name: REALM
+              value: {{ .Values.keycloak.realm }}
+
+          volumeMounts:
+            - mountPath: /etc/init-data
+              name: init-data
+            - mountPath: /var/secret-data
+              name: secret-data
+
+          command:
+            - bash
+            - -exc
+            - |
+
+              kcadm() { local cmd="$1" ; shift ; "$KCADM_PATH" "$cmd" --config /tmp/kcadm.config "$@" ; }
+
+              # set up trust store
+              if [[ -n "${CUSTOM_TRUSTSTORE}" ]]; then
+                keytool -importcert -noprompt -trustcacerts -file "${CUSTOM_TRUSTSTORE}" -keystore /tmp/truststore.jks -storepass temp1234 -storetype JKS
+                kcadm config truststore /tmp/truststore.jks --trustpass temp1234
+              fi
+
+              # log in to keycloak
+              kcadm config credentials config --server "$KEYCLOAK_URL" --realm master --user "$ADMIN_USERNAME" --password "$ADMIN_PASSWORD"
+
+              # create realm
+              REALM_OPTS=()
+              REALM_OPTS+=(-s enabled=true)
+              REALM_OPTS+=(-s "displayName=Drogue IoT")
+              REALM_OPTS+=(-s registrationAllowed=true)
+              REALM_OPTS+=(-s resetPasswordAllowed=true)
+              REALM_OPTS+=(-s loginWithEmailAllowed=false)
+              REALM_OPTS+=(-s identityProviders='{{ mustToJson .Values.keycloak.identityProviders }}')
+              if kcadm get "realms/${REALM}" &> /dev/null ; then
+                # exists -> update
+                kcadm update "realms/${REALM}" "${REALM_OPTS[@]}"
+              else
+                # need to create
+                kcadm create realms -s "realm=${REALM}" "${REALM_OPTS[@]}"
+              fi
+
+              # create realm roles
+              kcadm create roles -r "${REALM}" -s name=doppelgaenger-user || true
+              kcadm create roles -r "${REALM}" -s name=doppelgaenger-admin || true
+              # add doppelgaenger-user as default role
+              kcadm add-roles -r "${REALM}" --rname "default-roles-${REALM}" --rolename doppelgaenger-user
+
+              # create clients - api
+              ID=$(kcadm get clients -r "${REALM}" --query "clientId=api" --fields id --format csv --noquotes)
+              CLIENT_OPTS=()
+              CLIENT_OPTS+=(-s 'redirectUris={{ $redirect | toJson }}')
+              if [[ -n "$ID" ]]; then
+                # TODO: replace with update once https://github.com/keycloak/keycloak/issues/12484 is fixed
+                # kcadm update "clients/${ID}" -r "${REALM}" -f /etc/init-data/client.json "${CLIENT_OPTS[@]}"
+                kcadm delete "clients/${ID}" -r "${REALM}"
+                kcadm create clients -r "${REALM}" -f /etc/init-data/client.json "${CLIENT_OPTS[@]}"
+              else
+                kcadm create clients -r "${REALM}" -f /etc/init-data/client.json "${CLIENT_OPTS[@]}"
+              fi
+
+              # client clients - services
+              ID=$(kcadm get clients -r "${REALM}" --query "clientId=services" --fields id --format csv --noquotes)
+              if [[ -n "$ID" ]]; then
+                # TODO: replace with update once https://github.com/keycloak/keycloak/issues/12484 is fixed
+                # kcadm update "clients/${ID}" -r "${REALM}" -f /etc/init-data/client-services.json
+                kcadm delete "clients/${ID}" -r "${REALM}"
+                kcadm create clients -r "${REALM}" -f /etc/init-data/client-services.json
+              else
+                kcadm create clients -r "${REALM}" -f /etc/init-data/client-services.json
+              fi
+
+              # default role for service account of services
+              kcadm add-roles -r "${REALM}" --uusername service-account-services --rolename doppelgaenger-admin
+
+              # export secrets
+              ID=$(kcadm get clients -r "${REALM}" --query "clientId=services" --fields id --format csv --noquotes)
+              while : ; do
+                SECRET=$(kcadm get -r "${REALM}" clients/${ID}/client-secret --fields value --format csv --noquotes)
+                # check for missing secret in keycloak, unfortunately the CSV output is broken (JSON) when the field is missing
+                # TODO: the check for JSON can be removed once https://github.com/keycloak/keycloak/issues/12330 is fixed
+                [ "$SECRET" != "" -a "$SECRET" != '{"type":"secret"}' ] && break
+                echo "Secret missing, resetting secret..."
+                kcadm create -r "${REALM}" clients/${ID}/client-secret
+                sleep 5
+              done
+              echo "$SECRET" > /var/secret-data/client-secret-services
+
+              {{ if .Values.keycloak.postInstall.user.enabled }}
+              # create user
+              ID=$(kcadm get users -r "${REALM}" --query "username={{ .Values.keycloak.postInstall.user.name }}" --fields id --format csv --noquotes)
+              if [[ -n "$ID" ]]; then
+                kcadm update "users/$ID" -r "${REALM}" -s enabled=true
+              else
+                kcadm create users -r "${REALM}" -s "username={{ .Values.keycloak.postInstall.user.name }}" -s enabled=true
+              fi
+
+              # set role
+              kcadm add-roles -r "${REALM}" --uusername "{{ .Values.keycloak.postInstall.user.name }}" --rolename doppelgaenger-admin
+
+              # set password
+              ID=$(kcadm get users -r "${REALM}" --query "username={{ .Values.keycloak.postInstall.user.name }}" --fields id --format csv --noquotes)
+              kcadm update "users/${ID}/reset-password" -r "${REALM}" -s type=password -s "value={{ .Values.keycloak.postInstall.user.password }}" -s temporary=false -n
+              {{ end }}
+
+              # touch done
+              touch /var/secret-data/done
+
+        - name: create-secrets
+          image: {{ .Values.keycloak.postInstall.kubectlImage }}
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /var/secret-data
+              name: secret-data
+          command:
+            - bash
+            - -exc
+            - |
+              echo "$(date): Waiting for other container write finish marker"
+              while [[ ! -f /var/secret-data/done ]]; do
+                sleep 1
+              done
+              echo "Finish marker found"
+
+              # create drogue secret
+              echo "CLIENT_ID=api" > /tmp/secret.env
+              echo "CLIENT_SECRET=" >> /tmp/secret.env
+              kubectl create secret generic --dry-run=client keycloak-client-secret-api --from-env-file=/tmp/secret.env --output json | tee | kubectl apply -f -
+
+              # create services secret
+              echo "CLIENT_ID=services" > /tmp/secret.env
+              echo -n "CLIENT_SECRET=" >> /tmp/secret.env
+              cat /var/secret-data/client-secret-services >> /tmp/secret.env
+              kubectl create secret generic --dry-run=client keycloak-client-secret-services --from-env-file=/tmp/secret.env --output json | tee | kubectl apply -f -
+
+              # ensure pods have up-to-date client secrets
+              HASH=$(sha1sum /var/secret-data/client-secret-services | awk '{ print $1 }')
+              # this is so complicated because:
+              #  a) kubectl annotate doesn't support annotating podSpec -> use kubectl patch
+              #  b) because kubectl patch doesn't support label selectors -> use kubectl get -l upfront
+              #  c) because kubectl does client side rate limiting -> run tasks in parallel, wait at the end
+              for i in $(kubectl get deploy -l client.oauth2.drogue.io/services -o name); do
+                echo "$HASH" | jq -R '{spec:{template:{metadata:{annotations:{"oauth2-client-secret-hash": .}}}}}' | kubectl patch $i --patch-file=/dev/stdin &
+              done
+              wait
+
+
+{{- end -}}

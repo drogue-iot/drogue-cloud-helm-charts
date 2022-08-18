@@ -7,7 +7,7 @@ Arguments: (dict)
  * root - .
  * app - The application configuration
 */}}
-{{- define "drogue-cloud-core.container-resources" -}}
+{{- define "drogue-cloud-common.container-resources" -}}
 
 {{- if .app.resources }}
 resources:

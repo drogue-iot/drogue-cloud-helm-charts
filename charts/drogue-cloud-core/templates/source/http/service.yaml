@@ -20,7 +20,7 @@ spec:
 
   ports:
     - name: service
-      port: {{ include "drogue-cloud-core.http-service-port" $app }}
+      port: {{ include "drogue-cloud-common.http-service-port" $app }}
       protocol: TCP
       targetPort: service
       {{- if has .Values.global.cluster (list "minikube" "kind" ) }}

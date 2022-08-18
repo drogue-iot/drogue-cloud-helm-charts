@@ -201,6 +201,7 @@ keycloak:
   identityProviders: []
   ingress:
     disable: false
+  realm: drogue
   postgres:
     # mode is the way postgres gets configured. This can be:
     #  - drogue: Re-use the Drogue Cloud postgres instance
@@ -248,6 +249,10 @@ postgres:
     enabled: false
   image: docker.io/bitnami/postgresql:14
 
+  storage:
+    size: 1G
+    # className: <storage class name>
+
   # use an external postgres instance
   # external:
   #  host: <hostname>
@@ -258,6 +263,9 @@ kafka:
   version: "3.1.0"
   # DEPRECATED: use "inter.broker.protocol.version" in the "kafkaConfigProperties" section below
   # logVersion: "3.0"
+
+  clusterResourceName: drogue-iot
+  internalUserName: drogue-iot
 
   kafkaConfigProperties:
     offsets.topic.replication.factor: 1

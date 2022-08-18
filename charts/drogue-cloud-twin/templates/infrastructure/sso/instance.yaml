@@ -1,0 +1,98 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: sso
+  labels:
+    {{- include "drogue-cloud-twin.labels" (dict "root" . "name" "keycloak" "component" "sso") | nindent 4 }}
+spec:
+  instances: 1
+
+  serverConfiguration:
+    - name: db
+      value: postgres
+    - name: db-url-database
+      secret:
+        name: keycloak-db-secret
+        key: database
+    - name: db-url-host
+      secret:
+        name: keycloak-db-secret
+        key: host
+    - name: db-url-port
+      secret:
+        name: keycloak-db-secret
+        key: port
+    - name: db-username
+      secret:
+        name: keycloak-db-secret
+        key: username
+    - name: db-password
+      secret:
+        name: keycloak-db-secret
+        key: password
+
+    {{- if .Values.postgres.tls.enabled }}
+    {{- if .Values.global.drogueCloud.useServiceCA }}
+    - name: db-url-properties
+      value: ?sslmode=verify-full&sslrootcert={{ "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt" | urlquery }}
+    {{- else }}{{/* useServiceCA */}}
+
+    {{- with .Values.postgres.tls.trustAnchor}}
+
+      {{- if or .configMap .secret }}
+    - name: db-url-properties
+      value: ?sslmode=verify-full&sslrootcert={{ "/etc/tls/postgres/ca.crt" | urlquery }}
+      {{- end }}
+
+    {{- end }}{{/* with trustAnchor */}}
+    {{- end }}{{/* useServiceCA */}}
+    {{- end }}{{/* tls.enabled */}}
+
+  {{- if .Values.global.drogueCloud.keycloak.insecure }}
+    - name: hostname-strict-https
+      value: "false"
+    - name: proxy
+      value: edge
+  {{- else }}
+    {{- if .Values.global.drogueCloud.useServiceCA }}
+    - name: proxy
+      value: reencrypt
+    {{- else }}
+    - name: proxy
+      value: passthrough
+    {{- end }}
+  {{- end }}
+
+  hostname: {{ include "drogue-cloud-twin.sso.host" . }}
+  disableDefaultIngress: true
+
+  {{- if .Values.global.drogueCloud.keycloak.insecure }}
+
+  tlsSecret: INSECURE-DISABLE
+
+  {{- else }}
+
+  {{- if .Values.global.drogueCloud.useServiceCA }}
+  tlsSecret: sso-tls
+  {{- else }}
+  tlsSecret: {{ .Values.global.drogueCloud.keycloak.tlsSecret }}
+  {{- end }}
+
+  {{- end }}{{/* endif keycloak.insecure */}}
+
+  {{- if and .Values.postgres.tls.enabled ( not .Values.global.drogueCloud.useServiceCA ) }}
+  {{ $root := .}}
+  {{- with .Values.postgres.tls.trustAnchor }}
+  {{- if or .secret .configMap }}
+  {{/* we need to inject a certificate */}}
+  unsupported:
+    podTemplate:
+      spec:
+        containers:
+          - volumeMounts:
+              {{- include "drogue-cloud-common.postgres.volume-mounts" $root | nindent 14 }}
+        volumes:
+          {{- include "drogue-cloud-common.postgres.volumes" $root | nindent 10 }}
+  {{- end }}
+  {{- end }}
+  {{- end }}

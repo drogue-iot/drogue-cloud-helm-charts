@@ -2,10 +2,10 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaUser
 metadata:
-  name: drogue-iot
+  name: {{ .Values.kafka.internalUserName }}
   labels:
-    strimzi.io/cluster: drogue-iot
-    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "drogue-iot" "component" "kafka") | nindent 4 }}
+    strimzi.io/cluster: {{ .Values.kafka.clusterResourceName }}
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" .Values.kafka.internalUserName "component" "kafka") | nindent 4 }}
 spec:
   authentication:
     type: scram-sha-512

@@ -1,0 +1,29 @@
+{{- $ref := dict "root" . "name" "api" "component" "api" -}}
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: api
+  annotations:
+    {{- include "drogue-cloud-common.ingress.annotations" (dict "root" . "app" .Values.api ) | nindent 4 }}
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+spec:
+  {{- include "drogue-cloud-common.ingress.className" ( dict "root" . "ingress" .Values.api.ingress) | nindent 2 }}
+  rules:
+    - host: {{ include "drogue-cloud-twin.api.host" . }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: doppelgaenger-backend
+                port:
+                  name: service
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: doppelgaenger-backend
+                port:
+                  name: service

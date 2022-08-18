@@ -1,0 +1,34 @@
+{{- if not .Values.keycloak.ingress.disable }}
+
+{{ $service := "sso-service" }}
+{{- if and ( not .Values.global.drogueCloud.keycloak.insecure ) .Values.global.drogueCloud.useServiceCA }}
+{{ $service = "sso-tls" }}
+{{- end }}
+
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: sso {{/* doesn't use -ingress suffix to not conflict with the keycloak operator, which would delete it*/}}
+  annotations:
+  {{/* replace with drogue-cloud-core.ingress.annotations once it suppors service CA settings */}}
+  {{ with .Values.services.sso.ingress.annotations }}
+    {{ . | toYaml | nindent 4 }}
+  {{ else }}
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
+  {{ end }}
+  labels:
+    {{- include "drogue-cloud-twin.labels" (dict "root" . "name" "sso-ingress" "component" "sso") | nindent 4 }}
+spec:
+  {{- include "drogue-cloud-common.ingress.className" (dict "root" . "ingress" .Values.services.sso.ingress ) | nindent 2 }}
+  rules:
+    - host: {{ include "drogue-cloud-twin.sso.host" . }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ $service }}
+                port:
+                  number: {{ if .Values.global.drogueCloud.keycloak.insecure }}8080{{ else }}8443{{ end }}
+{{- end }}

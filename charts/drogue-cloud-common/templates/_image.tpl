@@ -22,7 +22,7 @@ Arguments: (dict)
  * name - core name of the image
 */}}
 {{- define "drogue-cloud-common.image" -}}
-{{ include "drogue-cloud-common.image-repo" .root }}{{ .name }}:{{ include "drogue-cloud-common.image-tag" .root }}
+{{ include "drogue-cloud-common.image-repo" .root }}{{ .root.Values.defaults.images.prefix }}{{ .name }}:{{ include "drogue-cloud-common.image-tag" .root }}
 {{- end }}
 
 {{/*

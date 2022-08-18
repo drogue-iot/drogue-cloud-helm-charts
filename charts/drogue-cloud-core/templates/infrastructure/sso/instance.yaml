@@ -90,9 +90,9 @@ spec:
       spec:
         containers:
           - volumeMounts:
-              {{- include "drogue-cloud-core.postgres.volume-mounts" $root | nindent 14 }}
+              {{- include "drogue-cloud-common.postgres.volume-mounts" $root | nindent 14 }}
         volumes:
-          {{- include "drogue-cloud-core.postgres.volumes" $root | nindent 10 }}
+          {{- include "drogue-cloud-common.postgres.volumes" $root | nindent 10 }}
   {{- end }}
   {{- end }}
   {{- end }}

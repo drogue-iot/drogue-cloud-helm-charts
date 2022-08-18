@@ -2,12 +2,15 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
- name: postgres-pvc
- labels:
+  name: postgres-pvc
+  labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
- accessModes:
- - ReadWriteOnce
- resources:
-   requests:
-     storage: 1G
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.postgres.storage.size | quote }}
+  {{- with .Values.postgres.storage.className }}
+  storageClassName: {{ . | quote }}
+  {{- end }}

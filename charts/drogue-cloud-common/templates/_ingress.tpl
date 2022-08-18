@@ -6,7 +6,7 @@ Arguments:
   * app - the application configuration
   * insecure - service is always insecure (or not)
 */}}
-{{- define "drogue-cloud-core.ingress.annotations" -}}
+{{- define "drogue-cloud-common.ingress.annotations" -}}
 
 {{- with .app.ingress.annotations }}
 {{- . | toYaml }}
@@ -38,7 +38,7 @@ Arguments:
   * root - .
   * ingress
 */}}
-{{- define "drogue-cloud-core.ingress.className" -}}
+{{- define "drogue-cloud-common.ingress.className" -}}
 {{- with .ingress.className | default .root.Values.defaults.ingress.className -}}
 ingressClassName: {{ . }}
 {{- end }}

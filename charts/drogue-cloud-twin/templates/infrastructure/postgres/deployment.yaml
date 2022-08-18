@@ -1,0 +1,106 @@
+{{- $ref := dict "root" . "name" "postgres" "component" "digital-twin" -}}
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: postgres
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        {{- include "drogue-cloud-twin.labels" $ref | nindent 8 }}
+    spec:
+      containers:
+        - name: postgres
+          image: {{ .Values.postgres.image }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POSTGRES_DB
+              value: {{ .Values.postgres.databaseName | quote }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: admin.username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: admin.password
+            - name: PGPASSWORD # used in combination with psql
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: admin.password
+
+          {{- if .Values.postgres.tls.enabled }}
+            - name: POSTGRESQL_ENABLE_TLS
+              value: "yes"
+            - name: POSTGRESQL_TLS_CERT_FILE
+              value: /etc/tls/tls.crt
+            - name: POSTGRESQL_TLS_KEY_FILE
+              value: /etc/tls/tls.key
+
+          {{- end }}
+
+          readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            tcpSocket:
+              port: 5432
+            timeoutSeconds: 1
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            tcpSocket:
+              port: 5432
+            timeoutSeconds: 1
+          ports:
+            - containerPort: 5432
+              name: postgres
+              protocol: TCP
+          resources:
+            {{- with .Values.postgres.resources }}
+            {{ . | toYaml | nindent 12 }}
+            {{- else }}
+            limits:
+              memory: 512Mi
+            {{- end }}
+
+          volumeMounts:
+            - mountPath: /bitnami/postgresql
+              name: storage
+          {{- if .Values.postgres.tls.enabled }}
+            - mountPath: /etc/tls
+              name: tls
+          {{- end }}
+
+      {{- if .Values.postgres.podSecurityContext.enabled }}
+      securityContext: {{- omit .Values.postgres.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+
+      {{- if .Values.postgres.tls.enabled }}
+      {{- if .Values.global.drogueCloud.useServiceCA }}
+        - name: tls
+          secret:
+            secretName: postgres-tls
+            defaultMode: 0600
+      {{- else }}
+        - name: tls
+          secret:
+            secretName: {{ .Values.postgres.tls.secret }}
+            defaultMode: 0600
+      {{- end }}
+      {{- end }}

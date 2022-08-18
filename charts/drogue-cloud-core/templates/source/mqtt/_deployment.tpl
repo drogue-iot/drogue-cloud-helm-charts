@@ -54,7 +54,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" .root "prefix" "STATE__CLIENT__" ) | nindent 12 }}
+            {{- include "drogue-cloud-common.oauth2-internal.env-vars" (dict "root" .root "prefix" "STATE__CLIENT__" ) | nindent 12 }}
             - name: AUTH__URL
               value: {{ include "drogue-cloud-core.service-url.auth-service" .root }}
             - name: AUTH__CLIENT_ID
@@ -67,7 +67,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
-            {{- include "drogue-cloud-core.oauth2-internal.env-vars" (dict "root" .root "prefix" "AUTH__" ) | nindent 12 }}
+            {{- include "drogue-cloud-common.oauth2-internal.env-vars" (dict "root" .root "prefix" "AUTH__" ) | nindent 12 }}
             - name: COMMAND_SOURCE_KAFKA__TOPIC
               value: iot-commands
             - name: COMMAND_SOURCE_KAFKA__CONSUMER_GROUP
@@ -95,7 +95,7 @@ spec:
               value: /etc/endpoint/tls.key
             {{ end }}
 
-            {{- include "drogue-cloud-core.env-vars-extras" ( dict "root" .root "app" .app ) | nindent 12 }}
+            {{- include "drogue-cloud-common.env-vars-extras" ( dict "root" .root "app" .app ) | nindent 12 }}
 
           ports:
             - containerPort: 1883
@@ -104,7 +104,7 @@ spec:
             {{- include "drogue-cloud-common.health-container-port" . | nindent 12 }}
 
           {{- include "drogue-cloud-common.health-probes" ( dict "root" .root "app" .app ) | nindent 10 }}
-          {{- include "drogue-cloud-core.container-resources" ( dict "root" .root "app" .app ) | nindent 10 }}
+          {{- include "drogue-cloud-common.container-resources" ( dict "root" .root "app" .app ) | nindent 10 }}
 
           volumeMounts:
           {{- if not .app.ingress.insecure }}

@@ -6,10 +6,10 @@ Arguments (dict):
   * app - application structure
   * skipServiceCa - skip using the service CA, even if it is available
 */}}
-{{- define "drogue-cloud-core.http-service-env" }}
+{{- define "drogue-cloud-common.http-service-env" }}
 
 - name: HTTP__BIND_ADDR
-  value: "0.0.0.0:{{ include "drogue-cloud-core.http-bind-port" . }}"
+  value: "0.0.0.0:{{ include "drogue-cloud-common.http-bind-port" . }}"
 
 {{- if .app.service.insecure }}
 - name: HTTP__DISABLE_TLS
@@ -30,7 +30,7 @@ Arguments (dict):
   * root - .
   * app - application structure
 */}}
-{{- define "drogue-cloud-core.http-bind-port" }}
+{{- define "drogue-cloud-common.http-bind-port" }}
 {{- if .app.service.insecure }}8080{{- else -}}8443{{- end }}
 {{- end }}
 
@@ -41,7 +41,7 @@ Arguments (dict):
   * root - .
   * app - application structure
 */}}
-{{- define "drogue-cloud-core.http-service-port" }}
+{{- define "drogue-cloud-common.http-service-port" }}
 {{- if .app.service.insecure }}80{{- else -}}443{{- end }}
 {{- end }}
 
@@ -52,8 +52,8 @@ Arguments (dict):
   * root - .
   * app - application structure
 */}}
-{{- define "drogue-cloud-core.http-service-container-port" }}
-- containerPort: {{ include "drogue-cloud-core.http-bind-port" . }}
+{{- define "drogue-cloud-common.http-service-container-port" }}
+- containerPort: {{ include "drogue-cloud-common.http-bind-port" . }}
   name: service
   protocol: TCP
 {{- end }}

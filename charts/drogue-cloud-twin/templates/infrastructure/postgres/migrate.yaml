@@ -1,0 +1,29 @@
+{{- $ref := dict "root" . "name" "doppelgaenger-database-migration" "component" "digital-twin" -}}
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: migrate-database
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+spec:
+  backoffLimit: 1000
+  completions: 1
+  parallelism: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: diesel-migrate
+          image: {{ include "drogue-cloud-common.image" $ref | quote }}
+          imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
+          env:
+            {{- include "drogue-cloud-common.postgres.env-vars-default" . | nindent 12 }}
+            # now we map that from our deadpool based configuration to diesel
+            - name: DATABASE_URL
+              value: postgres://$(PG__DB__USER):$(PG__DB__PASSWORD)@$(PG__DB__HOST):$(PG__DB__PORT)/$(PG__DB__DBNAME)

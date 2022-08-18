@@ -1,0 +1,126 @@
+{{- if not .Values.kafka.external.enabled -}}
+kind: Kafka
+apiVersion: kafka.strimzi.io/v1beta2
+metadata:
+  name: {{ .Values.kafka.clusterResourceName }}
+  labels:
+    {{- include "drogue-cloud-twin.labels" (dict "root" . "name" .Values.kafka.clusterResourceName "component" "kafka") | nindent 4 }}
+spec:
+
+  kafka:
+
+    {{- with .Values.kafka.kafka.image }}
+    image: {{ . | quote }}
+    {{- end}}
+
+    authorization:
+      type: simple
+      superUsers:
+        - {{ .Values.kafka.internalUserName }}
+    config:
+      auto.create.topics.enable: false
+      {{ .Values.kafka.kafkaConfigProperties | toYaml | nindent 6 }}
+
+    listeners:
+      - name: plain
+        tls: false
+        port: 9092
+        type: internal
+        authentication:
+          type: scram-sha-512
+      - name: tls
+        tls: true
+        port: 9093
+        type: internal
+        authentication:
+          type: scram-sha-512
+{{- if .Values.kafka.externalAccess.enabled }}
+      - name: external
+        port: {{ .Values.kafka.externalAccess.port}}
+        type: {{ .Values.kafka.externalAccess.type }}
+        authentication:
+          type: scram-sha-512
+
+        {{- if .Values.kafka.externalAccess.tls.enabled }}
+        tls: true
+        {{- with .Values.kafka.externalAccess.tls.secret }}
+        configuration:
+          brokerCertChainAndKey:
+            secretName: {{ .  | quote }}
+            certificate: tls.crt
+            key: tls.key
+        {{- end }}
+        {{- else }}
+        tls: false
+        {{- end }}
+{{- end }}
+
+    {{- with .Values.kafka.kafka.resources }}
+    resources:
+      {{- . | toYaml | nindent 6 }}
+    {{- end }}
+
+    replicas: {{ .Values.kafka.kafka.replicas }}
+    storage:
+      {{- .Values.kafka.kafka.storage | toYaml | nindent 6 }}
+    version: {{ .Values.kafka.version }}
+    template:
+      pod:
+        {{- if .Values.kafka.podSecurityContext.enabled }}
+        securityContext: {{- omit .Values.kafka.podSecurityContext "enabled" | toYaml | nindent 10 }}
+        {{- else }}
+        {}
+        {{- end }}
+
+  zookeeper:
+    replicas: {{ .Values.kafka.zookeeper.replicas }}
+    {{- with .Values.kafka.zookeeper.image }}
+    image: {{ . | quote }}
+    {{- end}}
+    storage:
+      {{- .Values.kafka.zookeeper.storage | toYaml | nindent 6 }}
+    {{- with .Values.kafka.zookeeper.resources }}
+    resources:
+    {{- . | toYaml | nindent 6 }}
+    {{- end }}
+    template:
+      pod:
+        {{- if .Values.kafka.podSecurityContext.enabled }}
+        securityContext: {{- omit .Values.kafka.podSecurityContext "enabled" | toYaml | nindent 10 }}
+        {{- else }}
+        {}
+        {{- end }}
+
+  entityOperator:
+
+    topicOperator:
+      watchedNamespace: {{ .Release.Namespace }}
+      {{- with .Values.kafka.topicOperator.image }}
+      image: {{ . | quote }}
+      {{- end}}
+      {{- with .Values.kafka.topicOperator.resources }}
+      resources:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+
+    userOperator:
+      watchedNamespace: {{ .Release.Namespace }}
+      {{- with .Values.kafka.userOperator.image }}
+      image: {{ . | quote }}
+      {{- end}}
+      {{- with .Values.kafka.userOperator.resources }}
+      resources:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+
+    tlsSidecar:
+      {{- with .Values.kafka.tlsSidecar.image }}
+      image: {{ . | quote }}
+      {{- end}}
+      {{- with .Values.kafka.tlsSidecar.resources }}
+      resources:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+
+{{- end }}
+

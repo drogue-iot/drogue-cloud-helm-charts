@@ -3,7 +3,16 @@ global:
   domain: .my-cluster.dns
 
   drogueCloud:
-    jaeger: {}
+    jaeger:
+      enabled: false
+
+    keycloak:
+      # enable keycloak deployment
+      enabled: true
+      # downgrade to insecure deployment
+      insecure: false
+      postInstall:
+        image: quay.io/keycloak/keycloak:18.0.1
 
 defaults:
   images:
@@ -13,6 +22,7 @@ defaults:
     # pullPolicy: IfNotPresent
     # tag The container tag to apply. Defaults to the chart's application version
     # tag: latest
+    prefix: drogue-
   ingress:
     # className The ingress class name to use. Defaults to none, to let the cluster decide.
     # className: nginx
@@ -23,62 +33,157 @@ defaults:
     # log: info
     # backtrace: true
 
-helper:
-  image: registry.access.redhat.com/ubi8-minimal:latest
+configuration:
+  application: default
+  events:
+    topic: events
+  notifications:
+    topic: notifications
+  commands:
+    host: localhost
+    port: 8883
+    # clientId:
+    # username:
+    # password:
+    disableTls: false
 
-mongodb:
-  fullnameOverride: mongodb
-  enabled: true
-  auth:
-    enabled: true
-    rootPassword: admin123456
-    usernames:
-      - ditto
-    passwords:
-      - ditto1234
-    databases:
-      - ditto
-
-sso:
-  # realm to use
-  # realm: drogue
+api:
   ingress: {}
+
+services:
+  backend:
+    deployment: {}
+    service: {}
+  sso:
+    ingress: {}
+
+
+oauth2:
+  tls:
+    insecure: false
+  # The issuer URL. By default, this is the locally deployed keycloak instance
+  # issuerUrl: http://service/some/realm
+
+
+keycloak:
+  adminPassword: admin123456
+  identityProviders: []
+  ingress:
+    disable: false
+  realm: doppelgaenger
+  postgres:
+    # mode is the way postgres gets configured. This can be:
+    #  - drogue: Re-use the Drogue Cloud postgres instance
+    #  - external: Use an external instance
+    mode: drogue  # reuse drogue instance
+    # username: foo
+    # password: bar
+    # you can provide either:
+    #   url: jdbc:postgresql://foo/bar
+    # or:
+    #   host: postgres
+    #   port: 5678
+    #   databaseName: keycloak
+  # resources can be used to define the resource requirements
+  # resources:
+  # postInstall is used to create a job which fixes up roles for a newly deployed Keycloak 15.x instance.
   postInstall:
     # enabled can be used to disable the job, in case you don't need it or are upgrading from
     # a Keycloak 12 instance, in which case you need to manually configure the roles.
     enabled: true
-    image: quay.io/keycloak/keycloak:18.0.0
+    # image can override the global post install image for keycloak
+    # image: post install image
+    kubectlImage: ghcr.io/ctron/kubectl:1.21
+    # kcAdmPath: path the kcadm.sh binary
+    user:
+      enabled: true
+      name: admin
+      password: admin123456
 
-ditto:
-  ingress: {}
-  # version: latest
-  # registry: docker.io/eclipse
-  # pullPolicy: Always
-  metrics:
+
+postgres:
+  tls:
     enabled: false
-  logLevel: info
-  devops:
-    password: devops123456
-  services:
-    connectivity:
-      replicas: 1
-    concierge:
-      replicas: 1
-    gateway:
-      replicas: 1
-    policies:
-      replicas: 1
-    things:
-      replicas: 1
-    thingsSearch:
-      replicas: 1
+    # the secret containing the key/cert, ignored if .global.drogueCloud.useServiceCA is true
+    secret: postgres-tls
+    # the configuration for the client's trust anchor, defaults to the system trust anchors
+    # trustAnchor:
+    #   configMap: <name> # either configMap
+    #   secret: <name> # or a secret
+    #   key: <key> # defaults to ca.crt
+  databaseName: storage
+  username: admin
+  password: admin123456
+  podSecurityContext:
+    enabled: false
+  image: docker.io/bitnami/postgresql:14
 
-operator: {}
+  storage:
+    size: 1G
+    # className: <storage class name>
+
+  # use an external postgres instance
+  # external:
+  #  host: <hostname>
+  #  port: <port>
 
 kafka:
+
+  version: "3.1.0"
+  # DEPRECATED: use "inter.broker.protocol.version" in the "kafkaConfigProperties" section below
+  # logVersion: "3.0"
+
+  clusterResourceName: drogue-doppelgaenger
+  internalUserName: drogue-doppelgaenger
+
+  kafkaConfigProperties:
+    offsets.topic.replication.factor: 1
+    transaction.state.log.min.isr: 1
+    transaction.state.log.replication.factor: 1
+    default.replication.factor: 1
+    min.insync.replicas: 1
+
+  podSecurityContext:
+    enabled: false
+
+  externalAccess:
+    enabled: true
+    port: 9094
+    type: nodeport
+    tls:
+      enabled: true
+
+  # external can be used to configure Drogue Cloud to use an external Kafka instance
   external:
     enabled: false
+    # bootstrapServer lists the boostrap server
+    # bootstrapServer: my-server:9002
+    # tls defines if TLS should be used or not
     tls:
-      enabled: false
+      enabled: true
     sasl:
       enabled: false
+      mechanism: SCRAM-SHA-512  # or PLAIN
+      # username: my-user
+      # password: my-password
+
+    # properties allow you to provide arbitrary additional properties
+    properties: {}
+
+  kafka:
+    replicas: 1
+    storage:
+      type: persistent-claim
+      size: 10Gi
+      deleteClaim: true
+
+  zookeeper:
+    replicas: 1
+    storage:
+      type: persistent-claim
+      size: 1Gi
+      deleteClaim: true
+
+  topicOperator: {}
+  userOperator: {}
+  tlsSidecar: {}

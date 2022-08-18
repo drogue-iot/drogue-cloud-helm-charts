@@ -5,7 +5,7 @@ apiVersion: v1
 metadata:
   name: command-endpoint
   annotations:
-    {{- include "drogue-cloud-core.tls-service-annotations" $app | nindent 4 }}
+    {{- include "drogue-cloud-common.tls-service-annotations" $app | nindent 4 }}
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
@@ -17,5 +17,5 @@ spec:
   ports:
     - name: service
       protocol: TCP
-      port: {{ include "drogue-cloud-core.http-service-port" $app }}
+      port: {{ include "drogue-cloud-common.http-service-port" $app }}
       targetPort: service

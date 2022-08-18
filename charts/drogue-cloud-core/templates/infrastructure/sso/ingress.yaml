@@ -19,7 +19,7 @@ metadata:
   labels:
     {{- include "drogue-cloud-core.labels" (dict "root" . "name" "sso-ingress" "component" "sso") | nindent 4 }}
 spec:
-  {{- include "drogue-cloud-core.ingress.className" (dict "root" . "ingress" .Values.services.sso.ingress ) | nindent 2 }}
+  {{- include "drogue-cloud-common.ingress.className" (dict "root" . "ingress" .Values.services.sso.ingress ) | nindent 2 }}
   rules:
     - host: {{ include "drogue-cloud-core.sso.host" . }}
       http:

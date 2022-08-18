@@ -1,0 +1,28 @@
+{{- if not .Values.kafka.external.enabled -}}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: events
+  labels:
+    strimzi.io/cluster: {{ .Values.kafka.clusterResourceName }}
+    {{- include "drogue-cloud-twin.labels" (dict "root" . "name" "events" "component" "kafka") | nindent 4 }}
+spec:
+  config: {}
+  partitions: 3
+  replicas: 1
+  topicName: {{ .Values.configuration.events.topic }}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: notifications
+  labels:
+    strimzi.io/cluster: {{ .Values.kafka.clusterResourceName }}
+    {{- include "drogue-cloud-twin.labels" (dict "root" . "name" "notifications" "component" "kafka") | nindent 4 }}
+spec:
+  config: {}
+  partitions: 3
+  replicas: 1
+  topicName: {{ .Values.configuration.notifications.topic }}
+{{- end }}

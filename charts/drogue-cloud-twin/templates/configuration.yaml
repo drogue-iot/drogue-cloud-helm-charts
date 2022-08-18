@@ -1,0 +1,15 @@
+{{- $ref := dict "root" . "name" "drogue-doppelgaenger-configuration" "component" "global" -}}
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: {{ $ref.name }}
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+
+data:
+  {{- $resource := (lookup "v1" "ConfigMap" .Release.Namespace $ref.name ) | default dict }}
+  {{- $data := (get $resource "data" ) | default dict }}
+
+  {{- $clientId := .Values.configuration.commands.clientId | default (get $resource "command.mqtt.clientId" ) | default (randAlphaNum 16) }}
+  command.mqtt.clientId: {{ $clientId | quote }}
