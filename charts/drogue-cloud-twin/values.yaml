@@ -51,6 +51,8 @@ configuration:
 
 api:
   ingress: {}
+  # virtual service definition for all backends, to identify the use of TLS
+  service: {}
 
 services:
 
