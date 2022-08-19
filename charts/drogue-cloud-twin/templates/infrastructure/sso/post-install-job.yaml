@@ -139,6 +139,7 @@ data:
     }
 ---
 {{- $redirect := list
+  (printf "%s/oauth2-redirect.html" (include "drogue-cloud-twin.api.url" . ))
   "http://localhost:*"
 -}}
 {{- with (((.Values.keycloak).clients).api).extraRedirectUris }}

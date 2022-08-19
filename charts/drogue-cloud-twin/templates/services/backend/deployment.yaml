@@ -41,6 +41,8 @@ spec:
             {{- include "drogue-cloud-twin.config.common" ( dict "root" . "prefix" "" )  | nindent 12 }}
             {{- include "drogue-cloud-twin.config.service" ( dict "root" . "prefix" "SERVICE__" ) | nindent 12 }}
             {{- include "drogue-cloud-twin.config.listener" ( dict "root" . "prefix" "LISTENER__" ) | nindent 12 }}
+            - name: OPENAPI_OAUTH_CLIENT
+              value: api
 
             {{- include "drogue-cloud-common.oauth2-authenticator.env-vars" (dict "root" . "clients" (list "api" "services" )) | nindent 12 }}
 
