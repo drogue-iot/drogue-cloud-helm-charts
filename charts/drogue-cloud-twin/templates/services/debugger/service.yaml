@@ -1,0 +1,25 @@
+{{- if not .Values.services.debugger.disabled }}
+
+{{- $ref := dict "root" . "name" "doppelgaenger-debugger" "component" "digital-twin" -}}
+{{- $app := dict "root" . "name" "doppelgaenger-debugger" "app" .Values.services.debugger -}}
+kind: Service
+apiVersion: v1
+metadata:
+  name: doppelgaenger-debugger
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+
+spec:
+
+  selector:
+    {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 4 }}
+
+  type: ClusterIP
+
+  ports:
+    - name: service
+      port: 8080
+      protocol: TCP
+      targetPort: service
+
+{{- end }}

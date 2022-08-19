@@ -80,6 +80,11 @@ services:
     deployment: {}
     extraEnvironment: {} # use to configure injector
 
+  debugger:
+    disabled: true # experimental
+    deployment: {}
+    ingress: {}
+    service: {}
 
 oauth2:
   tls:

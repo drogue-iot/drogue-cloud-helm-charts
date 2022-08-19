@@ -1,0 +1,55 @@
+{{- if not .Values.services.debugger.disabled }}
+
+{{- $ref := dict "root" . "name" "doppelgaenger-debugger" "component" "digital-twin" "metrics" true  -}}
+{{- $app := dict "root" . "name" "doppelgaenger-debugger" "app" .Values.services.debugger -}}
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: doppelgaenger-debugger
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+
+spec:
+
+  replicas: {{ $app.app.deployment.replicas | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "drogue-cloud-common.selectorLabels" $ref | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "drogue-cloud-twin.labels" $ref | nindent 8 }}
+
+    spec:
+      containers:
+        - name: endpoint
+          image: {{ $app.app.deployment.image | default "docker.io/swaggerapi/swagger-ui:v4.14.0" }}
+          imagePullPolicy: {{ $app.app.deployment.imagePullPolicy | default "IfNotPresent" }}
+          env:
+            - name: API_URL
+              value: {{ include "drogue-cloud-twin.api.url" . }}
+            - name: KEYCLOAK_URL
+              value: {{ include "drogue-cloud-twin.sso.url" . }}
+            - name: REALM
+              value: {{ .Values.keycloak.realm }}
+            - name: CLIENT_ID
+              value: api
+
+          ports:
+            - containerPort: 8080
+              name: service
+              protocol: TCP
+
+          {{- include "drogue-cloud-common.container-resources" $app | nindent 10 }}
+
+          readinessProbe:
+            initialDelaySeconds: 2
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 3
+            httpGet:
+              port: 8080
+              path: /
+
+
+{{- end }}

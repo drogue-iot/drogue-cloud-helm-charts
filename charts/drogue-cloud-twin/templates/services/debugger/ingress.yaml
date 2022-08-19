@@ -1,0 +1,26 @@
+{{- if not .Values.services.debugger.disabled }}
+
+{{- $ref := dict "root" . "name" "api" "component" "api" -}}
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: api
+  annotations:
+    {{- include "drogue-cloud-common.ingress.annotations" (dict "root" . "app" .Values.services.debugger ) | nindent 4 }}
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+spec:
+  {{- include "drogue-cloud-common.ingress.className" ( dict "root" . "ingress" .Values.services.debugger.ingress) | nindent 2 }}
+  rules:
+    - host: {{ include "drogue-cloud-twin.debugger.host" . }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: doppelgaenger-debugger
+                port:
+                  name: service
+
+{{- end }}

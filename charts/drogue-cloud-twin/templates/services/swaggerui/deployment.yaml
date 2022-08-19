@@ -5,8 +5,6 @@ apiVersion: apps/v1
 metadata:
   name: doppelgaenger-swaggerui
   annotations:
-    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"postgres"}]'
-    {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
     io.drogue/tls-entrypoint-hash: {{ include (print $.Template.BasePath "/services/swaggerui/tls.yaml") . | sha256sum }}
   labels:
     {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
