@@ -52,9 +52,13 @@ spec:
               path: /
 
           volumeMounts:
+            - mountPath: /run
+              name: run
             - mountPath: /endpoints
               name: endpoints
       volumes:
+        - name: run
+          emptyDir: {}
         - name: endpoints
           emptyDir: {}
 
