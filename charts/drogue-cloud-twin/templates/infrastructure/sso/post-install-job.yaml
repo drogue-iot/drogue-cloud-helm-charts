@@ -142,9 +142,12 @@ data:
   (printf "%s/oauth2-redirect.html" (include "drogue-cloud-twin.api.url" . ))
   "http://localhost:*"
 -}}
+
 {{- if not .Values.services.debugger.disabled }}
 {{- $redirect = concat $redirect (list (include "drogue-cloud-twin.debugger.url" . ) ) }}
+{{- $redirect = concat $redirect (list (printf "%s/" (include "drogue-cloud-twin.debugger.url" . )) ) }}
 {{- end }}
+
 {{- with (((.Values.keycloak).clients).api).extraRedirectUris }}
 {{- $redirect = concat $redirect . }}
 {{- end }}
