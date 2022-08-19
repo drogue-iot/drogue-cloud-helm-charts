@@ -17,5 +17,5 @@ data:
     # switch to TLS
     if [[ -n "${TLS_KEY_FILE}" ]]; then
       sed -i "s|${PORT};|${PORT} ssl;|g" $NGINX_CONF
-      sed -i "|${PORT} ssl;|a ssl_certificate $TLS_CERT_BUNDLE_FILE; ssl_certificate_key $TLS_KEY_FILE;"
+      sed -i "/ ssl;/a ssl_certificate $TLS_CERT_BUNDLE_FILE; ssl_certificate_key $TLS_KEY_FILE;" $NGINX_CONF
     fi

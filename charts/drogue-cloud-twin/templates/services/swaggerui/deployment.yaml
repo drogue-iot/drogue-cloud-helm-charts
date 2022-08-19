@@ -67,11 +67,17 @@ spec:
             httpGet:
               port: {{ include "drogue-cloud-common.http-bind-port" $app }}
               path: /
+{{- if $app.app.service.insecure }}
+              scheme: HTTP
+{{- else }}
+              scheme: HTTPS
+{{- end }}
 
           volumeMounts:
             {{- include "drogue-cloud-common.tls-volume-mounts" $app | nindent 12 }}
             - name: tls-entrypoint
-              mountPath: /docker/docker-entrypoint.d
+              mountPath: /docker-entrypoint.d/50-tls.sh
+              subPath: 50-tls.sh
               readOnly: true
 
       volumes:
@@ -79,6 +85,4 @@ spec:
         - name: tls-entrypoint
           configMap:
             name: doppelgaenger-swaggerui-entrypoint-tls
-            items:
-              - key: 50-tls.sh
-                path: 50-tls.sh
+            defaultMode: 0555
