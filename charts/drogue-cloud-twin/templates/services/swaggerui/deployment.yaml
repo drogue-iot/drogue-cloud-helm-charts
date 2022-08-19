@@ -35,7 +35,7 @@ spec:
             - name: VALIDATOR_URL
               value: none
             - name: URL
-              value: {{ include "drogue-cloud-twin.api.url" . | quote }}/api
+              value: {{ include "drogue-cloud-twin.api.url" . }}/api
             - name: OAUTH_CLIENT_ID
               value: api
             - name: OAUTH_SCOPES
