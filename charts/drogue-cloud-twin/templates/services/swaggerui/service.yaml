@@ -1,5 +1,5 @@
 {{- $ref := dict "root" . "name" "doppelgaenger-swaggerui" "component" "digital-twin" -}}
-{{- $app := dict "root" . "name" "doppelgaenger-swaggerui" "app" .Values.services.backend -}}
+{{- $app := dict "root" . "name" "doppelgaenger-swaggerui" "app" .Values.services.swaggerUi -}}
 kind: Service
 apiVersion: v1
 metadata:
