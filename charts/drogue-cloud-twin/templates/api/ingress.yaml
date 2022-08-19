@@ -17,7 +17,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: doppelgaenger-backend
+                name: doppelgaenger-swaggerui
                 port:
                   name: service
           - path: /api
