@@ -1,10 +1,10 @@
 {{- if not .Values.services.debugger.disabled }}
 
-{{- $ref := dict "root" . "name" "api" "component" "api" -}}
+{{- $ref := dict "root" . "name" "debugger" "component" "api" -}}
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: api
+  name: debugger
   annotations:
     {{- include "drogue-cloud-common.ingress.annotations" (dict "root" . "app" .Values.services.debugger ) | nindent 4 }}
   labels:
