@@ -7,6 +7,7 @@ metadata:
   annotations:
     app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"postgres"}]'
     {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
+    io.drogue/tls-entrypoint-hash: {{ include (print $.Template.BasePath "/services/swaggerui/tls.yaml") . | sha256sum }}
   labels:
     {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
 
@@ -20,6 +21,7 @@ spec:
     metadata:
       labels:
         {{- include "drogue-cloud-twin.labels" $ref | nindent 8 }}
+
     spec:
       containers:
         - name: endpoint
@@ -43,6 +45,13 @@ spec:
             - name: PORT
               value: {{ include "drogue-cloud-common.http-bind-port" $app | quote }}
 
+{{- if not $app.app.service.insecure }}
+            - name: TLS_CERT_BUNDLE_FILE
+              value: /etc/tls/service/tls.crt
+            - name: TLS_KEY_FILE
+              value: /etc/tls/service/tls.key
+{{- end }}
+
           ports:
             - containerPort: {{ include "drogue-cloud-common.http-bind-port" $app }}
               name: service
@@ -61,6 +70,15 @@ spec:
 
           volumeMounts:
             {{- include "drogue-cloud-common.tls-volume-mounts" $app | nindent 12 }}
+            - name: tls-entrypoint
+              mountPath: /docker/docker-entrypoint.d
+              readOnly: true
 
       volumes:
         {{- include "drogue-cloud-common.tls-volumes" $app | nindent 8 }}
+        - name: tls-entrypoint
+          configMap:
+            name: doppelgaenger-swaggerui-entrypoint-tls
+            items:
+              - key: 50-tls.sh
+                path: 50-tls.sh

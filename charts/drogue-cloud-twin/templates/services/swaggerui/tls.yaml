@@ -1,0 +1,21 @@
+{{- $ref := dict "root" . "name" "doppelgaenger-swaggerui" "component" "digital-twin" "metrics" true  -}}
+kind: ConfigMap
+apiVersion: v1
+
+metadata:
+  name: doppelgaenger-swaggerui-entrypoint-tls
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+
+data:
+  50-tls.sh: |
+    #! /bin/sh
+    set -e
+
+    NGINX_CONF=/etc/nginx/nginx.conf
+
+    # switch to TLS
+    if [[ -n "${TLS_KEY_FILE}" ]]; then
+      sed -i "s|${PORT};|${PORT} ssl;|g" $NGINX_CONF
+      sed -i "|${PORT} ssl;|a ssl_certificate $TLS_CERT_BUNDLE_FILE; ssl_certificate_key $TLS_KEY_FILE;"
+    fi
