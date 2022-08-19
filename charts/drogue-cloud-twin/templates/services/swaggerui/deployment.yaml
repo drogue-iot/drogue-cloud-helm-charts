@@ -40,8 +40,11 @@ spec:
               value: openid
             - name: OAUTH_ADDITIONAL_PARAMS
               value: '{nonce: "1"}'
+            - name: PORT
+              value: {{ include "drogue-cloud-common.http-bind-port" $app | quote }}
+
           ports:
-            - containerPort: 8080
+            - containerPort: {{ include "drogue-cloud-common.http-bind-port" $app }}
               name: service
               protocol: TCP
 
@@ -53,5 +56,11 @@ spec:
             timeoutSeconds: 1
             failureThreshold: 3
             httpGet:
-              port: 8080
+              port: {{ include "drogue-cloud-common.http-bind-port" $app }}
               path: /
+
+          volumeMounts:
+            {{- include "drogue-cloud-common.tls-volume-mounts" $app | nindent 12 }}
+
+      volumes:
+        {{- include "drogue-cloud-common.tls-volumes" $app | nindent 8 }}
