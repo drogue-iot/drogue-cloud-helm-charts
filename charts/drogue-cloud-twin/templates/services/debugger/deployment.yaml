@@ -22,9 +22,9 @@ spec:
 
     spec:
       containers:
-        - name: endpoint
-          image: {{ $app.app.deployment.image | default "docker.io/swaggerapi/swagger-ui:v4.14.0" }}
-          imagePullPolicy: {{ $app.app.deployment.imagePullPolicy | default "IfNotPresent" }}
+        - name: service
+          image: {{ include "drogue-cloud-common.image" $ref | quote }}
+          imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
           env:
             - name: API_URL
               value: {{ include "drogue-cloud-twin.api.url" . }}
