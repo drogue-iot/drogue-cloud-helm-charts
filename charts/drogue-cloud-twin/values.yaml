@@ -70,10 +70,16 @@ services:
   sso:
     ingress: {}
 
+  swaggerUi:
+    deployment: {}
+    ingress: {}
+    service: {}
+
   injector:
     disabled: true # enable/disable deployment
     deployment: {}
     extraEnvironment: {} # use to configure injector
+
 
 oauth2:
   tls:
