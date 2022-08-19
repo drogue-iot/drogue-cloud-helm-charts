@@ -84,7 +84,8 @@ services:
     disabled: true # experimental
     deployment: {}
     ingress: {}
-    service: {}
+    service:
+      insecure: true
 
 oauth2:
   tls:
