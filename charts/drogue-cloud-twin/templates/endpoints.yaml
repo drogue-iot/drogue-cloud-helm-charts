@@ -1,0 +1,15 @@
+{{- $ref := dict "root" . "name" "drogue-doppelgaenger-endpoints" "component" "global" -}}
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: {{ $ref.name }}
+  labels:
+    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
+
+data:
+  api-url: {{ include "drogue-cloud-twin.api.url" . }}
+  sso-url: {{ include "drogue-cloud-twin.sso.url" . }}
+  {{- if not .Values.services.debugger.disabled }}
+  debugger-url: {{ include "drogue-cloud-twin.debugger.url" . }}
+  {{- end }}
