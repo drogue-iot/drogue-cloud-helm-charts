@@ -19,7 +19,7 @@ spec:
 
   ports:
     - name: endpoint
-      port: 5683
+      port: {{ if .Values.endpoints.coap.ingress.insecure }}5683{{ else }}5684{{ end }}
       protocol: UDP
       targetPort: endpoint
       {{- if has .Values.global.cluster (list "minikube" "kind" ) }}

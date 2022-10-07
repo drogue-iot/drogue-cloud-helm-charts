@@ -45,7 +45,7 @@ console:
     console: {}
       # url: https://foo-bar
     coapEndpoint: {}
-      # url: coap://foo-bar
+      # url: coaps://foo-bar
     httpEndpoint: {}
       # url: https://foo-bar
     mqttEndpoint: {}
@@ -95,8 +95,7 @@ endpoints:
   coap:
     deployment: {}
     ingress:
-      insecure: true  # currently we only have CoAP without DTLS
-      port: 5683
+      port: 5684
 
 
 integrations:
