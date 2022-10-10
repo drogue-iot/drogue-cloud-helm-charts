@@ -16,7 +16,7 @@ global:
       # downgrade to insecure deployment
       insecure: false
       postInstall:
-        image: quay.io/keycloak/keycloak:18.0.1
+        image: quay.io/keycloak/keycloak:19.0
 
 defaults:
   images:
@@ -185,7 +185,7 @@ certificates:
 
 
 helper:
-  image: registry.access.redhat.com/ubi8-minimal:latest
+  image: registry.access.redhat.com/ubi9-minimal:latest
 
 
 oauth2:
@@ -223,7 +223,7 @@ keycloak:
     enabled: true
     # image can override the global post install image for keycloak
     # image: post install image
-    kubectlImage: ghcr.io/ctron/kubectl:1.21
+    kubectlImage: ghcr.io/ctron/kubectl:1.23
     # kcAdmPath: path the kcadm.sh binary
     user:
       enabled: true
@@ -259,7 +259,7 @@ postgres:
 
 kafka:
 
-  version: "3.1.0"
+  version: "3.2.0"
   # DEPRECATED: use "inter.broker.protocol.version" in the "kafkaConfigProperties" section below
   # logVersion: "3.0"
 

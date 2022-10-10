@@ -34,7 +34,7 @@ kafka:
 
 grafana:
   adminPassword: admin123456
-  image: docker.io/grafana/grafana:8.5.6
+  image: docker.io/grafana/grafana:9.1.7
   podSecurityContext:
     enabled: false
   ingress:
