@@ -6,8 +6,8 @@ metadata:
   labels:
     {{- include "drogue-cloud-core.labels" (dict "root" . "name" "keycloak-client-secret-drogue" "component" "sso") | nindent 4 }}
 data:
-  CLIENT_ID: "drogue"
-  CLIENT_SECRET: ""
+  CLIENT_ID: {{ "drogue" | b64enc | quote }}
+  CLIENT_SECRET: {{ "" | b64enc | quote }}
 ---
 kind: Secret
 apiVersion: v1
@@ -16,5 +16,5 @@ metadata:
   labels:
     {{- include "drogue-cloud-core.labels" (dict "root" . "name" "keycloak-client-secret-services" "component" "sso") | nindent 4 }}
 data:
-  CLIENT_ID: "services"
-  CLIENT_SECRET: {{ .Values.keycloak.postInstall.clients.services | quote }}
+  CLIENT_ID: {{ "services" | b64enc | quote }}
+  CLIENT_SECRET: {{ .Values.keycloak.clients.services.clientSecret | b64enc | quote }}

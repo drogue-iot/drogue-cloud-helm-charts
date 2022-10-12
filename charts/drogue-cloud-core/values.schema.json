@@ -374,9 +374,17 @@
     },
     "keycloak": {
       "type": "object",
+      "required": [
+        "adminPassword",
+        "realm"
+      ],
       "properties": {
         "adminPassword": {
           "type": "string"
+        },
+        "realm": {
+          "type": "string",
+          "default": "drogue"
         },
         "postgres": {
           "type": "object",
@@ -390,6 +398,17 @@
                 "drogue",
                 "external"
               ]
+            }
+          }
+        },
+        "postInstall": {
+          "type": "object",
+          "required": [
+            "enabled"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
             }
           }
         }

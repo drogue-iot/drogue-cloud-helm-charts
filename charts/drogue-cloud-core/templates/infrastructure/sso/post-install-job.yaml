@@ -251,7 +251,6 @@ spec:
               ID=$(kcadm get clients -r "${REALM}" --query "clientId=drogue" --fields id --format csv --noquotes)
               CLIENT_OPTS=()
               CLIENT_OPTS+=(-s 'redirectUris={{ $redirect | toJson }}')
-              CLIENT_OPTS+=(-s 'clientSecret={{ .Values.keycloak.postInstall.clients.drogue | toJson }}')
               if [[ -n "$ID" ]]; then
                 # TODO: replace with update once https://github.com/keycloak/keycloak/issues/12484 is fixed
                 # kcadm update "clients/${ID}" -r "${REALM}" -f /etc/init-data/client.json "${CLIENT_OPTS[@]}"
@@ -264,7 +263,7 @@ spec:
               # client clients - services
               ID=$(kcadm get clients -r "${REALM}" --query "clientId=services" --fields id --format csv --noquotes)
               CLIENT_OPTS=()
-              CLIENT_OPTS+=(-s 'clientSecret={{ .Values.keycloak.postInstall.clients.drogue | toJson }}')
+              CLIENT_OPTS+=(-s 'secret={{ .Values.keycloak.clients.services.clientSecret | toJson }}')
               if [[ -n "$ID" ]]; then
                 # TODO: replace with update once https://github.com/keycloak/keycloak/issues/12484 is fixed
                 # kcadm update "clients/${ID}" -r "${REALM}" -f /etc/init-data/client-services.json "${CLIENT_OPTS[@]}"
