@@ -230,6 +230,10 @@ keycloak:
       name: admin
       password: admin123456
 
+  clients:
+    services:
+      # the secret of the client, replace with your own value (e.g. from pwgen -s 32)
+      clientSecret: "vUpu7egrPK3Ggd0GHrfAzviTKRZgjG3u"
 
 postgres:
   tls:

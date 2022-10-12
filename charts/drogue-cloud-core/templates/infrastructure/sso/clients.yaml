@@ -1,0 +1,20 @@
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: keycloak-client-secret-drogue
+  labels:
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "keycloak-client-secret-drogue" "component" "sso") | nindent 4 }}
+data:
+  CLIENT_ID: "drogue"
+  CLIENT_SECRET: ""
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: keycloak-client-secret-services
+  labels:
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "keycloak-client-secret-services" "component" "sso") | nindent 4 }}
+data:
+  CLIENT_ID: "services"
+  CLIENT_SECRET: {{ .Values.keycloak.postInstall.clients.services | quote }}

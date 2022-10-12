@@ -7,8 +7,8 @@ metadata:
   annotations:
     app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"device-management-service"}]'
     {{- include "drogue-cloud-common.jaeger-annotations" . | nindent 4 }}
+    checksum/clients: {{ include (print $.Template.BasePath "/infrastructure/sso/clients.yaml") . | sha256sum }}
   labels:
-    client.oauth2.drogue.io/services: ""
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
   replicas: {{ $app.app.deployment.replicas | default 1 }}
