@@ -5,7 +5,6 @@ metadata:
   name: {{ .name | quote }}
   annotations:
     {{- include "drogue-cloud-common.jaeger-annotations" .root | nindent 4 }}
-    checksum/clients: {{ include (print .root.Template.BasePath "/infrastructure/sso/clients.yaml") .root | sha256sum }}
   labels:
     {{- include "drogue-cloud-core.labels" . | nindent 4 }}
 
@@ -20,6 +19,7 @@ spec:
         {{- include "drogue-cloud-core.labels" . | nindent 8 }}
       annotations:
         {{- include "drogue-cloud-common.prometheus-annotations" . | nindent 8 }}
+        checksum/clients: {{ include (print .root.Template.BasePath "/infrastructure/sso/clients.yaml") .root | sha256sum }}
 
     spec:
       containers:
