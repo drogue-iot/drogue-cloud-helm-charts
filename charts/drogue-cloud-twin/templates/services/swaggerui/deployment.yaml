@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: endpoint
-          image: {{ $app.app.deployment.image | default "docker.io/swaggerapi/swagger-ui:v4.14.0" }}
+          image: {{ $app.app.deployment.image | default "docker.io/swaggerapi/swagger-ui:v4.15.2" }}
           imagePullPolicy: {{ $app.app.deployment.imagePullPolicy | default "IfNotPresent" }}
           env:
             - name: BASE_URL
