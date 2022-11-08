@@ -7,7 +7,7 @@ metadata:
 spec:
   instances: 1
 
-  serverConfiguration:
+  additionalOptions:
     - name: db
       value: postgres
     - name: db-url-database
@@ -63,19 +63,23 @@ spec:
     {{- end }}
   {{- end }}
 
-  hostname: {{ include "drogue-cloud-twin.sso.host" . }}
-  disableDefaultIngress: true
+  hostname:
+    hostname: {{ include "drogue-cloud-twin.sso.host" . }}
+  ingress:
+    enabled: false
+
+  http:
 
   {{- if .Values.global.drogueCloud.keycloak.insecure }}
 
-  tlsSecret: INSECURE-DISABLE
+    httpEnabled: true
 
   {{- else }}
 
   {{- if .Values.global.drogueCloud.useServiceCA }}
-  tlsSecret: sso-tls
+    tlsSecret: sso-tls
   {{- else }}
-  tlsSecret: {{ .Values.global.drogueCloud.keycloak.tlsSecret }}
+    tlsSecret: {{ .Values.global.drogueCloud.keycloak.tlsSecret }}
   {{- end }}
 
   {{- end }}{{/* endif keycloak.insecure */}}

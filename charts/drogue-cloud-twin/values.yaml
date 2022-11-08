@@ -12,7 +12,7 @@ global:
       # downgrade to insecure deployment
       insecure: false
       postInstall:
-        image: quay.io/keycloak/keycloak:20.0.1
+        image: quay.io/keycloak/keycloak:20.0
 
 defaults:
   images:
@@ -81,7 +81,8 @@ services:
     extraEnvironment: {}  # use to configure injector
 
   debugger:
-    disabled: true  # experimental
+    # disable the deployment of the debugger
+    # disabled: false
     deployment: {}
     ingress: {}
     service:
@@ -100,6 +101,10 @@ keycloak:
   ingress:
     disable: false
   realm: doppelgaenger
+  clients:
+    services:
+      # the secret of the client, replace with your own value (e.g. from pwgen -s 32)
+      clientSecret: "kRhMpmCxfZJD4hES6CoUdU1YEIVuzDiD"
   postgres:
     # mode is the way postgres gets configured. This can be:
     #  - drogue: Re-use the Drogue Cloud postgres instance
@@ -120,15 +125,11 @@ keycloak:
     # enabled can be used to disable the job, in case you don't need it or are upgrading from
     # a Keycloak 12 instance, in which case you need to manually configure the roles.
     enabled: true
-    # image can override the global post install image for keycloak
-    # image: post install image
-    kubectlImage: ghcr.io/ctron/kubectl:1.23
     # kcAdmPath: path the kcadm.sh binary
     user:
       enabled: true
       name: admin
       password: admin123456
-
 
 postgres:
   tls:

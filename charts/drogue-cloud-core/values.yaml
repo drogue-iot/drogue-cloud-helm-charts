@@ -16,7 +16,7 @@ global:
       # downgrade to insecure deployment
       insecure: false
       postInstall:
-        image: quay.io/keycloak/keycloak:19.0
+        image: quay.io/keycloak/keycloak:20.0
 
 defaults:
   images:
@@ -221,9 +221,6 @@ keycloak:
     # enabled can be used to disable the job, in case you don't need it or are upgrading from
     # a Keycloak 12 instance, in which case you need to manually configure the roles.
     enabled: true
-    # image can override the global post install image for keycloak
-    # image: post install image
-    kubectlImage: ghcr.io/ctron/kubectl:1.23
     # kcAdmPath: path the kcadm.sh binary
     user:
       enabled: true
