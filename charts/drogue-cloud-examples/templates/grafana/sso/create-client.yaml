@@ -1,4 +1,5 @@
 {{- if and .Values.grafana.keycloak.enabled .Values.grafana.keycloak.client.create }}
+{{ $app := (dict "root" . "app" .Values.grafana.keycloak.client ) }}
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -64,6 +65,7 @@ spec:
   ttlSecondsAfterFinished: 600
   template:
     spec:
+      {{- include "drogue-cloud-common.pod-security-context" $app | nindent 6 }}
       restartPolicy: OnFailure
 
       volumes:
@@ -75,6 +77,8 @@ spec:
         - name: post-install
           image: {{ .Values.global.drogueCloud.keycloak.postInstall.image }}
           imagePullPolicy: IfNotPresent
+
+          {{- include "drogue-cloud-common.container-security-context" $app | nindent 10 }}
 
           env:
             - name: ADMIN_USERNAME
