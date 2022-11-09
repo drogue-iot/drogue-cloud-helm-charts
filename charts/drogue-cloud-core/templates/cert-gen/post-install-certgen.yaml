@@ -1,5 +1,7 @@
 {{- if include "drogue-cloud-core.cert-gen" . -}}
 {{- $ref := dict "root" . "name" "post-install-certgen" "component" "endpoints" -}}
+{{- $app := dict "root" . "app" .Values.certificates.generator -}}
+
 kind: Job
 apiVersion: batch/v1
 metadata:
@@ -20,10 +22,16 @@ spec:
     spec:
       serviceAccountName: certgen
       restartPolicy: OnFailure
+
+      {{- include "drogue-cloud-common.pod-security-context" $app | nindent 6 }}
+
       containers:
         - name: post-install
           image: {{ include "drogue-cloud-common.image" ( dict "root" . "name" "test-cert-generator") | quote }}
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
+
+          {{- include "drogue-cloud-common.container-security-context" $app | nindent 10 }}
+
           env:
             - name: CERT_ALTNAMES
               value: "{{- include "drogue-cloud-common.ingress.cert-altnames" . -}}"
@@ -31,11 +39,15 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+
           command: ["make", "deploy"]
+
           volumeMounts:
             - mountPath: /etc/drogue-certs
               name: certs
+
       volumes:
         - name: certs
           emptyDir: {}
+
 {{- end }}
