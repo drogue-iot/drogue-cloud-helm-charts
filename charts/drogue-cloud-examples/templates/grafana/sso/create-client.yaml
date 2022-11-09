@@ -65,7 +65,6 @@ spec:
   template:
     spec:
       restartPolicy: OnFailure
-      serviceAccountName: post-install-keycloak # created by core chart
 
       volumes:
         - name: init-data
