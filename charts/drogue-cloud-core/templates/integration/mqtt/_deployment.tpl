@@ -22,10 +22,16 @@ spec:
         checksum/clients: {{ include (print .root.Template.BasePath "/infrastructure/sso/clients.yaml") .root | sha256sum }}
 
     spec:
+
+      {{- include "drogue-cloud-common.pod-security-context" ( dict "root" .root "app" .app ) | nindent 6 }}
+
       containers:
         - name: service
           image: {{ include "drogue-cloud-common.image" (dict "root" .root "name" "mqtt-integration" ) | quote }}
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" .root }}
+
+          {{- include "drogue-cloud-common.container-security-context" ( dict "root" .root "app" .app ) | nindent 10 }}
+
           env:
             {{- include "drogue-cloud-common.rust.logging" ( dict "root" .root "app" .app ) | nindent 12 }}
             {{- include "drogue-cloud-common.jaeger-env" ( dict "root" .root "app" .app ) | nindent 12 }}

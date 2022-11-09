@@ -25,10 +25,16 @@ spec:
         checksum/clients: {{ include (print $.Template.BasePath "/infrastructure/sso/clients.yaml") . | sha256sum }}
 
     spec:
+
+      {{- include "drogue-cloud-common.pod-security-context" $app | nindent 6 }}
+
       containers:
         - name: service
           image: {{ include "drogue-cloud-common.image" $ref | quote }}
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
+
+          {{- include "drogue-cloud-common.container-security-context" $app | nindent 10 }}
+
           env:
             {{- include "drogue-cloud-common.rust.logging" $app | nindent 12 }}
             {{- include "drogue-cloud-common.jaeger-env" $app | nindent 12 }}
