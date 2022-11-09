@@ -1,4 +1,6 @@
 {{- $ref := dict "root" . "name" "migrate-database" "component" "device-registry" -}}
+{{- $app := dict "root" . "app" .Values.postgres.migration -}}
+
 kind: Job
 apiVersion: batch/v1
 metadata:
@@ -10,6 +12,7 @@ metadata:
     helm.sh/hook-delete-policy: before-hook-creation
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+
 spec:
   backoffLimit: 1000
   completions: 1
@@ -17,11 +20,17 @@ spec:
   ttlSecondsAfterFinished: 600
   template:
     spec:
+
+      {{- include "drogue-cloud-common.pod-security-context" $app | nindent 6 }}
+
       restartPolicy: OnFailure
       containers:
         - name: diesel-migrate
           image: {{ include "drogue-cloud-common.image" ( dict "root" . "name" "database-migration") | quote }}
           imagePullPolicy: {{ include "drogue-cloud-common.image-pull-policy" . }}
+
+          {{- include "drogue-cloud-common.container-security-context" $app | nindent 10 }}
+
           env:
             {{- include "drogue-cloud-common.postgres.env-vars-default" . | nindent 12 }}
             # now we map that from our deadpool based configuration to diesel
