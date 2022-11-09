@@ -1,4 +1,6 @@
 {{- $ref := dict "root" . "name" "post-install-timescaledb" "component" "database" -}}
+{{- $app := (dict "root" . "app" .Values.timescale.postInstall ) }}
+
 kind: Job
 apiVersion: batch/v1
 metadata:
@@ -19,10 +21,15 @@ spec:
       labels:
         {{ include "drogue-cloud-examples.labels" $ref | nindent 8 }}
     spec:
+      {{- include "drogue-cloud-common.pod-security-context" $app | nindent 6 }}
+
       restartPolicy: OnFailure
       containers:
         - name: migrate
           image: {{ .Values.timescale.postInstall.image }}
+
+          {{- include "drogue-cloud-common.container-security-context" $app | nindent 10 }}
+
           env:
             - name:  PGUSER
               valueFrom:

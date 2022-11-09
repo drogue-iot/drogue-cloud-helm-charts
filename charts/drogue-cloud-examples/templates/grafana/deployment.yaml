@@ -1,3 +1,5 @@
+{{- $app := dict "root" . "app" .Values.grafana -}}
+
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -24,10 +26,16 @@ spec:
         checksum/secret-timescale: {{ include (print $.Template.BasePath "/timescaledb/secret.yaml") . | sha256sum }}
     spec:
       serviceAccountName: grafana
+
+      {{- include "drogue-cloud-common.pod-security-context" $app | nindent 6 }}
+
       initContainers:
         - name: collect-dashboards
-          image: ghcr.io/ctron/kubectl:1.21
+          image: ghcr.io/ctron/kubectl:1.25
           imagePullPolicy: IfNotPresent
+
+          {{- include "drogue-cloud-common.container-security-context" $app | nindent 10 }}
+
           command:
             - bash
             - -c
@@ -41,6 +49,9 @@ spec:
         - name: grafana
           image: {{ .Values.grafana.image }}
           imagePullPolicy: IfNotPresent
+
+          {{- include "drogue-cloud-common.container-security-context" $app | nindent 10 }}
+
           env:
             - name: GF_SECURITY_ADMIN_PASSWORD
               valueFrom:
@@ -139,9 +150,7 @@ spec:
               name: grafana-dashboard-providers
             - mountPath: /var/lib/grafana/dashboards
               name: grafana-dashboards
-      {{- if .Values.grafana.podSecurityContext.enabled }}
-      securityContext: {{- omit .Values.grafana.podSecurityContext "enabled" | toYaml | nindent 8 }}
-      {{- end }}
+
       volumes:
         - name: grafana-storage
           persistentVolumeClaim:
