@@ -18,6 +18,10 @@ global:
       postInstall:
         image: quay.io/keycloak/keycloak:20.0
 
+    defaults:
+      podSecurityContext: {}
+      containerSecurityContext: {}
+
 defaults:
   images:
     repository: ghcr.io/drogue-iot

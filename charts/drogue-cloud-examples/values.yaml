@@ -2,6 +2,11 @@ global:
   cluster: kubernetes
   domain: .my-cluster.dns
 
+  drogueCloud:
+    defaults:
+      podSecurityContext: {}
+      containerSecurityContext: {}
+
 drogueApplication:
   name: drogue-public-temperature
   # eventTopic can provide an explicit event topic
