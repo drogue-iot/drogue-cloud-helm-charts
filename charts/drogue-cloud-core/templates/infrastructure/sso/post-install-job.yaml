@@ -121,7 +121,6 @@ spec:
   template:
     spec:
       restartPolicy: OnFailure
-      serviceAccountName: post-install-keycloak
 
       volumes:
         - name: init-data
