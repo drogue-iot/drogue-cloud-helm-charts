@@ -62,7 +62,9 @@ spec:
     replicas: {{ .Values.kafka.kafka.replicas }}
     storage:
       {{- .Values.kafka.kafka.storage | toYaml | nindent 6 }}
-    version: {{ .Values.kafka.version }}
+    {{- with .Values.kafka.version }}
+    version: {{ . | quote }}
+    {{- end }}
     template:
       pod:
         {{- if .Values.kafka.podSecurityContext.enabled }}

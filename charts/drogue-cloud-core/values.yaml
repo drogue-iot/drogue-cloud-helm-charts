@@ -251,7 +251,7 @@ postgres:
   password: admin123456
   podSecurityContext:
     enabled: false
-  image: docker.io/bitnami/postgresql:14
+  image: docker.io/bitnami/postgresql:15
 
   storage:
     size: 1G
@@ -267,9 +267,8 @@ postgres:
 
 kafka:
 
-  version: "3.2.0"
-  # DEPRECATED: use "inter.broker.protocol.version" in the "kafkaConfigProperties" section below
-  # logVersion: "3.0"
+  # explicit kafka version
+  # version: "3.2.0"
 
   clusterResourceName: drogue-iot
   internalUserName: drogue-iot
