@@ -1,4 +1,6 @@
 {{- $ref := dict "root" . "name" "postgres" "component" "device-registry" -}}
+{{- $app := dict "root" . "app" .Values.postgres }}
+
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -17,10 +19,16 @@ spec:
       labels:
         {{- include "drogue-cloud-core.labels" $ref | nindent 8 }}
     spec:
+
+      {{- include "drogue-cloud-common.pod-security-context" $app | nindent 6 }}
+
       containers:
         - name: postgres
           image: {{ .Values.postgres.image }}
           imagePullPolicy: IfNotPresent
+
+          {{- include "drogue-cloud-common.container-security-context" $app | nindent 10 }}
+
           env:
             - name: POSTGRES_DB
               value: {{ .Values.postgres.databaseName | quote }}

@@ -249,8 +249,6 @@ postgres:
   databaseName: registry
   username: admin
   password: admin123456
-  podSecurityContext:
-    enabled: false
   image: docker.io/bitnami/postgresql:15
 
   storage:
