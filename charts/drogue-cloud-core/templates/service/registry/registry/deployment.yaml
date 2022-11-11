@@ -70,6 +70,7 @@ spec:
               value: 15s
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_SENDER__PROPERTIES__" ) | nindent 12 }}
             {{- include "drogue-cloud-core.keycloak.internal-access" . | nindent 12 }}
+            {{- include "drogue-cloud-core.cors.env-vars" $app | nindent 12 }}
             {{- include "drogue-cloud-common.env-vars-extras" $app | nindent 12 }}
 
           {{- include "drogue-cloud-common.health-probes" ( dict "root" . "app" $app ) | nindent 10 }}

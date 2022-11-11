@@ -67,6 +67,9 @@ spec:
             - name: KAFKA_DOWNSTREAM_CONFIG__BOOTSTRAP_SERVERS
               value: {{ include "drogue-cloud-common.kafka-bootstrap-server" . }}
             {{- include "drogue-cloud-common.kafka-properties" (dict "root" . "prefix" "KAFKA_DOWNSTREAM_CONFIG__PROPERTIES__" ) | nindent 12 }}
+
+            {{- include "drogue-cloud-core.cors.env-vars" $app | nindent 12 }}
+
             {{- include "drogue-cloud-common.env-vars-extras" $app | nindent 12 }}
 
           ports:

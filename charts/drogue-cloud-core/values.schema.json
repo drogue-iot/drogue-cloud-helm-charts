@@ -102,6 +102,9 @@
             },
             {
               "$ref": "#/$defs/ingress"
+            },
+            {
+              "$ref": "#/$defs/cors"
             }
           ]
         },
@@ -200,6 +203,9 @@
               "$ref": "#/$defs/http"
             },
             {
+              "$ref": "#/$defs/cors"
+            },
+            {
               "$ref": "#/$defs/ingress"
             }
           ]
@@ -210,6 +216,22 @@
       "type": "object",
       "properties": {
         "registry": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/deployment"
+            },
+            {
+              "$ref": "#/$defs/service"
+            },
+            {
+              "$ref": "#/$defs/http"
+            },
+            {
+              "$ref": "#/$defs/cors"
+            }
+          ]
+        },
+        "topicOperator": {
           "type": "object",
           "properties": {
             "topicOperator": {
@@ -291,6 +313,9 @@
             },
             {
               "$ref": "#/$defs/ingress"
+            },
+            {
+              "$ref": "#/$defs/cors"
             }
           ]
         },
@@ -431,6 +456,66 @@
           "type": "number",
           "minimum": 0,
           "default": 1
+        }
+      }
+    },
+    "cors": {
+      "type": "object",
+      "properties": {
+        "cors": {
+          "$ref": "#/$defs/corsConfig"
+        }
+      }
+    },
+    "corsConfig": {
+      "oneOf": [
+        "#/$defs/corsConfigPermissive",
+        "#/$defs/corsConfigNone",
+        "#/$defs/corsConfigCustom"
+      ]
+    },
+    "corsConfigCustom": {
+      "type": "object",
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "custom"
+          ]
+        },
+        "allowedOrigins": {
+          "type": "string"
+        }
+      }
+    },
+    "corsConfigPermissive": {
+      "type": "object",
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "permissive"
+          ]
+        }
+      }
+    },
+    "corsConfigNone": {
+      "type": "object",
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "none"
+          ]
         }
       }
     },

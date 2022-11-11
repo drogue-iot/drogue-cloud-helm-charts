@@ -147,6 +147,9 @@ spec:
               value: {{ .Values.console.overrides.wsIntegration.url | default ( include "drogue-cloud-common.ingress.ws-url" (dict "root" . "prefix" "websocket-integration" "ingress" .Values.integrations.websocket.ingress ) ) }}
             - name: ENDPOINTS__KAFKA_BOOTSTRAP_SERVERS
               value: {{ .Values.console.overrides.kafka.servers | default ( include "drogue-cloud-common.kafka-bootstrap-server" . ) }}
+
+            {{- include "drogue-cloud-core.cors.env-vars" $app | nindent 12 }}
+
             {{- include "drogue-cloud-common.env-vars-extras" $app | nindent 12 }}
 
           ports:
