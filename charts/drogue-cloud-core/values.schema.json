@@ -469,9 +469,15 @@
     },
     "corsConfig": {
       "oneOf": [
-        "#/$defs/corsConfigPermissive",
-        "#/$defs/corsConfigNone",
-        "#/$defs/corsConfigCustom"
+        {
+          "ref": "#/$defs/corsConfigPermissive"
+        },
+        {
+          "ref": "#/$defs/corsConfigNone"
+        },
+        {
+          "ref": "#/$defs/corsConfigCustom"
+        }
       ]
     },
     "corsConfigCustom": {
