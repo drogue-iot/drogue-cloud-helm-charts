@@ -2,6 +2,23 @@ apiVersion: v1
 entries:
   drogue-cloud-common:
   - apiVersion: v2
+    created: "2022-11-17T15:21:18.838989586Z"
+    description: Common functionality for Drogue Cloud charts
+    digest: 3c7e40c0f2e803e88eb55bb03aeb2900db591c6480f8f5c3f1ea24dfa2fbe125
+    home: https://drogue.io
+    icon: https://blog.drogue.io/favicon.svg
+    keywords:
+    - IoT
+    maintainers:
+    - email: ctron@dentrassi.de
+      name: ctron
+      url: https://dentrassi.de
+    name: drogue-cloud-common
+    type: library
+    urls:
+    - https://github.com/drogue-iot/drogue-cloud-helm-charts/releases/download/drogue-cloud-common-0.7.0/drogue-cloud-common-0.7.0.tgz
+    version: 0.7.0
+  - apiVersion: v2
     created: "2022-10-13T13:23:52.361318591Z"
     description: Common functionality for Drogue Cloud charts
     digest: f7ef506b8f4f32d82336bfd27161cac899f5fba85c02db15f06b293772fc19d2
@@ -428,6 +445,29 @@ entries:
     - https://github.com/drogue-iot/drogue-cloud-helm-charts/releases/download/drogue-cloud-common-0.1.1/drogue-cloud-common-0.1.1.tgz
     version: 0.1.1
   drogue-cloud-core:
+  - apiVersion: v2
+    appVersion: 0.11.0
+    created: "2022-11-17T15:21:19.052782495Z"
+    dependencies:
+    - name: drogue-cloud-common
+      repository: file://../drogue-cloud-common
+      version: 0.7.0
+    description: Drogue IoT Cloud core installation
+    digest: 59e3ec82759ad2c515c69a82d60a95f643639abd7b33136df5efc72d83a476de
+    home: https://drogue.io
+    icon: https://blog.drogue.io/favicon.svg
+    keywords:
+    - IoT
+    kubeVersion: '>= 1.22.0-0'
+    maintainers:
+    - email: ctron@dentrassi.de
+      name: ctron
+      url: https://dentrassi.de
+    name: drogue-cloud-core
+    type: application
+    urls:
+    - https://github.com/drogue-iot/drogue-cloud-helm-charts/releases/download/drogue-cloud-core-0.7.0/drogue-cloud-core-0.7.0.tgz
+    version: 0.7.0
   - apiVersion: v2
     appVersion: 0.10.0
     created: "2022-10-13T13:23:52.522015529Z"
@@ -1509,6 +1549,29 @@ entries:
     version: 0.1.0
   drogue-cloud-examples:
   - apiVersion: v2
+    appVersion: 0.11.0
+    created: "2022-11-17T15:21:19.270174722Z"
+    dependencies:
+    - name: drogue-cloud-common
+      repository: file://../drogue-cloud-common
+      version: 0.7.0
+    description: Installation of examples on top of Drogue IoT Cloud
+    digest: aca7a866dd9f0290189fcbb9417986d0a63d70b88e8e31d770feb8a4b3e58540
+    home: https://drogue.io
+    icon: https://blog.drogue.io/favicon.svg
+    keywords:
+    - IoT
+    kubeVersion: '>= 1.22.0-0'
+    maintainers:
+    - email: ctron@dentrassi.de
+      name: ctron
+      url: https://dentrassi.de
+    name: drogue-cloud-examples
+    type: application
+    urls:
+    - https://github.com/drogue-iot/drogue-cloud-helm-charts/releases/download/drogue-cloud-examples-0.7.0/drogue-cloud-examples-0.7.0.tgz
+    version: 0.7.0
+  - apiVersion: v2
     appVersion: 0.10.0
     created: "2022-10-13T13:23:52.65884766Z"
     dependencies:
@@ -2336,6 +2399,36 @@ entries:
     version: 0.1.1
   drogue-cloud-metrics:
   - apiVersion: v2
+    appVersion: 0.11.0
+    created: "2022-11-17T15:21:19.5552581Z"
+    dependencies:
+    - name: drogue-cloud-common
+      repository: file://../drogue-cloud-common
+      version: 0.7.0
+    - condition: prometheus.createInstance
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: ~14.6.0
+    - condition: grafana.enabled
+      name: grafana
+      repository: https://grafana.github.io/helm-charts
+      version: ~6.43.5
+    description: Drogue IoT Cloud metrics stack installation
+    digest: 6a4f895f9ae357365ff9cedc9cc4c5f00d08df6d6e43a1fb6686852f4edaef6b
+    home: https://drogue.io
+    icon: https://blog.drogue.io/favicon.svg
+    keywords:
+    - IoT
+    kubeVersion: '>= 1.22.0'
+    maintainers:
+    - email: dbosanac@redhat.com
+      name: dejanb
+    name: drogue-cloud-metrics
+    type: application
+    urls:
+    - https://github.com/drogue-iot/drogue-cloud-helm-charts/releases/download/drogue-cloud-metrics-0.7.0/drogue-cloud-metrics-0.7.0.tgz
+    version: 0.7.0
+  - apiVersion: v2
     appVersion: 0.10.0
     created: "2022-10-13T13:23:52.813368093Z"
     dependencies:
@@ -2666,6 +2759,29 @@ entries:
     - https://github.com/drogue-iot/drogue-cloud-helm-charts/releases/download/drogue-cloud-metrics-0.5.0-alpha1/drogue-cloud-metrics-0.5.0-alpha1.tgz
     version: 0.5.0-alpha1
   drogue-cloud-twin:
+  - apiVersion: v2
+    appVersion: 0.11.0
+    created: "2022-11-17T15:21:19.764553227Z"
+    dependencies:
+    - name: drogue-cloud-common
+      repository: file://../drogue-cloud-common
+      version: 0.7.0
+    description: Drogue IoT Cloud digital twin installation
+    digest: a323bf43dd7440a4e97e46c0c1c9f2c35d5a1e1699002bd6383e2e34a711d201
+    home: https://drogue.io
+    icon: https://blog.drogue.io/favicon.svg
+    keywords:
+    - IoT
+    kubeVersion: '>= 1.22.0-0'
+    maintainers:
+    - email: ctron@dentrassi.de
+      name: ctron
+      url: https://dentrassi.de
+    name: drogue-cloud-twin
+    type: application
+    urls:
+    - https://github.com/drogue-iot/drogue-cloud-helm-charts/releases/download/drogue-cloud-twin-0.7.0/drogue-cloud-twin-0.7.0.tgz
+    version: 0.7.0
   - apiVersion: v2
     appVersion: 0.10.0
     created: "2022-07-07T14:58:48.814047139Z"
@@ -3352,4 +3468,4 @@ entries:
     urls:
     - https://github.com/drogue-iot/drogue-cloud-helm-charts/releases/download/drogue-cloud-twin-0.1.0/drogue-cloud-twin-0.1.0.tgz
     version: 0.1.0
-generated: "2022-10-13T13:23:52.814544513Z"
+generated: "2022-11-17T15:21:19.765927834Z"
