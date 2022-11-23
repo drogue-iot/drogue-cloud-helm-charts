@@ -123,7 +123,7 @@ spec:
         {{- if not .app.ingress.insecure }}
         - name: endpoint-tls
           secret:
-            secretName: mqtt-endpoint-tls
+            secretName: {{ ((.app.service).certificates).secret | default "mqtt-endpoint-tls" | quote }}
         {{- end }}
 
         - name: client-secret-services

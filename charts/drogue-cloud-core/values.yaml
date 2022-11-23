@@ -74,30 +74,41 @@ endpoints:
 
   http:
     deployment: {}
-    service: {}
+    service:
+      certificates:
+        secret: "http-endpoint-tls"
     ingress:
       port: 443
 
   mqtt:
     deployment: {}
-    service: {}
+    service:
+      certificates:
+        secret: "mqtt-endpoint-tls"
     ingress:
       port: 8883
 
   mqttWs:
     deployment: {}
-    service: {}
+    service:
+      certificates:
+        secret: "mqtt-endpoint-tls"
     ingress:
       port: 443
 
   mqttWsBrowser:
     deployment: {}
-    service: {}
+    service:
+      certificates:
+        secret: "mqtt-endpoint-tls"
     ingress:
       port: 443
 
   coap:
     deployment: {}
+    service:
+      certificates:
+        secret: "coap-endpoint-tls"
     ingress:
       port: 5684
 
@@ -106,19 +117,25 @@ integrations:
 
   mqtt:
     deployment: {}
-    service: {}
+    service:
+      certificates:
+        secret: "mqtt-endpoint-tls"
     ingress:
       port: 8883
 
   mqttWs:
     deployment: {}
-    service: {}
+    service:
+      certificates:
+        secret: "mqtt-endpoint-tls"
     ingress:
       port: 443
 
   mqttWsBrowser:
     deployment: {}
-    service: {}
+    service:
+      certificates:
+        secret: "mqtt-endpoint-tls"
     ingress:
       port: 443
 

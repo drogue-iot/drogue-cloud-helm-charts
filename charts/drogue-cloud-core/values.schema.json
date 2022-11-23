@@ -527,6 +527,9 @@
     "service": {
       "type": "object",
       "properties": {
+        "certificates": {
+          "$ref": "#/$defs/certificateConfig"
+        },
         "ingress": {
           "$ref": "#/$defs/serviceConfig"
         }
@@ -538,6 +541,14 @@
         "insecure": {
           "type": "boolean",
           "default": false
+        }
+      }
+    },
+    "certificateConfig": {
+      "type": "object",
+      "properties": {
+        "secret": {
+          "type": "string"
         }
       }
     },
