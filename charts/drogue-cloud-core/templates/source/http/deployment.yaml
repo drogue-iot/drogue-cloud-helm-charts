@@ -90,7 +90,7 @@ spec:
         {{ if not .Values.endpoints.http.service.insecure }}
         - name: service-tls
           secret:
-            secretName: http-endpoint-tls
+            secretName: {{ ((((.Values.endpoints).http).service).certificates).secret | default "http-endpoint-tls" | quote }}
         {{ end }}
 
         - name: client-secret-services
