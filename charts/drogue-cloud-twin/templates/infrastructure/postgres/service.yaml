@@ -1,5 +1,3 @@
-{{ if .Values.postgres.enabled }}
-
 {{- $ref := dict "root" . "name" "postgres" "component" "digital-twin" -}}
 kind: Service
 apiVersion: v1
@@ -23,5 +21,3 @@ spec:
       port: 5432
       protocol: TCP
       targetPort: 5432
-
-{{- end }}
