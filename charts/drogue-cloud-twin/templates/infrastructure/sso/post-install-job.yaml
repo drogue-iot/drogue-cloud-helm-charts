@@ -2,52 +2,6 @@
 
 {{- if .Values.keycloak.postInstall.enabled -}}
 ---
-kind: ServiceAccount
-apiVersion: v1
-metadata:
-  name: post-install-keycloak
-  labels:
-    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
----
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: post-install-keycloak
-  labels:
-    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
-rules:
-  - verbs:
-      - create
-      - update
-      - get
-      - patch
-    apiGroups:
-      - ""
-    resources:
-      - secrets
-  - verbs:
-      - patch
-      - get
-      - list
-    apiGroups:
-      - apps
-    resources:
-      - deployments
----
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: post-install-keycloak
-  labels:
-    {{- include "drogue-cloud-twin.labels" $ref | nindent 4 }}
-roleRef:
-  kind: Role
-  apiGroup: rbac.authorization.k8s.io
-  name: post-install-keycloak
-subjects:
-  - kind: ServiceAccount
-    name: post-install-keycloak
----
 kind: ConfigMap
 apiVersion: v1
 metadata:
