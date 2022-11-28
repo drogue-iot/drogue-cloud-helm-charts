@@ -7,8 +7,6 @@ global:
       enabled: false
 
     keycloak:
-      # enable keycloak deployment
-      enabled: true
       # downgrade to insecure deployment
       insecure: false
       postInstall:
@@ -100,6 +98,9 @@ oauth2:
 
 
 keycloak:
+  # enable keycloak deployment
+  enabled: true
+
   adminPassword: admin123456
   identityProviders: []
   ingress:
@@ -136,6 +137,9 @@ keycloak:
       password: admin123456
 
 postgres:
+  # enable postgres deployment
+  enabled: true
+
   tls:
     enabled: false
     # the secret containing the key/cert, ignored if .global.drogueCloud.useServiceCA is true

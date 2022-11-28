@@ -1,3 +1,4 @@
+{{- if .Values.keycloak.enabled }}
 {{- if not .Values.keycloak.ingress.disable }}
 
 {{ $service := "sso-service" }}
@@ -32,3 +33,4 @@ spec:
                 port:
                   number: {{ if .Values.global.drogueCloud.keycloak.insecure }}8080{{ else }}8443{{ end }}
 {{- end }}
+{{- end }}{{/* keycloak deployment enabled */}}
