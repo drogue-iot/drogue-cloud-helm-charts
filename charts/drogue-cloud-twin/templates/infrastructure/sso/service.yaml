@@ -1,3 +1,5 @@
+{{- if .Values.keycloak.enabled }}
+
 {{- if and ( not .Values.global.drogueCloud.keycloak.insecure ) .Values.global.drogueCloud.useServiceCA }}
 kind: Service
 apiVersion: v1
@@ -16,3 +18,5 @@ spec:
     app: keycloak
   type: ClusterIP
 {{- end }}
+
+{{- end }}{{/* keycloak deployment enabled */}}
