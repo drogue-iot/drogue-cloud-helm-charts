@@ -7,7 +7,7 @@ metadata:
   labels:
     {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
 spec:
-  host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-endpoint-ws-browser" "ingress" .Values.endpoints.mqttWs.ingress ) }}
+  host: {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "mqtt-endpoint-ws-browser" "ingress" .Values.endpoints.mqttWsBrowser.ingress ) }}
   to:
     kind: Service
     name: mqtt-endpoint-ws-browser
