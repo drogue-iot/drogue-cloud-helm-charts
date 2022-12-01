@@ -99,7 +99,7 @@ spec:
         {{ if not .Values.endpoints.coap.ingress.insecure }}
         - name: endpoint-tls
           secret:
-            secretName: coap-endpoint-tls
+            secretName: {{ ((((.Values.endpoints).coap).service).certificates).secret | default "coap-endpoint-tls" | quote }}
         {{ end }}
 
         - name: client-secret-services
