@@ -8,7 +8,8 @@ You can add this repository be executing:
 
 ## Releases
 
-Changes are automatically released when one of the release branches is updated.
+Changes are automatically released when one of the release branches is updated. The release process
+is described [here](https://github.com/drogue-iot/drogue-cloud/blob/main/RELEASE.md).
 
 ## Changes
 
