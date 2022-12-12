@@ -217,6 +217,9 @@ oauth2:
 
 
 keycloak:
+  deployment:
+    # Can be set to false, to disable the deployment. NOTE: this will still run the post-install job.
+    enabled: true
   adminUser: admin
   adminPassword: admin123456
   identityProviders: []
