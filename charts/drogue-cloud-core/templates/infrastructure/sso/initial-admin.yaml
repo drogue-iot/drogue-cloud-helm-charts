@@ -6,5 +6,5 @@ metadata:
     {{- include "drogue-cloud-core.labels" (dict "root" . "name" "sso-initial-admin" "component" "sso") | nindent 4 }}
 type: kubernetes.io/basic-auth
 data:
-  username: YWRtaW4= # admin
-  password: {{ .Values.keycloak.adminPassword | b64enc }}
+  username: {{ .Values.keycloak.adminUser | b64enc | quote }}
+  password: {{ .Values.keycloak.adminPassword | b64enc | quote }}
