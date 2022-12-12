@@ -217,6 +217,7 @@ oauth2:
 
 
 keycloak:
+  adminUser: admin
   adminPassword: admin123456
   identityProviders: []
   ingress:
