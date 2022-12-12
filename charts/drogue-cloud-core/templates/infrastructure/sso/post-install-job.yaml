@@ -142,12 +142,12 @@ spec:
             - name: ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: sso-initial-admin
+                  name: sso-service-credentials
                   key: username
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: sso-initial-admin
+                  name: sso-service-credentials
                   key: password
 
             - name: KEYCLOAK_URL
