@@ -93,6 +93,18 @@ data:
       ]
     }
 ---
+{{ if .Values.keycloak.postInstall.user.enabled }}
+kind: Secret
+apiVersion: v1
+metadata:
+  name: post-install-drogue-admin
+  labels:
+    {{- include "drogue-cloud-core.labels" $ref | nindent 4 }}
+data:
+  username: {{ .Values.keycloak.postInstall.user.name | b64enc | quote }}
+  password: {{ .Values.keycloak.postInstall.user.password | b64enc | quote }}
+{{ end }}
+---
 {{- $redirect := list
   (include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress ))
   (printf "%s/*" (include "drogue-cloud-common.ingress.url" (dict "root" . "prefix" "console" "ingress" .Values.services.console.ingress )))
