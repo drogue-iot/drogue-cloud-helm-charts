@@ -251,6 +251,8 @@ keycloak:
       enabled: true
       name: admin
       password: admin123456
+    # allows to enable "resource owner password flow" with the main OAuth2 client (drogue).
+    resourceOwnerPasswordFlow: false
 
   clients:
     services:
