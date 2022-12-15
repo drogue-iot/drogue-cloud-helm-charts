@@ -125,7 +125,7 @@ data:
           "protocol": "openid-connect",
           "protocolMapper": "oidc-audience-mapper",
           "config": {
-            "included.client.audience": "services",
+            "included.client.audience": "direct",
             "id.token.claim": "false",
             "access.token.claim": "true"
           }
