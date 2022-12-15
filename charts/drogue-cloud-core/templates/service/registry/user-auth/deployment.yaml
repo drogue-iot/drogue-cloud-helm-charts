@@ -50,7 +50,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             {{- include "drogue-cloud-common.postgres.env-vars" ( dict "root" . "prefix" "SERVICE__PG__" ) | nindent 12 }}
-            {{- include "drogue-cloud-common.oauth2-authenticator.env-vars" ( dict "root" . "clients" ( list "services" ) ) | nindent 12 }}
+            {{- include "drogue-cloud-core.oauth2-internal-authenticator.env-vars" . | nindent 12 }}
             {{- include "drogue-cloud-core.keycloak.internal-access" . | nindent 12 }}
             {{- include "drogue-cloud-common.env-vars-extras" $app | nindent 12 }}
 

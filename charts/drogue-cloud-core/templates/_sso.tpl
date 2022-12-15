@@ -17,3 +17,26 @@ For the Keycloak API, storing access tokens
 - name: "KEYCLOAK__TLS_INSECURE"
   value: {{ .Values.oauth2.tls.insecure | quote }}
 {{- end }}
+
+{{/*
+Apply OAuth2 authenticator settings for an external service.
+
+Arguments: .
+*/}}
+{{- define "drogue-cloud-core.oauth2-external-authenticator.env-vars" }}
+{{- $clients := list "drogue" "services" -}}
+{{- if .Values.keycloak.postInstall.resourceOwnerPasswordFlow }}
+{{- $clients = concat $clients "direct" }}
+{{- end }}
+{{- include "drogue-cloud-common.oauth2-authenticator.env-vars" (dict "root" . "clients" $clients ) }}
+{{- end }}
+
+{{/*
+Apply OAuth2 authenticator settings for an internal service.
+
+Arguments: .
+*/}}
+{{- define "drogue-cloud-core.oauth2-internal-authenticator.env-vars" }}
+{{- $clients := list "services" -}}
+{{- include "drogue-cloud-common.oauth2-authenticator.env-vars" (dict "root" . "clients" $clients ) }}
+{{- end }}

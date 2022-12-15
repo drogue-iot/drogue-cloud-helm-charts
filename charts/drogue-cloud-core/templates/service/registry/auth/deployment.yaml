@@ -41,7 +41,7 @@ spec:
             {{- include "drogue-cloud-common.health-env" $app | nindent 12 }}
             {{- include "drogue-cloud-common.http-service-env" $app | nindent 12 }}
             {{- include "drogue-cloud-common.postgres.env-vars-default" . | nindent 12 }}
-            {{- include "drogue-cloud-common.oauth2-authenticator.env-vars" (dict "root" . "clients" (list "services" )) | nindent 12 }}
+            {{- include "drogue-cloud-core.oauth2-internal-authenticator.env-vars" . | nindent 12 }}
             {{- include "drogue-cloud-common.env-vars-extras" $app | nindent 12 }}
 
           {{- include "drogue-cloud-common.health-probes" $app | nindent 10 }}
