@@ -42,7 +42,7 @@ spec:
                 configMapKeyRef:
                   name: configuration
                   key: instance
-            {{- include "drogue-cloud-common.oauth2-authenticator.env-vars" (dict "root" . "clients" (list "drogue" "services" )) | nindent 12 }}
+            {{- include "drogue-cloud-core.oauth2-external-authenticator.env-vars" . | nindent 12 }}
             - name: REGISTRY__URL
               value: {{ include "drogue-cloud-core.service-url.device-management-service" . }}
             - name: REGISTRY__CLIENT_ID

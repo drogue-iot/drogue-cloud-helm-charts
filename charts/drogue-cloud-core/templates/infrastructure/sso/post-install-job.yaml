@@ -92,6 +92,47 @@ data:
         }
       ]
     }
+{{ if .Values.keycloak.postInstall.resourceOwnerPasswordFlow }}
+  client-direct.json: |
+    {
+      "clientId": "direct",
+      "clientAuthenticatorType": "client-secret",
+      "enabled": true,
+      "publicClient": false,
+      "implicitFlowEnabled": false,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "fullScopeAllowed": true,
+      "defaultClientScopes": [
+        "email",
+        "profile",
+        "roles",
+        "web-origins"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "microprofile-jwt",
+        "offline_access",
+        "phone"
+      ],
+      "defaultRoles": [
+        "drogue-user"
+      ],
+      "protocolMappers": [
+        {
+          "name": "add-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "services",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    }
+{{ end }}
 ---
 {{ if .Values.keycloak.postInstall.user.enabled }}
 kind: Secret
@@ -246,6 +287,21 @@ spec:
 
               # default role for service account of services
               kcadm add-roles -r "${REALM}" --uusername service-account-services --rolename drogue-admin
+
+              {{ if .Values.keycloak.postInstall.resourceOwnerPasswordFlow }}
+              # client clients - direct
+              ID=$(kcadm get clients -r "${REALM}" --query "clientId=direct" --fields id --format csv --noquotes)
+              CLIENT_OPTS=()
+              CLIENT_OPTS+=(-s 'secret={{ .Values.keycloak.clients.direct.clientSecret | toJson }}')
+              if [[ -n "$ID" ]]; then
+                # TODO: replace with update once https://github.com/keycloak/keycloak/issues/12484 is fixed
+                # kcadm update "clients/${ID}" -r "${REALM}" -f /etc/init-data/client-direct.json "${CLIENT_OPTS[@]}"
+                kcadm delete "clients/${ID}" -r "${REALM}"
+                kcadm create clients -r "${REALM}" -f /etc/init-data/client-direct.json "${CLIENT_OPTS[@]}"
+              else
+                kcadm create clients -r "${REALM}" -f /etc/init-data/client-direct.json "${CLIENT_OPTS[@]}"
+              fi
+              {{ end }}
 
               {{ if .Values.keycloak.postInstall.user.enabled }}
               # create user

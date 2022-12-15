@@ -53,7 +53,7 @@ spec:
                   name: keycloak-client-secret-services
                   key: CLIENT_SECRET
             {{- include "drogue-cloud-common.oauth2-internal.env-vars" (dict "root" . "prefix" "REGISTRY__" ) | nindent 12 }}
-            {{- include "drogue-cloud-common.oauth2-authenticator.env-vars" (dict "root" . "clients" (list "services" )) | nindent 12 }}
+            {{- include "drogue-cloud-core.oauth2-internal-authenticator.env-vars" . | nindent 12 }}
             - name: INSTANCE
               valueFrom:
                 configMapKeyRef:

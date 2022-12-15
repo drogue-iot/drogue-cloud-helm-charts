@@ -18,3 +18,15 @@ metadata:
 data:
   CLIENT_ID: {{ "services" | b64enc | quote }}
   CLIENT_SECRET: {{ .Values.keycloak.clients.services.clientSecret | b64enc | quote }}
+{{ if .Values.keycloak.postInstall.resourceOwnerPasswordFlow }}
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: keycloak-client-secret-direct
+  labels:
+    {{- include "drogue-cloud-core.labels" (dict "root" . "name" "keycloak-client-secret-direct" "component" "sso") | nindent 4 }}
+data:
+  CLIENT_ID: {{ "direct" | b64enc | quote }}
+  CLIENT_SECRET: {{ .Values.keycloak.clients.direct.clientSecret | b64enc | quote }}
+{{ end }}
