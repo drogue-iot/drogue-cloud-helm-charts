@@ -18,7 +18,7 @@ data:
       "publicClient": true,
       "implicitFlowEnabled": true,
       "standardFlowEnabled": true,
-      "directAccessGrantsEnabled": false,
+      "directAccessGrantsEnabled": {{ .Values.keycloak.postInstall.resourceOwnerPasswordFlow | default false }},
       "serviceAccountsEnabled": false,
       "fullScopeAllowed": true,
       "webOrigins": [
