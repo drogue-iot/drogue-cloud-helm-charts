@@ -26,7 +26,7 @@ Arguments: .
 {{- define "drogue-cloud-core.oauth2-external-authenticator.env-vars" }}
 {{- $clients := list "drogue" "services" -}}
 {{- if .Values.keycloak.postInstall.resourceOwnerPasswordFlow }}
-{{- $clients = concat $clients "direct" }}
+{{- $clients = concat $clients (list "direct") }}
 {{- end }}
 {{- include "drogue-cloud-common.oauth2-authenticator.env-vars" (dict "root" . "clients" $clients ) }}
 {{- end }}
