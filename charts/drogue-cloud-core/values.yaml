@@ -197,7 +197,7 @@ services:
     deployment: {}
     enabled: true
     eventSource:
-      image: ghcr.io/drogue-cloud/drogue-event-source:0.2.0
+      image: ghcr.io/drogue-iot/drogue-event-source:0.2.3
 
 
 certificates:
