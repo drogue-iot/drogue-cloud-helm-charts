@@ -1,0 +1,10 @@
+apiVersion: jaegertracing.io/v1
+kind: Jaeger
+metadata:
+  name: jaeger
+spec:
+  {{- if has .Values.global.cluster (list "minikube" "kind" ) }}
+  ingress:
+    hosts:
+      - {{ include "drogue-cloud-common.ingress.host" (dict "root" . "prefix" "jaeger" "ingress" .root.Values.global.drogueCloud.jaeger.ingress ) }}
+  {{- end}}
